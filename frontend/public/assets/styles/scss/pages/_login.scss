@@ -1,0 +1,11 @@
+._login {
+    &_page {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        @include for-tablet {
+            background-color: $blue;
+        }
+    }
+}

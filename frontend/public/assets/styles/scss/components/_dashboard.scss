@@ -1,0 +1,778 @@
+._dashboard {
+
+    &-mobile {
+        display: none;
+    }
+    &_wrapper {
+        gap: 4.75rem;
+        display: flex;
+        padding-top: 5rem;
+        padding-bottom: 20rem;
+        flex-direction: column;
+    }
+    
+    &_nav {
+        gap: 2.5rem;
+        display: flex;
+        flex-direction: column;        
+        
+        &_top {
+            display: flex;
+            justify-content: space-between;
+            
+            &_left {
+                gap: 1.3rem;
+                display: flex;
+                flex-direction: column;        
+            }
+
+            &_right {
+                gap: 5.9rem;
+                display: flex;
+                padding: 1.2rem 1.6rem;
+                font-family: $HelveticaNeueMedium;
+            }
+        }
+
+        &_greeting {
+            color: $gray-400;
+            font-size: $_title_h2;
+            font-family: $HelveticaNeueMedium;
+        }
+        
+        &_status {
+            gap: 0.6rem;
+            display: flex;
+            flex-direction: column;
+
+            &-label {
+                font-size: $_typo_h1;
+            }
+            
+            &-text {
+                font-size: $_typo_h1;
+            }
+
+            &-indicator {
+                gap: 1rem;
+                display: flex;
+            }
+            
+            &-circle {
+                width: 1.5rem;
+                height: 1.5rem;
+                border-radius: 50%;
+                display: inline-block;
+                background: rgba(100, 227, 68, 1);
+
+                &_inactive {
+                    background: red;
+                }
+            }
+
+            &-date {
+                color: rgba(148, 148, 148, 1);
+            }
+        }
+
+        &_bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            &_left {
+                gap: 7.4rem;
+                display: flex;
+                align-items: center;
+                padding: 1.2rem 1.6rem;
+            }
+
+            &_right {
+                gap: 1.1rem;
+                display: flex;
+                border-radius: 8px;
+                flex-direction: column;
+                padding: 1.2rem 1.6rem;
+                background-color: rgba(246, 249, 255, 1);
+
+                ._dropdown_button_wrapper_modified {
+                    max-width: unset;
+                }
+            }
+        }
+
+        &_currency {
+            &-label {
+                font-size: 2.4rem;
+                font-family: $HelveticaNeueMedium;
+            }
+        }
+    }
+
+    &_content {
+        gap: 6.745rem;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    &_overall_investment {
+        gap: 3.6rem;
+        display: grid;
+        grid-template-columns: 66.53% 33.47%;
+        
+        &_info {
+            gap: 2.7rem;
+            display: flex;
+            border-radius: 2.2rem;
+            flex-direction: column;
+            padding: 4.072rem 2.3rem;
+            background-color: $cyan;
+
+            &-label {
+
+            }
+
+            &_detail {
+                gap: 1.9rem;
+                color: $blue;
+                display: flex;
+                flex-direction: column;
+
+                &-title {
+                    color: $orange;
+                }
+
+                &-value {
+                    font-size: 3.2rem;
+                    line-height: 3.907rem;
+                    font-family: $HelveticaNeueHeavy;
+                }
+
+                &s {
+                    // gap: 2.7rem;
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                }
+            }
+        }
+        
+        &_graph {
+            gap: 2.7rem;
+            display: flex;
+            position: relative;
+            align-items: center;
+            border-radius: 2.2rem;
+            flex-direction: column;
+            justify-content: center;
+            padding: 2.724rem 2.3rem;
+            background-color: $cyan;
+        }
+    }
+
+    &_no-investments-container {
+        width: 100vw;
+        height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        @include for-tablet {
+            &_web {
+                display: none;
+
+            }
+        }
+    }
+
+    &_project_details {
+        gap: 6.151rem;
+        display: flex;
+        flex-direction: column;
+        padding: 2.4rem 2.3rem;
+        background-color: $cyan;
+        border-radius: 2.114rem;
+
+        &_card {
+            gap: 2.049rem;
+            display: flex;
+            cursor: pointer;
+            flex-direction: column;
+            border-radius: 1.464rem;
+            background-color: #fff;
+            padding: 3.337rem 2.552rem;
+            transition: all 0.3s ease-in-out;
+            backdrop-filter: blur(1.9627848863601685px);
+            box-shadow: 0px 0px 11.71px 0px rgba(132, 132, 132, 0.25);
+
+            &s {
+                margin-left: 12rem;
+                margin-right: 12rem;
+                // gap: 2.606rem;
+                // display: flex;
+            }
+            
+            &_info {
+                gap: 1.317rem;
+                display: flex;
+                font-size: $_typo_h1;
+                flex-direction: column;
+                padding: 0.878rem 1.178rem;
+                font-family: $HelveticaNeueMedium;
+
+                &_value {
+                    color: $orange;
+                }
+                
+                &_wrapper {
+                    padding: 0 1.917rem;
+                    gap: 4.711rem;
+                    display: flex;
+                }
+
+            }
+
+            &_active {
+                color: #fff;
+                background-color: $blue;
+                
+                ._dashboard_project_details_card_info {
+                    &_name {
+                        color: $orange;
+                    }
+
+                    &_value {
+                        color: #fff;
+                    }
+                }
+            }
+        }
+
+        &_info {
+            gap: 8rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        &_graph {
+            &_section {
+                gap: 2.2rem;
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                border-radius: 2.114rem;
+                padding: 2.114rem 2.451rem;
+                background-color: #ffffff;
+            }
+
+            &_title {
+                margin-bottom: 2rem;
+            }
+
+            &_item {
+                position: relative;
+                padding-bottom: 5rem;
+            }
+
+            &_button {
+                border: 0;
+                cursor: pointer;
+                border-radius: 3px;
+                line-height: 1;
+                padding: 0.5rem 1rem 0.6rem;
+                background-color: #fff;
+
+                &_active {
+                    color: #fff;
+                    background-color: $blue;
+                }
+
+                &s {
+                    z-index: 1;
+                    bottom: 1rem;
+                    display: flex;
+                    gap: 1.153rem;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    position: absolute;
+                }
+            }
+
+            &_info {
+                display: flex;
+                flex-direction: column;
+
+                &_title {
+                    padding-bottom: 6.343rem;
+                }
+                
+                &_list {
+                    padding-bottom: 5.286rem;
+                }
+
+                &_item {
+                    gap: 1.161rem;
+                    display: flex;
+                    justify-content: space-between;
+
+                    &_name {
+                        color: $gray-400;
+                        font-size: $_typo_h1;
+                    }
+
+                    &_value {
+                        color: $blue;
+                        font-size: 2rem;
+                        font-family: $HelveticaNeueMedium;
+                    }
+                }
+
+                &_description {
+                    gap: 1.346rem;
+                    display: flex;
+                    font-size: 1.6rem;
+                    flex-direction: column;
+
+                    &_title {
+                        font-family: $HelveticaNeueMedium;
+                    }
+                }
+            }
+        }
+    }
+
+    &_no-account-container {
+        height: 50vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+._dashboard-mobile_no-investments-container_mobile {
+    display: none;
+}
+
+@include for-tablet {
+    ._dashboard-mobile_no-investments-container_mobile {
+        ._h1 {
+            font-size: 1.8rem;
+            text-align: center;
+        }
+
+    }
+
+    ._dashboard {
+        display: none;
+    }
+
+    ._dashboard-mobile {
+        background: rgba(246, 246, 246, 1);
+        display: flex;
+
+        &_wrapper {
+            gap: 4.158rem;
+            display: flex;
+            padding-top: 3rem;
+            flex-direction: column;
+            padding-bottom: 8.9rem;
+        }
+        
+        &_nav {
+            gap: 3rem;
+            display: flex;
+            flex-direction: column;        
+            
+            &_top {
+                gap: 3px;
+                display: flex;
+                flex-direction: column;
+            }
+
+            &_bottom {
+                display: flex;
+                justify-content: space-between;
+            }
+    
+            &_greeting {
+                color: $gray-400;
+                font-size: $_title_h3;
+                font-family: $HelveticaNeueMedium;
+            }
+            
+            &_status {
+                gap: 0.6rem;
+                display: flex;
+                flex-direction: column;
+
+                &-section {
+                    gap: 1.2rem;
+                    display: flex;
+                    flex-direction: column;
+                }
+    
+                &-label {
+                    font-size: $_typo_h1;
+                    font-family: $HelveticaNeueMedium;
+                }
+                
+                &-text {
+                    text-transform: capitalize;
+                    font-size: 1.2rem;
+                    font-weight: 500;
+                }
+    
+                &-indicator {
+                    gap: 1rem;
+                    display: flex;
+                    align-items: center;
+                }
+                
+                &-circle {
+                    width: 1.2rem;
+                    height: 1.2rem;
+                    border-radius: 50%;
+                    display: inline-block;
+                    background: rgba(100, 227, 68, 1);
+
+                    &_inactive {
+                        background: red;
+                    }
+                }
+    
+                &-date {
+                    font-size: 1.2rem;
+                    color: rgba(148, 148, 148, 1);
+                }
+            }
+    
+            &_currency {
+                ._dropdown_button_wrapper_modified {
+                    max-width: unset;
+                    width: auto;
+                }
+
+                ._dropdown_button_modified {
+                    font-size: 1.2rem;
+                }
+
+                ._dropdown_button_menu {
+                    top: 3.9rem;
+                }
+
+                &-select {
+                    gap: 1rem;
+                    display: grid;
+                }
+            }
+        }
+
+        &_welcome-message {
+            font-size: 2rem;
+        }
+    
+        &_content {
+            gap: 4.042rem;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        &_overall_investment {
+
+            &_info {
+                gap: 3rem;
+                display: flex;
+                border-radius: 2.2rem;
+                flex-direction: column;
+                
+                &-label {
+                    font-size: 1.6rem;
+                }
+    
+                &_detail {
+                    color: $blue;
+                    display: flex;
+                    justify-content: space-between;
+    
+                    &-title {
+                        display: flex;
+                        align-items: center;
+                        color: $gray-400;
+                        font-size: 1.2rem;
+                        font-family: $HelveticaNeueLight;
+                    }
+                    
+                    &-value {
+                        padding: 0.8rem 1.3rem;
+                        font-size: 1.6rem;
+                        font-family: $HelveticaNeueHeavy;
+                    }
+                    
+                    &-divider {
+                        width: 80%;
+                        height: 1px;
+                        margin: 0 auto;
+                        color: rgba(190, 190, 155, 0.5);
+                    }
+                    
+                    &s {
+                        gap: 1.1rem;
+                        display: flex;
+                        border-radius: 10px;
+                        flex-direction: column;
+                        padding: 1.7rem 1.5rem;
+                        background-color: $white;
+                    }
+                }
+            }
+            
+            &_graph {
+                gap: 2.7rem;
+                display: flex;
+                position: relative;
+                align-items: center;
+                border-radius: 2.2rem;
+                flex-direction: column;
+                justify-content: center;
+                background-color: #fff;
+
+                @media screen and (max-width:410px) {
+                    gap: 0;
+                    
+                    .recharts-labels-wrapper {
+                        display: flex;
+                        position: static !important;
+                        width: 80%;
+                        gap: 1rem;
+                        justify-content: center;
+                        padding-bottom: 2rem;
+                    }
+                }
+            }
+        }
+    
+        &_no-investments-container {
+            width: 100vw;
+            height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    
+        &_project_details {
+            gap: 3rem;
+            display: flex;
+            flex-direction: column;
+
+            &_label {
+                font-size: 16px;
+            }
+    
+            &_card {
+                gap: 1.1rem;
+                display: flex;
+                flex-direction: column;
+                border-radius: 1.464rem;
+                background-color: #fff;
+
+                &_divider {
+                    color: rgba(190, 190, 155, 0.5);
+                }
+
+                &_header {
+                    display: flex;
+                    padding: 2rem 1.6rem 0;
+                    flex-direction: column;
+                    
+                    &_top {
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                    }
+                    
+                    &_bottom {
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                    }
+                }
+
+                &_location {
+                    color: $blue;
+                    font-size: 1rem;
+                    margin-top: 2px;
+                    font-weight: 500;
+                }
+
+                &_status {
+                    color: $blue;
+                    font-size: 1.2rem;
+                    &-label {
+                        color: $orange;
+                        font-size: 1rem;
+                    }
+                }
+
+                &_title {
+                    color: $orange;
+                    font-size: 1.6rem;
+                    font-family: $HelveticaNeueLight;
+                }
+    
+                &s {
+                    gap: 3rem;
+                    display: flex;
+                    flex-direction: column;
+                }
+                
+                &_info {
+                    gap: 1rem;
+                    display: flex;
+                    color: $black;
+                    font-size: 1rem;
+                    padding: 6px 8px;
+                    flex-direction: column;
+                    font-family: $HelveticaNeueMedium;
+    
+                    &_value {
+                        color: $orange;
+                    }
+                    
+                    &_wrapper {
+                        gap: 1.441rem;
+                        display: flex;
+                        justify-content: space-between;
+                        padding: 0rem 1.6rem 2rem;
+                    }
+    
+                }
+    
+                &_active {
+                    color: #fff;
+                    background-color: $blue;
+                    
+                    ._dashboard-mobile_project_details_card {
+                        &_title {
+                            color: $white;
+                        }
+
+                        &_info {
+                            &_name {
+                                color: $orange;
+                            }
+        
+                            &_value {
+                                color: #fff;
+                            }
+                        }
+                    }
+                }
+            }
+    
+            &_info {
+                gap: 8rem;
+                display: flex;
+                flex-direction: column;
+            }
+    
+            &_graph {
+                &_section {
+                    gap: 1.2rem;
+                    display: flex;
+                    flex-direction: column;
+                    border-radius: 2.114rem;
+                    padding: 2.114rem 2.451rem;
+                    background-color: #ffffff;
+                }
+                
+                &_title {
+                    font-size: 1.4rem;
+                    margin-bottom: 5px;
+                    font-family: $HelveticaNeueLight;
+                }
+    
+                &_item {
+                    position: relative;
+                    padding-bottom: 5rem;
+                }
+    
+                &_button {
+                    border: 0;
+                    cursor: pointer;
+                    border-radius: 3px;
+                    line-height: 1;
+                    padding: 0.5rem 1rem 0.6rem;
+                    background-color: #fff;
+    
+                    &_active {
+                        color: #fff;
+                        background-color: $blue;
+                    }
+    
+                    &s {
+                        z-index: 1;
+                        bottom: 1rem;
+                        display: flex;
+                        gap: 1.153rem;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        position: absolute;
+                    }
+                }
+    
+                &_info {
+                    display: flex;
+                    flex-direction: column;
+    
+                    &_title {
+                        font-size: 1.2rem;
+                        padding-bottom: 1.4rem;
+                        font-family: $HelveticaNeueLight;
+                    }
+                    
+                    &_list {
+                        padding-bottom: 1.4rem;
+                    }
+    
+                    &_item {
+                        gap: 1.241rem;
+                        display: flex;
+                        justify-content: space-between;
+    
+                        &_name {
+                            color: $gray-400;
+                            font-size: 1.2rem;
+                        }
+    
+                        &_value {
+                            color: $blue;
+                            font-size: 1.6rem;
+                            font-family: $HelveticaNeueMedium;
+                        }
+                    }
+    
+                    &_description {
+                        // gap: 1.346rem;
+                        display: flex;
+                        font-size: 1.2rem;
+                        flex-direction: column;
+    
+                        &_title {
+                            font-family: $HelveticaNeueMedium;
+                        }
+                    }
+                }
+            }
+        }
+    
+        &_no-account-container {
+            height: 50vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            ._h1 {
+                font-size: 1.8rem;
+                text-align: center;
+            }
+        }
+    }
+}

@@ -1,0 +1,302 @@
+{
+    "Entities": [{
+        "id": 1,
+        "name": "Company ABC",
+        "address": "123 Main St",
+        "country": "USA",
+        "regId": "12345",
+        "ownerId": 10,
+        "caId": 20,
+        "projects": [
+            {
+                "id": 101,
+                "name": "Project Alpha",
+                "address": "456 Side St",
+                "latitude": 40.712776,
+                "longitude": -74.005974,
+                "startDate": "2023-01-01",
+                "actualMaturityDate": "2025-01-01",
+                "overallCost": 5000000.00,
+                "description": "A commercial real estate project",
+                "ownerName": "John Doe",
+                "legalId": 501,
+                "maturityLockingPeriod": 24,
+                "resourceGroupId": 301,
+                "legalDocuments": [
+                    {
+                        "id": 501,
+                        "legalId": 101,
+                        "resourceId": 601
+                    }
+                ],
+                "projectSettings": {
+                    "id": 201,
+                    "projectId": 101,
+                    "settings": {
+                        "settingName": "Example Setting",
+                        "value": "Value"
+                    }
+                },
+                "resources": [
+                    {
+                        "id": 601,
+                        "location": "Warehouse",
+                        "groupId": 301,
+                        "projected": true
+                    }
+                ],
+                "investors": [
+                    {
+                        "id": 1001,
+                        "investorId": 901,
+                        "account": {
+                            "id": 1101,
+                            "currency": "USD",
+                            "interestRate": 5.00,
+                            "investmentType": "fixed",
+                            "investments": [
+                                {
+                                    "id": 1201,
+                                    "investedDate": "2023-02-01",
+                                    "amount": 100000.00,
+                                    "modifiedDate": "2023-06-01",
+                                    "modifiedBy": 10
+                                }
+                            ],
+                            "transactionHistory": [
+                                {
+                                    "id": 1301,
+                                    "investmentId": 1201,
+                                    "userId": 10,
+                                    "projectId": 101,
+                                    "credited": true,
+                                    "amount": 5000.00,
+                                    "createdDate": "2023-07-01"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                "id": 102,
+                "name": "Project Beta",
+                "address": "789 Ocean Dr",
+                "latitude": 34.052235,
+                "longitude": -118.243683,
+                "startDate": "2024-03-15",
+                "actualMaturityDate": "2026-03-15",
+                "overallCost": 8000000.00,
+                "description": "A luxury residential development",
+                "ownerName": "Jane Smith",
+                "legalId": 502,
+                "maturityLockingPeriod": 36,
+                "resourceGroupId": 302,
+                "legalDocuments": [
+                    {
+                        "id": 502,
+                        "legalId": 102,
+                        "resourceId": 602
+                    }
+                ],
+                "projectSettings": {
+                    "id": 202,
+                    "projectId": 102,
+                    "settings": {
+                        "settingName": "Advanced Setting",
+                        "value": "Enabled"
+                    }
+                },
+                "resources": [
+                    {
+                        "id": 602,
+                        "location": "Construction Site",
+                        "groupId": 302,
+                        "projected": false
+                    }
+                ],
+                "investors": [
+                    {
+                        "id": 1002,
+                        "investorId": 901,
+                        "account": {
+                            "id": 1102,
+                            "currency": "EUR",
+                            "interestRate": 4.00,
+                            "investmentType": "variable",
+                            "investments": [
+                                {
+                                    "id": 1202,
+                                    "investedDate": "2024-04-01",
+                                    "amount": 200000.00,
+                                    "modifiedDate": "2024-08-01",
+                                    "modifiedBy": 11
+                                }
+                            ],
+                            "transactionHistory": [
+                                {
+                                    "id": 1302,
+                                    "investmentId": 1202,
+                                    "userId": 11,
+                                    "projectId": 102,
+                                    "credited": false,
+                                    "amount": 10000.00,
+                                    "createdDate": "2024-09-01"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": 30,
+                        "investorId": 1002,
+                        "investorProfile": {
+                          "id": 1002,
+                          "profileId": 1105,
+                          "kycId": 2099,
+                          "personalDetails": {
+                            "mobile": "+11234567890",
+                            "dob": "1975-08-21",
+                            "residentialAddress": "456 Investor Lane, City X",
+                            "mailingAddress": "PO Box 987, City Y"
+                          },
+                          "nomineeDetails": {
+                            "name": "Bob Williams",
+                            "mobile": "+19876543210",
+                            "email": "bob.williams@example.com",
+                            "relation": "Husband"
+                          },
+                          "documents": [
+                            {
+                              "docName": "document2.pdf",
+                              "docPath": "https://example.com/documents/document2.pdf"
+                            }
+                          ],
+                          "emergencyContact": {
+                            "name": "Emily Johnson",
+                            "mobile": "+1233445567",
+                            "relation": "Sister"
+                          }
+                        },
+                        "account": {
+                          "id": 1103,
+                          "currency": "USD",
+                          "interestRate": 5,
+                          "investmentType": "fixed",
+                          "investments": [
+                            {
+                              "id": 1203,
+                              "investedDate": "2024-05-01",
+                              "amount": 300000,
+                              "modifiedDate": "2024-09-01",
+                              "modifiedBy": 12
+                            }
+                          ],
+                          "transactionHistory": [
+                            {
+                              "id": 1303,
+                              "investmentId": 1203,
+                              "userId": 12,
+                              "projectId": 102,
+                              "credited": true,
+                              "amount": 15000,
+                              "createdDate": "2024-09-10"
+                            }
+                          ]
+                        }
+                    }
+                ]
+            }
+        ]
+    }],
+    "Users": [
+        {
+            "id": 10,
+            "role": "admin",
+            "firstName":" Tigran",
+            "lastName":"Harut",
+            "email": "admin@example.com"
+        },
+        {
+            "id": 20,
+            "role": "investor",
+            "firstName":"Joe",
+            "lastName":"Bishop",
+            "email": "investor@example.com",
+            "investorProfile": {
+                "id": 901,
+                "profileId": 1010,
+                "kycId": 2020,
+                "personalDetails": {
+                    "mobile": "+1234567890",
+                    "dob": "1980-05-15",
+                    "residentialAddress": "789 Investor St, City A",
+                    "mailingAddress": "PO Box 123, City B"
+                },
+                "nomineeDetails": {
+                    "name": "Jane Doe",
+                    "mobile": "+9876543210",
+                    "email": "nominee@example.com",
+                    "relation": "Spouse"
+                },
+                "documents": [
+                    {"docName": "document1.pdf", "docPath":"https://css4.pub/2015/icelandic/dictionary.pdf"}
+                ],
+                "emergencyContact": {
+                    "name": "John Smith",
+                    "mobile": "+1122334455",
+                    "relation": "Brother"
+                }
+            }
+        },
+        {
+            "id": 30,
+            "role": "investor",
+            "firstName": "Alice",
+            "lastName": "Williams",
+            "email": "alice.williams@example.com",
+            "investorProfile": {
+                "id": 1002,
+                "profileId": 1105,
+                "kycId": 2099,
+                "personalDetails": {
+                    "mobile": "+11234567890",
+                    "dob": "1975-08-21",
+                    "residentialAddress": "456 Investor Lane, City X",
+                    "mailingAddress": "PO Box 987, City Y"
+                },
+                "nomineeDetails": {
+                    "name": "Bob Williams",
+                    "mobile": "+19876543210",
+                    "email": "bob.williams@example.com",
+                    "relation": "Husband"
+                },
+                "documents": [
+                    {"docName": "document2.pdf", "docPath": "https://example.com/documents/document2.pdf"}
+                ],
+                "emergencyContact": {
+                    "name": "Emily Johnson",
+                    "mobile": "+1233445567",
+                    "relation": "Sister"
+                }
+            }
+        }        
+    ],
+    "ResourceGroup": {
+        "groupId": 301,
+        "groupName": "Construction Materials"
+    },
+    "Roles": [
+        {
+            "roleId": 1,
+            "roleName": "Investor"
+        },
+        {
+            "roleId": 2,
+            "roleName": "Admin"
+        },
+        {
+            "roleId": 3,
+            "roleName": "Investor"
+        }
+    ]
+}

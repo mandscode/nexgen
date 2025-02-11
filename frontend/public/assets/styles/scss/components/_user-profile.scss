@@ -1,0 +1,290 @@
+._user-profile {
+    &_wrapper {
+        gap: 5.3rem;
+        display: flex;
+        padding-top: 5.3rem;
+        padding-bottom: 8.9rem;
+        flex-direction: column;
+    }
+    
+    &_info {
+        gap: 5.4rem;
+        display: flex;
+        flex-direction: column;
+
+        &-wrapper {
+            gap: 4.1rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        &_section {
+            gap: 2.5rem;
+            display: flex;
+            padding: 2.2rem;
+            border-radius: 2.2rem;
+            flex-direction: column;
+            background-color: $gray-300;
+
+            &_title {
+                color: $orange;
+            }
+
+            &_detail {
+                gap: 0.9rem;
+                display: flex;
+                position: relative;
+                flex-direction: column;
+                
+                &_link {
+                    width: 100%;
+                    height: 100%;
+                    position: absolute;
+                }
+                
+                &s {
+                    display: flex;
+                    flex-wrap: wrap;
+                    row-gap: 6.2rem;
+                    justify-content: space-between;
+                    
+                    &_docs {
+                        gap: 5.15rem;
+                        justify-content: unset;
+                        text-align: center;
+
+                        &_input {
+                            border: 1px solid rgb(1, 39, 108);
+                            width: 16px;
+                            height: 16px;
+                            border-radius: 3.2px;
+                            background-color: transparent;
+                            appearance: none;
+                            outline: none;
+
+                            
+                            &:checked {
+                                background-color: rgba(1, 39, 108, 1);
+                                border: 0.8px solid rgba(1, 39, 108, 1);
+                                &::before {
+                                    content: '✔';
+                                    position: absolute;
+                                    top: 50%;
+                                    left: 50%;
+                                    transform: translate(-50%, -50%);
+                                    color: white;
+                                    font-size: 12px;
+                                    font-weight: bold;
+                                    width: 100%;
+                                    height: 100%;
+                                }
+                            }
+                              
+                        }
+                    }
+                }
+            }
+
+            &_label {
+                color: $gray-500;
+                font-family: $HelveticaNeueMedium;
+            }
+            
+            &_value {
+                border: 0;
+                font-size: 2rem;
+                background-color: transparent;
+                font-family: $HelveticaNeueMedium;
+
+                &:focus {
+                    border: 0;
+                    outline: 0;                    
+                }
+                
+                &:active {
+                    border: 0;
+                    outline: 0;                    
+                }
+            }
+        }
+    }
+    
+    &_name {
+        color: $blue;
+        font-size: $_sub_h1;
+        font-family: $HelveticaNeueMedium;
+        
+        &-section {                
+            gap: 1.6rem;
+            display: flex;
+            align-items: center;
+        }
+    }
+
+    &_pic {
+        width: 8.5rem;
+        height: 8.5rem;
+        border-radius: 50%;
+        object-fit: none;
+        border: 3px solid $blue;
+
+        &_text {
+            width: 8.5rem;
+            height: 8.5rem;
+            border-radius: 50%;
+            border: 3px solid #01276C;
+            justify-content: center;
+            display: flex;
+            align-items: center;
+            font-size: 3rem;
+            font-family: $HelveticaNeueMedium;
+        }
+        
+        &_wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+}
+
+@include for-tablet {
+    ._user-profile {
+        &_wrapper {
+            padding-top: 4rem;
+            ._h2 {
+                display: none;
+            }
+
+            ._title_h2 {
+                font-size: 1.6rem;
+            }
+        }
+        
+        &_info {
+    
+            &-wrapper {
+                gap: 3.5rem;
+            }
+    
+            &_section {
+    
+                &_title {
+
+                }
+    
+                &_detail {
+                    
+                    &s {
+                        gap: 2.5rem;
+                        flex-direction: column;
+
+                        &_docs {
+                            flex-direction: row;
+                            ._user-profile_info_section_value {
+                                font-size: 1rem;
+                            }
+                            
+                            ._user-profile_info_section_detail {
+                                display: flex;
+                                max-width: 7.7rem;
+                                align-items: center;
+                                flex-direction: column;
+                                justify-content: center;
+                            }
+                            &_label {
+                                font-size: 1.2rem !important;
+                            }
+                            &_input {
+                                border: 1px solid rgb(1, 39, 108);
+                                width: 12px;
+                                height: 12px;
+                                border-radius: 3.2px;
+                                background-color: transparent;
+                                appearance: none;
+                                outline: none;
+    
+                                
+                                &:checked {
+                                    background-color: rgba(1, 39, 108, 1);
+                                    border: 0.8px solid rgba(1, 39, 108, 1);
+                                    &::before {
+                                        content: '✔';
+                                        position: absolute;
+                                        top: 50%;
+                                        left: 50%;
+                                        transform: translate(-50%, -50%);
+                                        color: white;
+                                        font-size: 12px;
+                                        font-weight: bold;
+                                        width: 100%;
+                                        height: 100%;
+                                    }
+                                }
+                                  
+                            }
+                        }
+                    }
+                }
+                
+                &_label {
+                    font-size: 1.2rem;                    
+
+                    svg {
+                        height: 5.95rem;
+                        width: auto;
+                    }
+
+                    ._verified_svg {
+                        top: -25px !important;
+                        right: -10px;
+                        width: 2.8rem;
+                    }
+                }
+                
+                &_value {
+                    font-size: 1.6rem;
+                    width: fit-content;
+
+                    &:focus {
+
+                    }
+                    
+                    &:active {
+
+                    }
+                }
+            }
+        }
+    
+        &_name {
+            font-size: 2rem;
+
+            &-section {
+
+            }
+        }
+    
+        &_pic {
+            width: 4rem;
+            height: 4rem;
+            object-fit: contain;
+
+            &_text {
+                width: 4rem;
+                height: 4rem;
+                border-radius: 50%;
+                border: 3px solid #01276C;
+                justify-content: center;
+                display: flex;
+                align-items: center;
+                font-size: 2rem;
+                font-family: $HelveticaNeueMedium;
+            }
+
+            &_wrapper {
+
+            }
+        }
+    }
+}

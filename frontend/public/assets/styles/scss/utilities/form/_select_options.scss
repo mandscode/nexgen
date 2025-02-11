@@ -1,0 +1,111 @@
+._select-option {
+
+    &_wrapper {
+        display: flex;
+        width: 400px;
+        flex-direction: column;
+        position: relative;
+    }
+
+    &_options_menu {
+        max-height: 0;
+        width: calc( 100% - 12px);
+        opacity: 0;
+        transition: all 0.4s;
+        overflow: hidden;
+        border-radius: 5px;
+        // border: solid 1px $_input_dark_border;
+        background-color: $_input_light_bg;
+        position: absolute;
+        z-index: $zIndexBase;
+        box-shadow: $box-shadow-soft;
+
+        &.active {
+            max-height: 240px;
+            opacity: 1;
+            overflow-y: scroll;
+        }
+
+        &.active + ._select-option_selected::after {
+            transform: translateY(-50%) rotateX(180deg);
+        }
+
+        &::-webkit-scrollbar {
+            width: 8px;
+            background: #0d141f;
+            background: #81878f;
+            background: #f1f2f3;
+            border-radius: 0 5px 5px 0;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: #525861;
+            background: #81878f;
+            border-radius: 0 5px 5px 0;
+        }
+    }
+    
+    &_selected {
+        position: relative;
+        width: 388px;
+        border-radius: 5px;
+        // border: solid 1px $_input_dark_border;
+        background-color: $_input_light_bg;
+        cursor: pointer;
+        padding: 12px 24px;
+        box-shadow: $box-shadow-soft;
+        
+        &::after {
+            content: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="13" height="8" viewBox="0 0 13 8" fill="none"%3E%3Cpath d="M0.578125 1.21924L6.34673 6.78056L12.288 1.21924" stroke="black" stroke-linecap="round"%3E%3C/path%3E%3C/svg%3E');
+            /* Font Awesome	 */
+            // content: "\f078";
+            // font-family: "Font Awesome 5 Free";
+            // font-weight: 900;
+            -webkit-font-smoothing: antialiased;
+            display: inline-block;
+            font-style: normal;
+            font-variant: normal;
+            text-rendering: auto;
+            line-height: 1;
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transition: transform .5s;
+            transform: translateY(-50%);
+        }
+        
+    } 
+
+    &_option {
+        padding: 12px 24px;
+        cursor: pointer;
+        
+        * {
+            cursor: pointer;
+        }
+
+        &_title {
+            font-family: "Open Sans", sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1.57;
+            color: #1f2949;
+        }
+        
+        &_desc {
+            font-family: "Open Sans", sans-serif;
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 1.83;
+            color: #81878f;
+        }
+
+        input[type="radio"] {
+            display: none;
+        }
+
+        &:hover {
+            background: #efefef;
+        }
+    }
+}

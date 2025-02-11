@@ -1,0 +1,36 @@
+// Hero Section CSS
+._hero {
+    &_wrapper {
+        gap: 4rem;
+        display: flex;
+        // height: 40rem;
+        padding-top: 8rem;
+        text-align: center;
+        align-items: center;
+        padding-bottom: 8rem;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    &_info {
+        gap: 1.6rem;
+        display: flex;
+        max-width: 73rem;
+        flex-direction: column;
+    }
+
+    &_description {
+        color: $_typo_default_color
+    }
+
+    &_buttons {
+        gap: 1.6rem;
+        display: flex;
+        align-items: center;
+    }
+
+    &_designed_by {
+        font-size: 16px;
+        color:  $_typo_default_color
+    }
+}

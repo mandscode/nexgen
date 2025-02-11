@@ -1,0 +1,97 @@
+@import "./themes";
+
+@keyframes scrolly {
+    0% {
+      transform: translate3d(0, 0,0);
+    }
+    70% {
+      transform: translate3d(20%,0,0);
+      opacity: 0;
+    }
+    75% {
+      transform: translate3d(-150%,0,0);
+    }
+    95% {
+        opacity: 1;
+        transform: translate3d(0%,0,0);
+    }
+    100% {
+      transform: translate3d(0%, 0,0);
+    }
+}
+
+
+
+._h1_gradient {
+    background: #08C9AD;
+    background: linear-gradient(to right, #08C9AD 0%, #8047FE 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+._h2_gradient {
+    background: #08C9AD;
+    background: linear-gradient(to right, #08C9AD 0%, #8047FE 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+._sub-h1_gradient {
+    background: #08C9AD;
+    background: linear-gradient(to right, #08C9AD 0%, #8047FE 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+._sub-h2_gradient {
+    background: #08C9AD;
+    background: linear-gradient(to right, #08C9AD 0%, #8047FE 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+._typo-h1_gradient {
+    background: #08C9AD;
+    background: linear-gradient(to right, #08C9AD 0%, #8047FE 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+._typo-h2_gradient {
+    background: #08C9AD;
+    background: linear-gradient(to right, #08C9AD 0%, #8047FE 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+
+// Background Colors Classes
+._container_light_bg {
+    background: $_container_light_bg;
+}
+
+._container_soft_bg {
+    background: $_container_soft_bg;
+}
+
+._container_dark_bg {
+    background: $_container_dark_bg;
+}
+
+._container_deep_bg {
+    background: $_container_deep_bg;
+}
+
+// Background Colors Classes
+._content_light_bg {
+    background: $_content_light_bg;
+}
+
+._content_soft_bg {
+    background: $_content_soft_bg;
+}
+
+._content_dark_bg {
+    background: $_content_dark_bg;
+}
+
+._content_deep_bg {
+    background: $_content_deep_bg;
+}

@@ -1,0 +1,18 @@
+// $zIndexLowest: Represents the lowest z-index stage.
+// $zIndexBase: Denotes the base or default z-index stage.
+// $zIndexAboveBase: Refers to z-index values above the base stage.
+// $zIndexHigher: Suggests higher z-index values.
+// $zIndexDropdown: Specific to dropdown elements or components.
+// $zIndexModal: For modal dialogs or pop-ups that require higher stacking.
+// $zIndexOverlay: Indicates z-index values for overlay content.
+// $zIndexTop: Represents the highest z-index stage.
+
+
+$zIndexLowest: 1;
+$zIndexBase: 2;
+$zIndexAboveBase: 3;
+$zIndexHigher: 99;
+$zIndexAboveHigher: 100; // Header
+$zIndexModal: 101;
+$zIndexOverlay: 4;
+$zIndexTop: 999;

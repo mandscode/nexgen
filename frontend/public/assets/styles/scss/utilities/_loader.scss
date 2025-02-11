@@ -1,0 +1,51 @@
+$xbox-green: $blue;
+$dark: #222;
+// $light: $rosy-brown;
+
+.smart-glass {
+    position: absolute;
+    margin: auto;
+    left: 0;
+    background: #fff;
+    top: 0;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    overflow: hidden;
+
+    .logo {
+        width: 288px;
+        height: 288px;
+        position: relative;
+    }
+}
+
+  
+
+.circle {
+    padding: 20px;
+    border: 6px solid transparent;
+    border-top-color: $xbox-green;
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+    animation: connect 2.5s linear infinite;
+}
+.loading-text {
+    text-transform: uppercase;
+    color: $light;
+    text-align: center;
+    margin: 10px 0;
+    font-size: 1.8rem;
+}
+    
+@keyframes connect {
+    0% {
+        transform: rotate(0deg)
+    }
+    100% {
+        transform: rotate(-360deg)
+    }
+}

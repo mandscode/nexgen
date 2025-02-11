@@ -1,0 +1,79 @@
+// All _headings Sizes
+$_h1: 3.2rem;
+$_h1_line: 1.2;
+$_h2: 2.4rem;
+$_h2_line: 1.2;
+$_h3: 2rem;
+$_h3_line: calc($_h3 + 1rem);
+
+// All _sub-headings Sizes
+$_sub_h1: 2.4rem;
+$_sub_h1_line: 1.2;
+$_sub_h2: 2.4rem;
+$_sub_h2_line: 1.2;
+$_sub_h3: 2rem;
+$_sub_h3_line: 1.2;
+
+// All _titles Sizes
+$_title_h1: 2.4rem;
+$_title_h1_line: 1.2;
+$_title_h2: 2rem;
+$_title_h2_line: 1.2;
+$_title_h3: 1.6rem;
+$_title_h3_line: 1.2;
+
+// All _typo Sizes
+$_typo_h1: 1.6rem;
+$_typo_h1_line: 1.2;
+$_typo_h2: 1.4rem;
+$_typo_h2_line: 1.2;
+$_typo_h3: 1.2rem;
+$_typo_h3_line: 1.2;
+
+// All _links Sizes
+$_link_h1: 2.2rem;
+$_link_h1_line: calc($_link_h1 + 1rem);
+$_link_h2: 2rem;
+$_link_h2_line: calc($_link_h2 + 1rem);
+$_link_h3: 1.4rem;
+$_link_h3_line: calc($_link_h3 + 1rem);
+
+// All _button Sizes
+$_button_large: 2rem;
+$_button_large_line: calc($_button_large + 1rem);
+$_button_default: 1.6rem;
+$_button_default_line: 1.2;
+$_button_small: 1.4rem;
+$_button_small_line: calc($_button_small + 0.7rem);
+
+// All _input_title Sizes
+$_input_title_default: 1.8rem;
+$_input_title_default_line: calc($_input_title_default + 1rem);
+$_input_title_h1: 5rem;
+$_input_title_h1_line: calc($_input_title_h1 + 1rem);
+$_input_title_h2: 5rem;
+$_input_title_h2_line: calc($_input_title_h2 + 1rem);
+
+// All _input_label Sizes
+$_input_label_default: 1.8rem;
+$_input_label_default_line: calc($_input_label_default + 1rem);
+$_input_label_h1: 5rem;
+$_input_label_h1_line: calc($_input_label_h1 + 1rem);
+$_input_label_h2: 1.4rem;
+$_input_label_h2_line: calc($_input_label_h2 + 0.8rem);
+
+// All _input_place Sizes
+$_input_placeholder_default: 1.6rem;
+$_input_placeholder_default_line: calc($_input_placeholder_default + 1rem);
+$_input_placeholder_h1: 6rem;
+$_input_placeholder_h1_line: calc($_input_placeholder_h1 + 1rem);
+$_input_placeholder_h2: 4rem;
+$_input_placeholder_h2_line: calc($_input_placeholder_h2 + 1rem);
+
+// All _error Sizes
+$_error_default: 1.6rem;
+$_error_default_line: calc($_error_default + 1rem);
+$_error_h1: 6rem;
+$_error_h1_line: calc($_error_h1 + 1rem);
+$_error_h2: 4rem;
+$_error_h2_line: calc($_error_h2 + 1rem);

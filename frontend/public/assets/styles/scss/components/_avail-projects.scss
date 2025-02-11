@@ -1,0 +1,59 @@
+._avail-projects {
+
+    &_wrapper {
+        gap: 6.929rem;
+        display: flex;
+        flex-direction: column;
+        padding-top: 6.379rem;
+        padding-bottom: 9.7rem;
+    }
+
+    &_head {
+        display: flex;
+        align-items: center;
+        position: relative;
+
+        &_link {
+            display: flex;
+            align-items: center;
+        }
+    }
+
+    &_title {
+        left: 50%;
+        position: absolute;
+        transform: translateX(-50%);
+    }
+
+    &_list {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@include for-tablet {
+    ._avail-projects {
+        min-height: 90vh;
+        background-color: $gray-300;
+        &_wrapper {
+            padding-top: 3rem;
+        }
+    
+        &_head {
+            display: none;
+
+            &_link {
+            }
+        }
+    
+        &_title {
+
+        }
+    
+        &_list {
+            gap: 3rem;
+            display: flex;
+            flex-direction: column;
+        }
+    }
+}

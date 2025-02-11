@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",                           // JavaScript target version
+    "useDefineForClassFields": true,             // Aligns field behavior with ES2020
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],    // Libraries for modern JS and browser APIs
+    "module": "ESNext",                          // Enables ES module output for compatibility with modern bundlers
+    "skipLibCheck": true,                        // Skips type checking for library files to speed up builds
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",              // Use module resolution compatible with modern bundlers (e.g., Vite)
+    "allowImportingTsExtensions": true,         // Enables importing TypeScript files with extensions
+    "isolatedModules": true,                    // Required for bundlers that transpile each module separately
+    "moduleDetection": "force",                 // Ensures modules are treated correctly even if lacking `import/export`
+    "noEmit": true,                             // Prevents emitting JS files (handled by Vite)
+    "jsx": "react-jsx",                         // Enables React's JSX transformation with modern runtime
+
+    /* Linting */
+    "strict": true,                             // Enables all strict type-checking options
+    "noUnusedLocals": false,                     // Flags unused local variables
+    "noUnusedParameters": false,                 // Flags unused function parameters
+    "noFallthroughCasesInSwitch": true          // Prevents fallthrough in switch cases
+  },
+  "include": ["src"]                             // Includes only source files for type-checking
+}

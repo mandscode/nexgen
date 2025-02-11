@@ -1,0 +1,11 @@
+{
+  "name": "nexgen-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "concurrently \"npm run dev --prefix backend\" \"npm start --prefix frontend\" \"npm run dev --prefix admin\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.1"
+  }
+}

@@ -1,0 +1,213 @@
+// for Headings
+    // Primary Colors
+        $_title_default_color:  var(--title-default-color);
+        
+        $_title_light_color:  var(--title-light-color);
+        $_title_dark_color:   var(--title-dark-color);
+
+        $_title_primary_color:var(--title-primary-color);
+        $_title_secondary_color:var(--title-secondary-color);
+    //  Event Colors
+        $_title_hover_color: var(--title-hover-color);
+        $_title_active_color:var(--title-active-color);
+        $_title_focus_color:var( --title-focus-color);
+
+
+
+
+// for Sub Headings
+    // Primary Colors
+        $_sub-title_default_color: var(--sub-title-default-color);
+        
+        $_sub-title_light_color: var(--sub-title-light-color);
+        $_sub-title_dark_color:  var(--sub-title-dark-color);
+        
+        $_sub-title_primary_color:var(--sub-title-primary-color);
+        $_sub-title_secondary_color:var(--sub-title-secondary-color);
+    //  Event Colors
+        $_sub-title_hover_color: var(--sub-title-hover-color);
+        $_sub-title_active_color:var(--sub-title-active-color);
+        $_sub-title_focus_color:var(--sub-title-focus-color);
+
+// for Typography
+    // Primary Colors
+        $_typo_default_color: var(--typo-default-color);
+        
+        $_typo_light_color: var(--typo-light-color);
+        $_typo_dark_color:  var(--typo-dark-color);
+        
+        $_typo_primary_color:var(--typo-primary-color);
+        $_typo_secondary_color:var(--typo-secondary-color);
+    //  Event Colors
+        $_typo_hover_color: var(--typo-hover-color);
+        $_typo_active_color: var(--typo-active-color);
+        $_typo_focus_color: var(--typo-focus-color);
+
+
+
+
+
+// for Links
+    // Primary Colors
+        $_link_default_color:var(--link-default-color);
+        
+        $_link_light_color: var(--link-light-color);
+        $_link_dark_color: var(--link-dark-color);
+        
+        $_link_primary_color: var(--link-primary-color);
+        $_link_secondary_color:var(--link-secondary-color);
+    //  Event Colors
+        $_link_hover_color: var(--link-hover-color);
+        $_link_active_color: var(--link-active-color);
+        $_link_focus_color: var(--link-focus-color);
+
+
+
+// Forms ==================================================================================
+
+// for Input titles
+    // Primary Colors
+        $_input_default_title: var(--input-default-title);
+        
+        $_input_light_title: var(--input-light-title);
+        $_input_dark_title: var(--input-dark-title);
+        
+        $_input_primary_title: var(--input-primary-title);
+    //  Event Colors
+        $_input-title_hover_color: var(--input-title-hover-color);
+        $_input-title_active_color: var(--input-title-active-color);
+        $_input-title_focus_color: var(--input-title-focus-color);
+
+
+
+
+
+// for Input labels
+    // Primary Colors
+        $_input_default_label: var(--input-default-label);
+        
+        $_input_light_label: var(--input-light-label);
+        $_input_dark_label: var(--input-dark-label);
+        
+        $_input_primary_label: var(--input-default-label);
+    //  Event Colors
+        $_input-label_hover_color: var(--input-label-hover-color);
+        $_input-label_active_color: var(--input-label-active-color);
+        $_input-label_focus_color: var(--input-label-focus-color);
+
+
+
+
+
+
+// for Input placeholders
+    // Primary Colors
+        $_input_default_place: var(--input-default-place);
+        
+        $_input_light_place: var( --input-light-place);
+        $_input_dark_place: var(--input-dark-place);
+        
+        $_input_primary_place: var(--input-primary-place);
+
+    //  Event Colors
+        $_input_hover_place: var(--input-hover-place);
+        $_input_active_place: var(--input-active-place);
+        $_input_focus_place: var(--input-focus-place);
+
+
+
+
+
+// for Input borders
+    // Primary Colors
+        $_input_default_border: var(--input-default-border);
+        
+        $_input_light_border: var(--input-light-border);
+        $_input_dark_border: var(--input-dark-border);
+        
+        $_input_primary_border: var(--input-primary-border);
+    //  Event Colors
+        $_input_active_border: var(--input-active-border);
+        $_input_focus_border: var(--input-focus-border);
+
+
+
+
+
+// for Input backgrounds
+        $_input_default_bg:var(--input-default-bg);
+        
+        $_input_light_bg: var(--input-light-bg);
+        $_input_dark_bg: var(--input-dark-bg);
+        
+        $_input_primary_bg: var(--input-primary-bg);
+    //  Event Colors
+        $_input_active_bg: var(--input-active-bg);
+        $_input_focus_bg: var(--input-focus-bg);
+
+
+
+// Buttons ======================================================================================
+
+// Default Role - Outline
+// Primary Role - with background
+// Secondary Role - (Optinal)
+    
+    // for Button backgrounds
+        // Primary Colors
+            $_btn_default: var(--btn-default);
+            $_btn_primary: $blue;
+            $_btn_disabled: rgb(49, 52, 75);
+
+        //  Event background colors for default(Outline)
+            $_btn_hover_default: var(--btn-hover-default);
+            $_btn_focus_default: var(--btn-focus-default);
+            $_btn_active_default: var(--btn-active-default);
+
+        //  Event background colors for primary buttons
+            $_btn_hover_primary: $blue;
+            $_btn_active_primary: $blue;
+            $_btn_focus_primary: $blue;
+
+
+    
+    // for Button text colors
+        // Primary text colors
+            $_btn_default_color: var(--btn-default-color);
+            $_btn_primary_color: $white;
+
+        //  Event text colors for default(Outline)
+            $_btn_hover_default_color: var(--btn-hover-default-color);
+            $_btn_active_default_color: var(--btn-active-default-color);
+            $_btn_focus_default_color: var( --btn-focus-default-color);
+        
+        //  Event text colors for primary buttons
+            $_btn_hover_primary_color: $white;
+            $_btn_active_primary_color: $white;
+            $_btn_focus_primary_color: $white;
+
+
+
+    // for Button borders
+        // Primary border colors
+            $_btn-border_default: var(--btn-border-default);
+            $_btn-border_primary: var(--btn-border-primary);
+
+        //  Event border colors for default(Outline)
+            $_btn-border_active_default: var(--btn-border-hover-default);
+            $_btn-border_hover_default: var(--btn-border-active-default);
+            $_btn-border_focus_default: var(--btn-border-focus-default);
+        
+        //  Event border colors for primary buttons
+            $_btn-border_active_primary: var(--btn-border-active-primary);
+            $_btn-border_hover_primary: var(--btn-border-hover-primary);
+            $_btn-border_focus_primary: var(--btn-border-focus-primary);
+
+
+
+
+// box-shadow bg
+    $_box_shadow_strong:                           rgba(0, 0, 0, 0.7);
+    $_box_shadow_danger:                      2px 2px 4px 0px #c4c4c4;
+    $box-shadow-soft:       0px 3px 6px 0px rgba(140, 149, 159, 0.15);
+    $box-shadow-light:   3px 3px 6px #b8b9be, -3px -3px 6px #ffffff;

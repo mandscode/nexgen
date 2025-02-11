@@ -1,0 +1,30 @@
+._portfolio-mobile {
+    min-height: 100vh;
+    background-color: $gray-300;
+    
+    &_wrapper {
+        gap: 4.451rem;
+        display: flex;
+        padding-top: 3rem;
+        flex-direction: column;
+        padding-bottom: 7.5rem;
+
+        .splide__pagination {
+            bottom: -1.5rem;
+
+            .is-active {
+                background: $blue;
+                opacity: 1;
+            }
+        }
+
+        ._dropdown_button_wrapper_modified {
+            width: fit-content;
+            max-width: unset;
+        }
+    }
+
+    &_graph {
+        padding: 2.951rem 1.3rem 1.751rem;
+    }
+}

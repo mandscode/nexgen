@@ -1,0 +1,35 @@
+._projects_grid {
+    padding-bottom: 11.8rem;
+    
+    &_wrapper {
+        gap: 5rem;
+        display: flex;
+        flex-direction: column;
+        padding-top: 5.337rem;
+        border-top: 1px solid rgba(203, 203, 203, 1);
+    }
+
+    &_items {
+
+    }
+}
+
+@include for-tablet {
+    ._projects_grid {
+        background: rgba(246, 246, 246, 1);
+
+        
+        &_wrapper {
+            gap: 2rem;
+            border-top: 0;
+        }
+    
+        &_items {
+            
+        }
+
+        &_title {
+            font-size: 1.6rem;
+        }
+    }
+}

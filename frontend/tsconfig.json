@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "jsx": "react-jsx",  // For React 17+ JSX Transform
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "target": "es2015", // Or a higher version like es2020
+    "module": "commonjs",
+  }
+}
