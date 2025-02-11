@@ -16,10 +16,10 @@ export class AddAcademyStore {
     }
 
     async uploadFileToS3(file: File, folderName: string, folderNameForImage?: string): Promise<string> {
-      const region = process.env.REACT_APP_AWS_REGION as string;
-      const bucketName = process.env.REACT_APP_S3_BUCKET_NAME as string;
-      const accessKeyId = process.env.REACT_APP_AWS_ACCESS_KEY_ID as string;
-      const secretAccessKey = process.env.REACT_APP_AWS_SECRET_ACCESS_KEY as string;      
+      const region = import.meta.env.REACT_APP_AWS_REGION as string;
+      const bucketName = import.meta.env.REACT_APP_S3_BUCKET_NAME as string;
+      const accessKeyId = import.meta.env.REACT_APP_AWS_ACCESS_KEY_ID as string;
+      const secretAccessKey = import.meta.env.REACT_APP_AWS_SECRET_ACCESS_KEY as string;      
     
         const s3 = new S3Client({
           region,

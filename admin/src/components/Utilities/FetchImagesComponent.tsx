@@ -4,10 +4,10 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const prefix = "assets/media/images/projects/";
 
-const region = process.env.REACT_APP_AWS_REGION as string;
-const bucketName = process.env.REACT_APP_S3_BUCKET_NAME as string;
-const accessKeyId = process.env.REACT_APP_AWS_ACCESS_KEY_ID as string;
-const secretAccessKey = process.env.REACT_APP_AWS_SECRET_ACCESS_KEY as string;     
+const region = import.meta.env.REACT_APP_AWS_REGION as string;
+const bucketName = import.meta.env.REACT_APP_S3_BUCKET_NAME as string;
+const accessKeyId = import.meta.env.REACT_APP_AWS_ACCESS_KEY_ID as string;
+const secretAccessKey = import.meta.env.REACT_APP_AWS_SECRET_ACCESS_KEY as string;     
 
 // Initialize S3 client
 const s3Client = new S3Client({
