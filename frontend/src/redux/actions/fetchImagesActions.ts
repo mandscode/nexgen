@@ -16,6 +16,7 @@ AWS.config.update({
   
 // Action to fetch images
 export const fetchImages = () => {
+  console.log('fetchImages')
   return async (dispatch: Dispatch) => {
     dispatch({ type: FETCH_IMAGES_REQUEST });
 
@@ -30,7 +31,7 @@ export const fetchImages = () => {
       Bucket: bucketName,
       Prefix: prefix,
     };
-    console.log(region, accessKeyId, secretAccessKey)
+
     try {
       const data = await s3.listObjectsV2(params).promise();
       // Check if Contents is defined and not empty
