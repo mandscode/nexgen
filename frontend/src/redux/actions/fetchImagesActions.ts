@@ -30,7 +30,7 @@ export const fetchImages = () => {
       Bucket: bucketName,
       Prefix: prefix,
     };
-
+    console.log(region, accessKeyId, secretAccessKey)
     try {
       const data = await s3.listObjectsV2(params).promise();
       // Check if Contents is defined and not empty
