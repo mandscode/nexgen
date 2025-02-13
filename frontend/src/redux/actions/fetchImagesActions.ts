@@ -7,6 +7,7 @@ const region = process.env.REACT_APP_AWS_REGION as string;
 const accessKeyId = process.env.REACT_APP_AWS_ACCESS_KEY_ID as string;
 const secretAccessKey = process.env.REACT_APP_AWS_SECRET_ACCESS_KEY as string;    
 
+console.log(region, accessKeyId, secretAccessKey)
 // Set AWS credentials explicitly
 AWS.config.update({
     accessKeyId: accessKeyId,
@@ -16,7 +17,6 @@ AWS.config.update({
   
 // Action to fetch images
 export const fetchImages = () => {
-  console.log('fetchImages')
   return async (dispatch: Dispatch) => {
     dispatch({ type: FETCH_IMAGES_REQUEST });
 
@@ -31,7 +31,6 @@ export const fetchImages = () => {
       Bucket: bucketName,
       Prefix: prefix,
     };
-
     try {
       const data = await s3.listObjectsV2(params).promise();
       // Check if Contents is defined and not empty
