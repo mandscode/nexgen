@@ -7,7 +7,6 @@ const region = process.env.REACT_APP_AWS_REGION as string;
 const accessKeyId = process.env.REACT_APP_AWS_ACCESS_KEY_ID as string;
 const secretAccessKey = process.env.REACT_APP_AWS_SECRET_ACCESS_KEY as string;    
 
-console.log(region, accessKeyId, secretAccessKey)
 // Set AWS credentials explicitly
 AWS.config.update({
     accessKeyId: accessKeyId,
