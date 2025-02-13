@@ -74,7 +74,6 @@ export const createRole = async (roleData:AddRoleForm ) => {
     };
 
     const response = await api.post('/roles', formattedData);
-    console.log(response, "response..............")
     return response.data;
   } catch (error) {
     console.error('Error creating roles:', error);
@@ -115,7 +114,6 @@ export const updateInvestorDocument = async (docsData:InvestorDocumentsForm, id:
     const formattedData = {
       status:docsData
     };
-    console.log(formattedData, `/investors/${id}/documents/${docId}`)
     const response = await api.put(`/investors/${id}/documents/${docId}`, formattedData);
     return response.data;
   } catch (error) {

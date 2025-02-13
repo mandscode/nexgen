@@ -567,7 +567,6 @@ const UserDetail = ({  }:UserDetailProps) => {
       if(documentId) {
         const response = await updateInvestorDocument(newStatus, Number(id), documentId);
         
-        console.log("Response available at:", response);
         setUpdatedDocData(!updatedDocData)
         alert("File updated successfully!");
       }

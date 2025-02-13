@@ -18,7 +18,6 @@ export class AddProjectStore {
             const formattedValues = {
                 ...values
             };
-            console.log(formattedValues)
             await createProject(formattedValues);
 
             // Add the new user to the local store
