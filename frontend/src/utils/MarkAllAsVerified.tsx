@@ -18,8 +18,7 @@ const MarkAllAsVerified:React.FC <any> = ({id, docs}) => {
       // Assuming `documents` is an array of documents that needs to be updated
       for (const doc of docs) {
         // Assuming that the document object has `id`, and `status`
-        const response = await updateInvestorDocument(checked, id, doc.id);
-        console.log('API Response:', response.data); // Handle the response accordingly
+        await updateInvestorDocument(checked, id, doc.id);
       }
       alert("All documents updated successfully!");
     } catch (error) {

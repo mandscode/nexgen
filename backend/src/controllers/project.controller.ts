@@ -16,8 +16,6 @@ export class ProjectController {
 
     @Post('/')
     public async createProject(@Body() project: ProjectReqDTO): Promise<ProjectRespDTO | null> {
-        console.log('In createProject handler');
-        console.log('Received project data:', project);
         return projectService.createProject(project);
     }
 

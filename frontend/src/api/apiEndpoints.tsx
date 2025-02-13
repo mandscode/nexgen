@@ -69,7 +69,6 @@ export const updateInvestorDocument = async (docsData:any, id:number, docId:stri
     const formattedData = {
       status:docsData
     };
-    console.log(formattedData, `/investors/${id}/documents/${docId}`)
     const response = await api.put(`/investors/${id}/documents/${docId}`, formattedData);
     return response;
   } catch (error) {

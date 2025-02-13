@@ -17,7 +17,6 @@ export class TransactionController {
 
     @Post('/')
     public async createTransaction(@Body() transaction: TransactionDTO): Promise<TransactionDTO | null> {
-        console.log(transaction)
         return transactionService.createTransaction(transaction);
     }
 }
