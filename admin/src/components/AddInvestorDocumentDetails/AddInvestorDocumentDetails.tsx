@@ -13,6 +13,7 @@ import { InvestorDocumentsForm } from '../UserDetail/UserDetail';
 
 export interface AddInvestorDocumentDetailsProps {
  className?: string;
+ setDocDetailList?:any;
 }
 
 export interface AddInvestorDocumentsForm {
@@ -21,7 +22,7 @@ export interface AddInvestorDocumentsForm {
   status:boolean
 }
 
-const AddInvestorDocumentDetails = ({ }:AddInvestorDocumentDetailsProps) => {
+const AddInvestorDocumentDetails = ({setDocDetailList }:AddInvestorDocumentDetailsProps) => {
   const [addInvestorDocumentDetailsStore] = useState(() => new AddInvestorDocumentDetailsStore());
   const docsDetailStore = useOutletContext<InvestorDocumentsForm>();
 
@@ -40,7 +41,7 @@ const AddInvestorDocumentDetails = ({ }:AddInvestorDocumentDetailsProps) => {
 
   const navigate = useNavigate();  // Get the navigate function from react-router
   
-  const onSubmit = (data: AddInvestorDocumentsForm) => addInvestorDocumentDetailsStore.addInvestorDocsDetails(data, docsDetailStore, navigate, Number(id));
+  const onSubmit = (data: AddInvestorDocumentsForm) => addInvestorDocumentDetailsStore.addInvestorDocsDetails(data, docsDetailStore, navigate, Number(id), setDocDetailList);
 
    // Define form fields array
    const fields = [

@@ -8,6 +8,7 @@ import ProjectCard from "../utils/ProjectCard";
 import ProjectCardMobile from "../components/mobile/ProjectCardMobile";
 import { useDispatch } from "react-redux";
 import { fetchImages } from "../redux/actions/fetchImagesActions";
+import { Loader } from "../utils/Loader";
 
 interface Project {
     id: number;
@@ -99,21 +100,30 @@ const ProjectDetails = () => {
     }, [id]);
 
     const getProjectsImages = (projectName: string) => {
-
-        if (!projectName || !images || images.length === 0) return [];
+        if (!projectName || !images || images.length === 0) return ['/assets/media/images/no-image.jpg'];
+    
         const formattedName = projectName.replace(/\s+/g, ''); // Remove spaces
-        return images.filter((image: string) =>
+    
+        // Filter images matching the project name
+        const projectImages = images.filter((image: string) =>
             image.includes(`projects/${formattedName}/Default`)
         );
+    
+        // Return found images or a default fallback
+        return projectImages.length > 0 ? projectImages : ['/assets/media/images/no-image.jpg'];
     };
+    
 
     const getProjectImages = (projectName: string) => {
-        if (!projectName || !images || images.length === 0) return [];
+        if (!projectName || !images || images.length === 0) return ['/assets/media/images/no-image.jpg'];
+
         const formattedName = projectName.replace(/\s+/g, ''); // Remove spaces
-        console.log(formattedName, images)
-        return images.filter((image: string) =>
+
+        const projectImages = images.filter((image: string) =>
             image.includes(`projects/${formattedName}/Default`)
         );
+
+        return projectImages.length > 0 ? projectImages : ['/assets/media/images/no-image.jpg']
     };
 
     if (loading) {
@@ -227,8 +237,8 @@ const ProjectDetails = () => {
                                             },
                                         }}
                                         >
-                                        {images && images.map((image: string, index: number) => (
-
+                                        {project?.images && project?.images.map((image: string, index: number) => (
+                                            
                                             <SplideSlide key={index}>
                                                 <img className="_project-details_media_img" loading="lazy" src={image} />
                                             </SplideSlide>
@@ -254,10 +264,10 @@ const ProjectDetails = () => {
                                         </p>
                                         <p className="_project-details_info_item_value">
                                             {new Date(project.actualMaturityDate).toLocaleDateString('en-GB', {
-  day: '2-digit',
-  month: '2-digit',
-  year: '2-digit',
-})}
+                                                day: '2-digit',
+                                                month: '2-digit',
+                                                year: '2-digit',
+                                            })}
                                         </p>
                                     </div>
                                     <div className="_project-details_info_item">
@@ -294,29 +304,37 @@ const ProjectDetails = () => {
                     </div>
                 </section>
             ) : (
-                <p>Loading project details...</p>
+                <Loader/>
             )}
-            <section className="_projects_grid">
-                <div className="_container _projects_grid_wrapper">
-                    <h6 className="_projects_grid_title _title_h1">View similar projects</h6>
-                    <div className="_projects_grid_items">
-                        <div className="_avail-projects_list">
-                            {
-                                projects && projects.map((project: any, index: any) => {
-                                    // Find the corresponding images for each project
-                                    const projectImages = getProjectsImages(project.name);
-                                    return (
-                                        <div key={index}>
-                                            <ProjectCard project={project} images={projectImages} token={token} />
-                                            <ProjectCardMobile project={project} images={projectImages} token={token} />
-                                        </div>
-                                    );
-                                })
-                            }
+
+            {
+                project ? 
+                    <section className="_projects_grid">
+                        <div className="_container _projects_grid_wrapper">
+                            <h6 className="_projects_grid_title _title_h1">View similar projects</h6>
+                            <div className="_projects_grid_items">
+                                <div className="_avail-projects_list">
+                                    {
+                                        projects && projects.map((project: any, index: any) => {
+                                            // Find the corresponding images for each project
+                                            let projectImages = getProjectsImages(project.name);
+
+                                            projectImages = projectImages.length > 0 ? projectImages : ['/assets/media/images/no-image.jpg'];
+                                            return (
+                                                <div key={index}>
+                                                    <ProjectCard project={project} images={projectImages} token={token} />
+                                                    <ProjectCardMobile project={project} images={projectImages} token={token} />
+                                                </div>
+                                            );
+                                        })
+                                    }
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </section>
+                    </section>
+                :
+                null
+            }
         </>
     );
     

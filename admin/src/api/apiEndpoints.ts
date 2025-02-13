@@ -11,6 +11,27 @@ import { Academy } from '../components/Academy/Academy';
 import { InvestorDocumentsForm } from '../components/UserDetail/UserDetail';
 import { UpdateUserAccount } from '../components/UpdateUserAccountDetails/UpdateUserAccountDetails';
 import staticCountries from "./static_countries.json"
+
+import { S3Client, DeleteObjectsCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
+
+
+
+const region = import.meta.env.VITE_REACT_APP_AWS_REGION as string;
+const bucketName = import.meta.env.VITE_REACT_APP_S3_BUCKET_NAME as string;
+const accessKeyId = import.meta.env.VITE_REACT_APP_AWS_ACCESS_KEY_ID as string;
+const secretAccessKey = import.meta.env.VITE_REACT_APP_AWS_SECRET_ACCESS_KEY as string;
+
+const s3 = new S3Client({
+  region,
+  credentials: {
+    accessKeyId,
+    secretAccessKey,
+  },
+});
+
+
+
+
 // Example API call: Create a new user
 export const createUser = async (userData: { firstName: string; lastName: string; email: string; roleIds: any[] }) => {
   try {
@@ -135,8 +156,55 @@ export const createAcademy = async (academyData:Academy ) => {
   }
 };
 
+
+const deleteAcademyFolderFromS3 = async (academyName: string) => {
+  try {
+    const folderPath = `assets/media/images/academy/${academyName}/`;
+
+    // 1️⃣ List all objects in the folder
+    const listCommand = new ListObjectsV2Command({
+      Bucket: bucketName,
+      Prefix: folderPath,
+    });
+
+    const listedObjects = await s3.send(listCommand);
+
+    if (!listedObjects.Contents || listedObjects.Contents.length === 0) {
+      console.log(`No objects found in ${folderPath}`);
+      return;
+    }
+
+    // 2️⃣ Delete all objects in the folder
+    const deleteCommand = new DeleteObjectsCommand({
+      Bucket: bucketName,
+      Delete: {
+        Objects: listedObjects.Contents.map((obj) => ({ Key: obj.Key! })),
+      },
+    });
+
+    await s3.send(deleteCommand);
+    console.log(`Deleted folder and contents: ${folderPath}`);
+  } catch (error) {
+    console.error("Error deleting folder from S3:", error);
+  }
+};
+
 export const deleteAcademy = async (id:number) => {
   try {
+    const academies = await getAcademies();
+
+    const academy = await academies.find((ac:any) => ac.id == id)
+
+    const academyName = await academy.title.replace(/\s+/g, '');;
+
+    if (!academyName) {
+      throw new Error("Academy name not found.");
+    }
+
+    // 2️⃣ Delete the academy folder from S3
+    await deleteAcademyFolderFromS3(academyName);
+
+
     const response = await api.delete(`/contents/${id}`);
     return response.data;
   } catch (error) {

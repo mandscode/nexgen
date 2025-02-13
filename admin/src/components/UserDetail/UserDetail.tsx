@@ -261,6 +261,8 @@ const UserDetail = ({  }:UserDetailProps) => {
 
   const transactionTitle = 'Transaction History';
 
+  const [docDetailList, setDocDetailList] = useState(false);
+
   useEffect(() => {
     const fetchUsersAndProjects = async () => {
       try {
@@ -327,7 +329,7 @@ const UserDetail = ({  }:UserDetailProps) => {
   
     fetchUsersAndProjects();
     fetchProjects();
-  }, [id, userAccountlistShow, updatedDocData]); // Ensure id and store are in dependency array
+  }, [id, userAccountlistShow, updatedDocData, docDetailList]); // Ensure id and store are in dependency array
   
 
   useEffect(() => {
@@ -403,7 +405,6 @@ const UserDetail = ({  }:UserDetailProps) => {
   };
 
   const [personalDetailList, setPersonalDetailList] = useState(false);
-  const [docDetailList, setDocDetailList] = useState(false);
   
   const onClickNavigateForPersonalDetail = (value:any) => {
     setPersonalDetailList(!personalDetailList);
@@ -1157,7 +1158,7 @@ const UserDetail = ({  }:UserDetailProps) => {
                 </Card.Body>
               </Card>
               :
-              <AddInvestorDocumentDetails/>
+              <AddInvestorDocumentDetails setDocDetailList={setDocDetailList}/>
             }
           </Tab>
           <Tab eventKey="userAccount" title="User Account">

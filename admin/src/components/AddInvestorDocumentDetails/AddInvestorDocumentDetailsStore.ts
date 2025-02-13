@@ -15,10 +15,10 @@ export class AddInvestorDocumentDetailsStore {
     }
 
     async uploadFileToS3(file: File, folderName: number): Promise<string> {
-      const region = import.meta.env.REACT_APP_AWS_REGION as string;
-      const bucketName = import.meta.env.REACT_APP_S3_BUCKET_NAME as string;
-      const accessKeyId = import.meta.env.REACT_APP_AWS_ACCESS_KEY_ID as string;
-      const secretAccessKey = import.meta.env.REACT_APP_AWS_SECRET_ACCESS_KEY as string;     
+      const region = import.meta.env.VITE_REACT_APP_AWS_REGION as string;
+      const bucketName = import.meta.env.VITE_REACT_APP_S3_BUCKET_NAME as string;
+      const accessKeyId = import.meta.env.VITE_REACT_APP_AWS_ACCESS_KEY_ID as string;
+      const secretAccessKey = import.meta.env.VITE_REACT_APP_AWS_SECRET_ACCESS_KEY as string;     
     
         const s3 = new S3Client({
           region,
@@ -57,8 +57,7 @@ export class AddInvestorDocumentDetailsStore {
         return `https://${bucketName}.s3.${region}.amazonaws.com/${s3Key}`;
     }
 
-    async addInvestorDocsDetails(data: AddInvestorDocumentsForm, docsDetailStore: InvestorDocumentsForm, navigate: NavigateFunction, id:number) {
-      console.log(data)
+    async addInvestorDocsDetails(data: AddInvestorDocumentsForm, docsDetailStore: InvestorDocumentsForm, navigate: NavigateFunction, id:number, setDocDetailList:any) {
         try {
             if (data?.docUrl[0]) {
               const file = data.docUrl[0];
@@ -79,6 +78,7 @@ export class AddInvestorDocumentDetailsStore {
                     await uploadInvestorDocs(formattedValues, id);
                     navigate(`/investors/investor-detail/${id}`);
                     this.uploadingImg = false;
+                    setDocDetailList(true);
                     console.log("File available at:", url);
                 }
                 } catch (error) {

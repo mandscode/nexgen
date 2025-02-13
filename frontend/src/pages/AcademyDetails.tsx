@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import '@splidejs/splide/css'; // Import Splide styles
 import { getAcademy } from "../api/apiEndpoints";
+import { Loader } from "../utils/Loader";
 
 export interface Academy {
     id?: number;
@@ -64,7 +65,7 @@ const AcademyDetails = () => {
                 </div>
 
             ) : (
-                <p>Loading academy details...</p>
+                <Loader/>
             )}
         </>
     );

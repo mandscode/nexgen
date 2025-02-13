@@ -23,7 +23,7 @@ export const fetchImages = () => {
       region: region,
     });
 
-    const bucketName = 'nexgen-bucket-s3';
+    const bucketName = 'nexgen-s3-bucket';
     const prefix = `assets/media/images/projects/`;
 
     const params = {
@@ -38,6 +38,7 @@ export const fetchImages = () => {
         const images = data.Contents.map((item: any) => {
           return `https://${bucketName}.s3.ap-south-1.amazonaws.com/${item.Key}`;
         });
+
 
         dispatch({ type: FETCH_IMAGES_SUCCESS, payload: images });
       } else {

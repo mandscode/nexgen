@@ -1,14 +1,15 @@
 import { S3Client, ListObjectsV2Command, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { defineConfig, loadEnv } from 'vite';
+
 
 
 const prefix = "assets/media/images/projects/";
 
-const region = import.meta.env.REACT_APP_AWS_REGION as string;
-const bucketName = import.meta.env.REACT_APP_S3_BUCKET_NAME as string;
-const accessKeyId = import.meta.env.REACT_APP_AWS_ACCESS_KEY_ID as string;
-const secretAccessKey = import.meta.env.REACT_APP_AWS_SECRET_ACCESS_KEY as string;     
-
+const region = import.meta.env.VITE_REACT_APP_AWS_REGION as string;
+const bucketName = import.meta.env.VITE_REACT_APP_S3_BUCKET_NAME as string;
+const accessKeyId = import.meta.env.VITE_REACT_APP_AWS_ACCESS_KEY_ID as string;
+const secretAccessKey = import.meta.env.VITE_REACT_APP_AWS_SECRET_ACCESS_KEY as string;     
 // Initialize S3 client
 const s3Client = new S3Client({
   region,

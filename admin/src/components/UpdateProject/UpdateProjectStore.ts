@@ -15,10 +15,10 @@ export class UpdateProjectStore {
   }
 
   async uploadFileToS3(file: File, folderName: string, folderNameForImage?: string): Promise<string> {
-    const region = import.meta.env.REACT_APP_AWS_REGION as string;
-    const bucketName = import.meta.env.REACT_APP_S3_BUCKET_NAME as string;
-    const accessKeyId = import.meta.env.REACT_APP_AWS_ACCESS_KEY_ID as string;
-    const secretAccessKey = import.meta.env.REACT_APP_AWS_SECRET_ACCESS_KEY as string;     
+    const region = import.meta.env.VITE_REACT_APP_AWS_REGION as string;
+    const bucketName = import.meta.env.VITE_REACT_APP_S3_BUCKET_NAME as string;
+    const accessKeyId = import.meta.env.VITE_REACT_APP_AWS_ACCESS_KEY_ID as string;
+    const secretAccessKey = import.meta.env.VITE_REACT_APP_AWS_SECRET_ACCESS_KEY as string;     
 
     const s3 = new S3Client({
       region,
@@ -60,7 +60,7 @@ export class UpdateProjectStore {
         const folderName = project.name.replace(/\s+/g, ''); // Removes all spaces
         const folderNameForImage = data.imgType.replace(/\s+/g, '');
         this.uploadingImg = true;
-
+        
         try {
           const url = await this.uploadFileToS3(file, folderName, folderNameForImage);
           this.uploadingImg = false;
