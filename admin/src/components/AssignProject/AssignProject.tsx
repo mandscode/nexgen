@@ -9,7 +9,7 @@ import { useNavigate, useOutletContext } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { Investor } from '../Utilities/interface/interface';
 import { Col, Form, Row } from 'react-bootstrap';
-import { getProjects, getUsers } from '../../api/apiEndpoints';
+import { getInvestor, getProjects, getUser, getUsers } from '../../api/apiEndpoints';
 
 export interface AssignProjectProps {
  className?: string;
@@ -21,6 +21,7 @@ const AssignProject = ({ }:AssignProjectProps) => {
 
   const [userOptions, setUserOptions] = useState([]);
   const [projectOptions, setProjectOptions] = useState([]);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
 
   const schema = yup
   .object({
@@ -42,14 +43,13 @@ const AssignProject = ({ }:AssignProjectProps) => {
   
   const onSubmit = (data: Investor) => assignProjectStore.assignProject(data, investorStore, navigate);
 
-
+  
 
   useEffect(() => {
     // Fetch users
     const fetchUsers = async () => {
       try {
         const users = await getUsers();
-
         setUserOptions(
           users
             .filter((user: any) => {
@@ -66,18 +66,7 @@ const AssignProject = ({ }:AssignProjectProps) => {
       }
     };
 
-    // Fetch projects
-    const fetchProjects = async () => {
-      try {
-        const projects = await getProjects();
-        setProjectOptions(projects.map((project:any) => ({ id: project.id, name: project.name })));
-      } catch (error) {
-        console.error('Failed to fetch projects:', error);
-      }
-    };
-
     fetchUsers();
-    fetchProjects();
   }, []);
 
   // Define form fields array
@@ -102,6 +91,46 @@ const AssignProject = ({ }:AssignProjectProps) => {
     return "";
   }
 
+  // Function to restrict input to numbers only
+  const handleNumericInput = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    const allowedKeys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'];
+    if (!allowedKeys.includes(event.key)) {
+      event.preventDefault();
+    }
+  };
+
+  const handleUserIdChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+
+
+    if(event.target.value != 'Open this select menu') {
+      const userId = parseInt(event.target.value, 10);
+      setSelectedUserId(userId);
+    
+      // Fetch projects for the selected user
+      const investor = await getUser(userId);
+      if (investor?.entities?.length > 0) {
+        // Fetch projects if investor has entities
+        const projects = await getProjects();
+
+        const investorEntityIds = investor.entities.map((entity: any) => entity.id);
+        const filteredProjects = projects.filter((proj: any) =>
+          investorEntityIds.includes(Number(proj.entityID)) // Ensure matching type
+        );        
+
+        
+
+
+        // Update project options
+        setProjectOptions(filteredProjects.map((proj: any) => ({
+          name: proj.name, // Adjust this based on your project structure
+          id: proj.id
+        })));
+      } else {
+        setProjectOptions([]); // Clear options if no projects exist
+      }
+    }  
+  };
+
   return (
     <div className={`assignProject`}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -115,7 +144,8 @@ const AssignProject = ({ }:AssignProjectProps) => {
                     <Form.Select
                       aria-label="Default select example"
                       className={`form-control ${errors[field.name as keyof Investor] ? 'is-invalid' : ''}`}
-                      {...register(field.name as keyof Investor)} // Register the select field
+                      {...register(field.name as keyof Investor)}
+                      onChange={field.name === 'userId' ? handleUserIdChange : undefined} // Add onChange for userId
                     >
                       <option>Open this select menu</option>
                       {
@@ -127,6 +157,7 @@ const AssignProject = ({ }:AssignProjectProps) => {
                     :
                     <Form.Control
                       type={field.type}
+                      onKeyDown={field.type === 'number' ? handleNumericInput : undefined} // Restrict input for mobile field
                       className={`form-control ${errors[field.name as keyof Investor] ? 'is-invalid' : ''}`}
                       placeholder={field.placeholder}
                       isInvalid={!!errors[field.name as keyof Investor]}

@@ -7,13 +7,13 @@ import { TransactionDTO } from './transaction.service';
 
 export class AccountReqDTO {
     id?: number;
-    currency!: string;
+    currency!: number;
     investorId!: number;
 }
 
 export class AccountRespDTO {
     id?: number;
-    currency!: string;
+    currency!: number;
     investorId!: number;
     transactions?: TransactionDTO[];
     investments?: InvestmentDTO[];

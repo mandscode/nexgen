@@ -52,6 +52,10 @@ const Profile = () => {
         );
     }
 
+    const personalDetails = investor?.personalDetails ? JSON.parse(investor.personalDetails) : null;
+    const nomineeDetails = investor?.nomineeDetails ? JSON.parse(investor.nomineeDetails) : null;
+    const emergencyContact = investor?.emergencyContact ? JSON.parse(investor.emergencyContact) : null
+
     return (
         <>
             <section className="_user-profile">
@@ -68,56 +72,60 @@ const Profile = () => {
                                     :
                                     <div className="_user-profile_pic_text">{user.firstName.charAt(0).toUpperCase()}</div>
                                 }
+                                
                             </figure>
                             <span className="_user-profile_name">{user.firstName} {user.lastName}</span>
                         </div>
                         <div className="_user-profile_info">
-                            <div className="_user-profile_info_section">
-                                <h6 className="_user-profile_info_section_title _title_h2">Personal details</h6>
-                                <div className="_user-profile_info_section_details">
-                                    <div className="_user-profile_info_section_detail">
-                                        <label className="_user-profile_info_section_label">Email</label>
-                                        <input className="_user-profile_info_section_value" value={user.email}/>
-                                    </div>
-                                    <div className="_user-profile_info_section_detail">
-                                        <label className="_user-profile_info_section_label">Mobile</label>
-                                        <input className="_user-profile_info_section_value" value={investor?.personalDetails?.mobile ? investor.personalDetails.mobile : ''}/>
-                                    </div>
-                                    <div className="_user-profile_info_section_detail">
-                                        <label className="_user-profile_info_section_label">Date of birth</label>
-                                        <input className="_user-profile_info_section_value" value={investor?.personalDetails?.dob ? investor?.personalDetails?.dob : ''}/>
-                                    </div>
-                                    <div className="_user-profile_info_section_detail">
-                                        <label className="_user-profile_info_section_label">Residential address</label>
-                                        <input className="_user-profile_info_section_value" value={investor?.personalDetails?.residentialAddress ? investor?.personalDetails?.residentialAddress : ''}/>
-                                    </div>
-                                    <div className="_user-profile_info_section_detail">
-                                        <label className="_user-profile_info_section_label">Mailing address</label>
-                                        <input className="_user-profile_info_section_value" value={investor?.personalDetails?.mailingAddress ? investor?.personalDetails?.mailingAddress : ''}/>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="_user-profile_info_section">
-                                <h6 className="_user-profile_info_section_title _title_h2">Nominee details</h6>
-                                <div className="_user-profile_info_section_details">
-                                    <div className="_user-profile_info_section_detail">
-                                        <label className="_user-profile_info_section_label">Name</label>
-                                        <input className="_user-profile_info_section_value" value={investor?.nomineeDetails ? investor?.nomineeDetails.name : ''}/>
-                                    </div>
-                                    <div className="_user-profile_info_section_detail">
-                                        <label className="_user-profile_info_section_label">Email</label>
-                                        <input className="_user-profile_info_section_value" value={investor?.nomineeDetails ? investor?.nomineeDetails.email : ''}/>
-                                    </div>
-                                    <div className="_user-profile_info_section_detail">
-                                        <label className="_user-profile_info_section_label">Mobile</label>
-                                        <input className="_user-profile_info_section_value" value={investor?.nomineeDetails ? investor?.nomineeDetails.mobile : ''}/>
-                                    </div>
-                                    <div className="_user-profile_info_section_detail">
-                                        <label className="_user-profile_info_section_label">Relation</label>
-                                        <input className="_user-profile_info_section_value" value={investor?.nomineeDetails ? investor.nomineeDetails.relation : ''}/>
-                                    </div>
-                                </div>
-                            </div>
+
+<div className="_user-profile_info_section">
+    <h6 className="_user-profile_info_section_title _title_h2">Personal details</h6>
+    <div className="_user-profile_info_section_details">
+        <div className="_user-profile_info_section_detail">
+            <label className="_user-profile_info_section_label">Email</label>
+            <input className="_user-profile_info_section_value" value={user.email} />
+        </div>
+        <div className="_user-profile_info_section_detail">
+            <label className="_user-profile_info_section_label">Mobile</label>
+            <input className="_user-profile_info_section_value" value={personalDetails?.mobile || ''} />
+        </div>
+        <div className="_user-profile_info_section_detail">
+            <label className="_user-profile_info_section_label">Date of birth</label>
+            <input className="_user-profile_info_section_value" value={personalDetails?.dob || ''} />
+        </div>
+        <div className="_user-profile_info_section_detail">
+            <label className="_user-profile_info_section_label">Residential address</label>
+            <input className="_user-profile_info_section_value" value={personalDetails?.residentialAddress || ''} />
+        </div>
+        <div className="_user-profile_info_section_detail">
+            <label className="_user-profile_info_section_label">Mailing address</label>
+            <input className="_user-profile_info_section_value" value={personalDetails?.mailingAddress || ''} />
+        </div>
+    </div>
+</div>
+
+<div className="_user-profile_info_section">
+    <h6 className="_user-profile_info_section_title _title_h2">Nominee details</h6>
+    <div className="_user-profile_info_section_details">
+        <div className="_user-profile_info_section_detail">
+            <label className="_user-profile_info_section_label">Name</label>
+            <input className="_user-profile_info_section_value" value={nomineeDetails?.name || ''} />
+        </div>
+        <div className="_user-profile_info_section_detail">
+            <label className="_user-profile_info_section_label">Email</label>
+            <input className="_user-profile_info_section_value" value={nomineeDetails?.email || ''} />
+        </div>
+        <div className="_user-profile_info_section_detail">
+            <label className="_user-profile_info_section_label">Mobile</label>
+            <input className="_user-profile_info_section_value" value={nomineeDetails?.mobile || ''} />
+        </div>
+        <div className="_user-profile_info_section_detail">
+            <label className="_user-profile_info_section_label">Relation</label>
+            <input className="_user-profile_info_section_value" value={nomineeDetails?.relation || ''} />
+        </div>
+    </div>
+</div>
+
                             <div className="_user-profile_info_section">
                                 <h6 className="_user-profile_info_section_title _title_h2">Your documents</h6>
                                 <div className="_user-profile_info_section_details _user-profile_info_section_details_docs ">
@@ -164,28 +172,22 @@ const Profile = () => {
                                 <MarkAllAsVerified id={Number(investor?.id)} docs={docs}/>
                             </div>
                             <div className="_user-profile_info_section">
-                                <h6 className="_user-profile_info_section_title _title_h2">Emergency contact</h6>
-                                <div className="_user-profile_info_section_details">
-                                    <div className="_user-profile_info_section_detail">
-                                        <label className="_user-profile_info_section_label">Name</label>
-                                        <input className="_user-profile_info_section_value" 
-                                            value={investor?.emergencyContact?.name || ''}
-                                        />
-                                    </div>
-                                    <div className="_user-profile_info_section_detail">
-                                        <label className="_user-profile_info_section_label">Mobile</label>
-                                        <input className="_user-profile_info_section_value" 
-                                            value={investor?.emergencyContact?.mobile || ''}
-                                    />
-                                    </div>
-                                    <div className="_user-profile_info_section_detail">
-                                        <label className="_user-profile_info_section_label">Relation</label>
-                                        <input className="_user-profile_info_section_value" 
-                                        value={investor?.emergencyContact?.relation || ''}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
+    <h6 className="_user-profile_info_section_title _title_h2">Emergency contact</h6>
+    <div className="_user-profile_info_section_details">
+        <div className="_user-profile_info_section_detail">
+            <label className="_user-profile_info_section_label">Name</label>
+            <input className="_user-profile_info_section_value" value={emergencyContact?.name || ''} />
+        </div>
+        <div className="_user-profile_info_section_detail">
+            <label className="_user-profile_info_section_label">Mobile</label>
+            <input className="_user-profile_info_section_value" value={emergencyContact?.mobile || ''} />
+        </div>
+        <div className="_user-profile_info_section_detail">
+            <label className="_user-profile_info_section_label">Relation</label>
+            <input className="_user-profile_info_section_value" value={emergencyContact?.relation || ''} />
+        </div>
+    </div>
+</div>
                         </div>
                     </div>
                 </div>

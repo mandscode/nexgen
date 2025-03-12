@@ -73,7 +73,7 @@ const TransactionList: React.FC<any> = ({ data, currency }) => {
                   }}
                 >
                   {
-                    transaction?.details && Object.keys(transaction?.details)
+                    transaction?.details && Object.keys(JSON.parse(transaction?.details))
                   }
                 </div>
                 <div style={{ color: "#999", fontSize: "14px" }}>
@@ -124,15 +124,7 @@ const TransactionList: React.FC<any> = ({ data, currency }) => {
 
 // Example usage
 const TransactionTable: React.FC<any> = ({data, currency}) => {
-  const transactionData = [
-    { amount: 12.0, date: "11/22/3333 | 7:04 PM", credited: true },
-    { amount: 12.0, date: "11/22/3333 | 7:04 PM", credited: true },
-    { amount: 12.0, date: "11/22/3333 | 7:04 PM", credited: true },
-    { amount: 12.0, date: "11/22/3333 | 7:04 PM", credited: false },
-    { amount: 12.0, date: "11/22/3333 | 7:04 PM", credited: false },
-    { amount: 12.0, date: "11/22/3333 | 7:04 PM", credited: true },
-    { amount: 12.0, date: "11/22/3333 | 7:04 PM", credited: false },
-  ];
+
   if(!data || data.length > 1) {
     <Loader/>
   }

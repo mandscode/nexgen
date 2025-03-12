@@ -1850,8 +1850,6 @@ a {
     height: 7.2rem;
     border-radius: 1rem;
   }
-}
-@media only screen and (max-width: 1024px) {
   ._blog-card_info {
     gap: 0.6rem;
     letter-spacing: 0.2px;
@@ -2614,8 +2612,6 @@ a {
     align-items: center;
     justify-content: center;
   }
-}
-@media only screen and (max-width: 1024px) {
   ._dashboard-mobile_project_details {
     gap: 3rem;
     display: flex;
@@ -2781,8 +2777,6 @@ a {
   ._dashboard-mobile_project_details_graph_info_description_title {
     font-family: HelveticaNeueMedium;
   }
-}
-@media only screen and (max-width: 1024px) {
   ._dashboard-mobile_no-account-container {
     height: 50vh;
     display: flex;
@@ -3403,6 +3397,12 @@ a {
   }
   ._projects_grid_title {
     font-size: 1.6rem;
+  }
+}
+@media (max-width: 576px) { /* Adjust for mobile */
+  .modal-content {
+    max-width: 90% !important; /* Ensure it takes 90% of the screen */
+    margin: auto;
   }
 }
 

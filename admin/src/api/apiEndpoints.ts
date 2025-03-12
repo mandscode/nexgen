@@ -33,9 +33,9 @@ const s3 = new S3Client({
 
 
 // Example API call: Create a new user
-export const createUser = async (userData: { firstName: string; lastName: string; email: string; roleIds: any[] }) => {
+export const createUser = async (url: string, userData: { firstName: string; lastName: string; email: string; roleIds: any[]; password?: string; }) => {
   try {
-    const response = await api.post('/users', userData);
+    const response = await api.post(url, userData);
     return response.data;
   } catch (error) {
     console.error('Error creating user:', error);
@@ -354,9 +354,9 @@ export const createProject = async (projectData:AddProjectForm ) => {
 
 // Example API call: assign Project to investors
 export const assignProject = async (investorId: number,  projectId: number[] ) => {
-
   try {
     const response = await api.put(`/investors/${investorId}/projects/assign`, projectId);
+    console.log("assignProject", projectId)
     return response.data;
   } catch (error) {
     console.error(`Error updating roles for user with ID ${investorId}:`, error);
@@ -404,7 +404,7 @@ export const getInvestor = async (id:number) => {
 
 export const getCurrencyAll = async () => {
   try {
-    const response = await axios.get('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies.json');
+    const response = await api.get('/currencies');
     return response.data;
   } catch (error) {
     console.error('Error fetching users:', error);

@@ -70,7 +70,6 @@ let TransactionController = class TransactionController {
     }
     createTransaction(transaction) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(transaction);
             return transaction_service_1.default.createTransaction(transaction);
         });
     }

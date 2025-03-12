@@ -55,6 +55,24 @@ class RoleService {
             return null;
         });
     }
+    getRoleByName(name) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const role = yield role_1.default.findOne({ where: { name } });
+            return role ? (0, role_mapper_1.toRoleDTO)(role) : null;
+        });
+    }
+    ensureRolesExist() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const roles = ["Admin", "Viewer", "Investor", "Master Admin"];
+            for (const roleName of roles) {
+                const existingRole = yield this.getRoleByName(roleName);
+                if (!existingRole) {
+                    yield this.createRole({ name: roleName });
+                    console.log(`Role '${roleName}' created.`);
+                }
+            }
+        });
+    }
 }
 const roleService = new RoleService();
 exports.default = roleService;

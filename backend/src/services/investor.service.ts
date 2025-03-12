@@ -57,7 +57,8 @@ class InvestorService {
     }
 
     async assignProjects(investorId: number, projectIds: number[]): Promise<InvestorRespDTO | null> {
-        let projects: Project[] = [];
+
+
         if (projectIds) {
             await (await Investor.findByPk(investorId))?.setProjects(projectIds);
             return this.getInvestorById(investorId);

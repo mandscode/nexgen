@@ -60,6 +60,14 @@ const AddInvestorPersonalDetails = ({  }:AddInvestorPersonalDetailsProps) => {
     { name: 'mailingAddress', type: 'text', placeholder: 'Mailing Address', as:"textarea"  },
   ];
 
+    // Function to restrict input to numbers only
+    const handleNumericInput = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    const allowedKeys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'];
+    if (!allowedKeys.includes(event.key)) {
+      event.preventDefault();
+    }
+  };
+
   return (
     <div className={`addInvestorPersonalDetails`}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -72,6 +80,7 @@ const AddInvestorPersonalDetails = ({  }:AddInvestorPersonalDetailsProps) => {
                   <Form.Control
                     as={field.as || "input"}
                     type={field.type}
+                    onKeyDown={field.type === 'number' ? handleNumericInput : undefined} // Restrict input for mobile field
                     className={`form-control ${errors[field.name as keyof AddInvestorPersonalDetails] ? 'is-invalid' : ''}`}
                     placeholder={field.placeholder}
                     isInvalid={!!errors[field.name as keyof AddInvestorPersonalDetails]}

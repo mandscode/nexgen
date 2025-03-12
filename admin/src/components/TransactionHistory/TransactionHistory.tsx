@@ -7,7 +7,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { Card } from 'react-bootstrap';
 import NexGenTable from '../NexGenTable/NexGenTable';
 // import { TransactionDTO } from '../AddTransactions/AddTransactions';
-import { getAccount, getInvestor, getTransactions, getUser } from '../../api/apiEndpoints';
+import { getAccount, getCurrencyAll, getInvestor, getProject, getTransactions, getUser } from '../../api/apiEndpoints';
 
 
 interface Transaction {
@@ -41,14 +41,19 @@ const TransactionHistory = ({ }:TransactionHistoryProps) => {
     {
       header: 'Transaction Details',
       columns: [
+        // {
+        //   accessorKey: 'id',
+        //   header: 'ID',
+        //   cell: info => info.getValue(),
+        // },
         {
-          accessorKey: 'id',
-          header: 'ID',
+          accessorKey: 'entityName',
+          header: 'Entity Name',
           cell: info => info.getValue(),
         },
         {
-          accessorKey: 'accountId',
-          header: 'Account ID',
+          accessorKey: 'projectId',
+          header: 'Project Name',
           cell: info => info.getValue(),
         },
         {
@@ -57,8 +62,8 @@ const TransactionHistory = ({ }:TransactionHistoryProps) => {
           cell: info => info.getValue(),
         },
         {
-          accessorKey: 'projectId',
-          header: 'Project ID',
+          accessorKey: 'accountId',
+          header: 'Currency',
           cell: info => info.getValue(),
         },
         {
@@ -87,14 +92,21 @@ const TransactionHistory = ({ }:TransactionHistoryProps) => {
 
         const formattedData = await Promise.all(
           data.map(async (value: any) => {
-            
+              const allCurr = await getCurrencyAll();
             const account = await getAccount(value.accountId); // Await the asynchronous call
             const investor = await getInvestor(account.investorId); // Await the asynchronous call
-            const user = await getUser(investor.userId);          // Await the asynchronous call
+            const user = await getUser(investor.userId); 
+            const project = await getProject(value.projectId)         // Await the asynchronous call
+
+
+              const currency = allCurr.find((curr: any) => curr.id === account.currency); // Find matching currency
+              
+
             return {
               id: value.id,
-              accountId: value.accountId,
-              projectId: value.projectId,
+              accountId: currency.name,
+              entityName: project.entity.name,
+              projectId: project.name,
               credited: value.credited,
               amount: value.amount,
               createdDate: value.transactionDate,
@@ -110,37 +122,6 @@ const TransactionHistory = ({ }:TransactionHistoryProps) => {
 
     fetchTransactions(); // Call the fetch function
   }, []);
-  //   {
-  //     id: 1,
-  //     accountId: 101,
-  //     investmentId: 201,
-  //     userId: 301,
-  //     projectId: 401,
-  //     credited: true,
-  //     amount: 1500.75,
-  //     createdDate: new Date('2024-09-01'),
-  //   },
-  //   {
-  //     id: 2,
-  //     accountId: 102,
-  //     investmentId: 202,
-  //     userId: 302,
-  //     projectId: 402,
-  //     credited: false,
-  //     amount: 2500.50,
-  //     createdDate: new Date('2024-09-15'),
-  //   },
-  //   {
-  //     id: 3,
-  //     accountId: 103,
-  //     investmentId: 203,
-  //     userId: 303,
-  //     projectId: 403,
-  //     credited: true,
-  //     amount: 320.00,
-  //     createdDate: new Date('2024-09-20'),
-  //   },
-  // ];
   
   
   

@@ -16,6 +16,8 @@ const sequelize_typescript_1 = require("sequelize-typescript");
 const role_1 = __importDefault(require("./role"));
 const user_role_1 = __importDefault(require("./user-role"));
 const class_transformer_1 = require("class-transformer");
+const entity_1 = __importDefault(require("./entity"));
+const user_entities_1 = __importDefault(require("./user-entities"));
 let User = class User extends sequelize_typescript_1.Model {
 };
 __decorate([
@@ -50,6 +52,21 @@ __decorate([
 ], User.prototype, "email", void 0);
 __decorate([
     (0, sequelize_typescript_1.Column)({
+        type: sequelize_typescript_1.DataType.STRING,
+        allowNull: true
+    }),
+    __metadata("design:type", String)
+], User.prototype, "password", void 0);
+__decorate([
+    (0, sequelize_typescript_1.Column)({
+        type: sequelize_typescript_1.DataType.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+    }),
+    __metadata("design:type", Boolean)
+], User.prototype, "isMasterAdmin", void 0);
+__decorate([
+    (0, sequelize_typescript_1.Column)({
         type: sequelize_typescript_1.DataType.JSON,
         allowNull: true
     }),
@@ -78,10 +95,23 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "picture", void 0);
 __decorate([
+    (0, sequelize_typescript_1.Column)({
+        type: sequelize_typescript_1.DataType.BOOLEAN,
+        allowNull: false,
+        defaultValue: true, // Default to true for new users
+    }),
+    __metadata("design:type", Boolean)
+], User.prototype, "isFirstLogin", void 0);
+__decorate([
     (0, class_transformer_1.Exclude)(),
     (0, sequelize_typescript_1.BelongsToMany)(() => role_1.default, () => user_role_1.default),
     __metadata("design:type", Array)
 ], User.prototype, "roles", void 0);
+__decorate([
+    (0, class_transformer_1.Exclude)(),
+    (0, sequelize_typescript_1.BelongsToMany)(() => entity_1.default, () => user_entities_1.default),
+    __metadata("design:type", Array)
+], User.prototype, "entities", void 0);
 User = __decorate([
     (0, sequelize_typescript_1.Table)({
         timestamps: true,

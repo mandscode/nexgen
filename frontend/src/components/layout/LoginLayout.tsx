@@ -1,28 +1,47 @@
-import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
-import { createUser } from '../../api/apiEndpoints';
+
 import { useDispatch } from 'react-redux';
 import { tokenFailure, tokenRequest, tokenSuccess } from '../../redux/actions/tokenActions';
 import { fetchUserById } from '../../redux/actions/userActions';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import api from '../../api/api';
+import LoginMDB from './LoginMDB';
+
+
 
 const LoginLayout = () => {
     const dispatch = useDispatch();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
-    const handleLoginSuccess = async (credentialResponse:any) => {
+    const [showPassword, setShowPassword] = useState(false);
+    const togglePasswordVisibility = () => {
+      setShowPassword((prev) => !prev);
+    };
+
+    
+    const handleEmailPasswordLogin = async (event:any) => {
+        event.preventDefault();
         try {
             dispatch(tokenRequest()); // Dispatch token request action
-            const token = credentialResponse.credential;
-
-            const response:any = await createUser(token); // API call to validate and get user info
-            if (response.status === 200) {
-                await dispatch(fetchUserById(Number(response?.data?.id)) as any);
+            const response = await api.post('/users/login', { email, password });
+            const { token, message, userId, isMasterAdmin } = response.data;
+            if (message === "create_password") {
+                // Store credentials temporarily for re-login after password change
+                // setUserId(userId);
+                // setShowModal(true);
+            } else if (token) {
+                localStorage.setItem('token', token);
+                localStorage.setItem('userId', userId);
+                localStorage.setItem('isMasterAdmin', isMasterAdmin);
+                await dispatch(fetchUserById(Number(userId)) as any);
                 await dispatch(tokenSuccess(token)); // Dispatch token success action
-            } else {
-                throw new Error("Login response was not successful.");
             }
-        } catch (error:any) {
-            dispatch(tokenFailure(error.message)); // Dispatch token failure action
-            console.error("Login failed", error);
+
+            // Redirect to the dashboard or home page
+        } catch (err:any) {
+            dispatch(tokenFailure(err.message)); // Dispatch token failure action
+            alert('Invalid email or password'); // Handle errors
         }
     };
     
@@ -71,15 +90,15 @@ const LoginLayout = () => {
                     </div>
                     <div className="_login_right_bottom">
                         <a className="_login_right_bottom_link">
-                            <GoogleOAuthProvider clientId="799373350915-tjcsjie1ph3kgboco6fha7lcg5b0dn6u.apps.googleusercontent.com">
+                            <LoginMDB/>
+                            {/* <GoogleOAuthProvider clientId="799373350915-tjcsjie1ph3kgboco6fha7lcg5b0dn6u.apps.googleusercontent.com">
                                 <div>
-                                    {/* <img src="/assets/media/images/pages/login/login/google_login.png"/> */}
                                     <GoogleLogin
                                         onSuccess={handleLoginSuccess}
                                         onError={handleLoginFailure}
                                     />
                                 </div>
-                            </GoogleOAuthProvider>
+                            </GoogleOAuthProvider> */}
                         </a>
                         <p className="_login_right_bottom_text">
                             Advanced Investing for the Modern Generation

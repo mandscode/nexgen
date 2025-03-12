@@ -3,6 +3,9 @@ import Entity from './entity';
 import ProjectResource from './project-resource';
 import Resource from './resource';
 import { BelongsToCreateAssociationMixin, BelongsToGetAssociationMixin, BelongsToManyAddAssociationMixin, BelongsToManyGetAssociationsMixin, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
+import { Exclude } from 'class-transformer';
+import ProjectInvestor from './project-investor';
+import Investor from './investor';
 
 @Table({
     timestamps: true,
@@ -100,6 +103,10 @@ export default class Project extends Model<InferAttributes<Project>, InferCreati
     @ForeignKey(() => Entity)
     @Column
     entityID!: number;
+
+    @Exclude()
+    @BelongsToMany(() => Investor, () => ProjectInvestor)
+    investors?: Investor[];
 
     @BelongsTo(() => Entity)
     entity?: Entity;

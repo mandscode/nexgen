@@ -44,6 +44,9 @@
 						},
 						"type": "array"
 					},
+					"isMasterAdmin": {
+						"type": "boolean"
+					},
 					"personalDetails": {
 						"properties": {},
 						"additionalProperties": {},
@@ -51,12 +54,21 @@
 					},
 					"status": {
 						"type": "string"
+					},
+					"entities": {
+						"items": {},
+						"type": "array"
+					},
+					"isFirstLogin": {
+						"type": "boolean"
 					}
 				},
 				"required": [
 					"firstName",
 					"lastName",
-					"email"
+					"email",
+					"isMasterAdmin",
+					"isFirstLogin"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -76,12 +88,28 @@
 					"email": {
 						"type": "string"
 					},
+					"password": {
+						"type": "string"
+					},
 					"roleIds": {
 						"items": {
 							"type": "number",
 							"format": "double"
 						},
 						"type": "array"
+					},
+					"entityIds": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array"
+					},
+					"isMasterAdmin": {
+						"type": "boolean"
+					},
+					"isFirstLogin": {
+						"type": "boolean"
 					},
 					"status": {
 						"type": "string"
@@ -96,7 +124,9 @@
 					"firstName",
 					"lastName",
 					"email",
-					"roleIds"
+					"roleIds",
+					"isMasterAdmin",
+					"isFirstLogin"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -216,6 +246,69 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"InvestmentDTO": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"investmentType": {
+						"type": "string"
+					},
+					"amount": {
+						"type": "number",
+						"format": "double"
+					},
+					"accountId": {
+						"type": "number",
+						"format": "double"
+					},
+					"modifiedBy": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"investmentType",
+					"amount",
+					"accountId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"AccountRespDTO": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"currency": {
+						"type": "number",
+						"format": "double"
+					},
+					"investorId": {
+						"type": "number",
+						"format": "double"
+					},
+					"transactions": {
+						"items": {
+							"$ref": "#/components/schemas/TransactionDTO"
+						},
+						"type": "array"
+					},
+					"investments": {
+						"items": {
+							"$ref": "#/components/schemas/InvestmentDTO"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"currency",
+					"investorId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"ProjectRespDTO": {
 				"properties": {
 					"id": {
@@ -277,6 +370,12 @@
 							"$ref": "#/components/schemas/ResourceDTO"
 						},
 						"type": "array"
+					},
+					"investors": {
+						"items": {
+							"$ref": "#/components/schemas/InvestorRespDTO"
+						},
+						"type": "array"
 					}
 				},
 				"required": [
@@ -285,141 +384,6 @@
 					"countryName",
 					"startDate",
 					"entity"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"ProjectReqDTO": {
-				"properties": {
-					"id": {
-						"type": "number",
-						"format": "double"
-					},
-					"name": {
-						"type": "string"
-					},
-					"address": {
-						"type": "string"
-					},
-					"latitude": {
-						"type": "number",
-						"format": "double"
-					},
-					"countryName": {
-						"type": "string"
-					},
-					"longitude": {
-						"type": "number",
-						"format": "double"
-					},
-					"startDate": {
-						"type": "string"
-					},
-					"actualMaturityDate": {
-						"type": "string"
-					},
-					"overallCost": {
-						"type": "number",
-						"format": "double"
-					},
-					"description": {
-						"type": "string"
-					},
-					"ownerName": {
-						"type": "string"
-					},
-					"legalId": {
-						"type": "string"
-					},
-					"maturityLockingPeriod": {
-						"type": "number",
-						"format": "double"
-					},
-					"settings": {
-						"properties": {},
-						"additionalProperties": {},
-						"type": "object"
-					},
-					"entityID": {
-						"type": "number",
-						"format": "double"
-					},
-					"resourceIds": {
-						"items": {
-							"type": "number",
-							"format": "double"
-						},
-						"type": "array"
-					}
-				},
-				"required": [
-					"name",
-					"address",
-					"countryName",
-					"startDate",
-					"entityID"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"InvestmentDTO": {
-				"properties": {
-					"id": {
-						"type": "number",
-						"format": "double"
-					},
-					"investmentType": {
-						"type": "string"
-					},
-					"amount": {
-						"type": "number",
-						"format": "double"
-					},
-					"accountId": {
-						"type": "number",
-						"format": "double"
-					},
-					"modifiedBy": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"investmentType",
-					"amount",
-					"accountId"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"AccountRespDTO": {
-				"properties": {
-					"id": {
-						"type": "number",
-						"format": "double"
-					},
-					"currency": {
-						"type": "string"
-					},
-					"investorId": {
-						"type": "number",
-						"format": "double"
-					},
-					"transactions": {
-						"items": {
-							"$ref": "#/components/schemas/TransactionDTO"
-						},
-						"type": "array"
-					},
-					"investments": {
-						"items": {
-							"$ref": "#/components/schemas/InvestmentDTO"
-						},
-						"type": "array"
-					}
-				},
-				"required": [
-					"currency",
-					"investorId"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -508,6 +472,79 @@
 				"required": [
 					"emergencyContact",
 					"userId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ProjectReqDTO": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"name": {
+						"type": "string"
+					},
+					"address": {
+						"type": "string"
+					},
+					"latitude": {
+						"type": "number",
+						"format": "double"
+					},
+					"countryName": {
+						"type": "string"
+					},
+					"longitude": {
+						"type": "number",
+						"format": "double"
+					},
+					"startDate": {
+						"type": "string"
+					},
+					"actualMaturityDate": {
+						"type": "string"
+					},
+					"overallCost": {
+						"type": "number",
+						"format": "double"
+					},
+					"description": {
+						"type": "string"
+					},
+					"ownerName": {
+						"type": "string"
+					},
+					"legalId": {
+						"type": "string"
+					},
+					"maturityLockingPeriod": {
+						"type": "number",
+						"format": "double"
+					},
+					"settings": {
+						"properties": {},
+						"additionalProperties": {},
+						"type": "object"
+					},
+					"entityID": {
+						"type": "number",
+						"format": "double"
+					},
+					"resourceIds": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"address",
+					"countryName",
+					"startDate",
+					"entityID"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -657,6 +694,49 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"CurrencyDTO": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"symbol": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"code",
+					"name",
+					"symbol"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Partial_CurrencyDTO_": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"symbol": {
+						"type": "string"
+					}
+				},
+				"type": "object",
+				"description": "Make all properties in T optional"
+			},
 			"ContentDTO": {
 				"properties": {
 					"id": {
@@ -749,7 +829,8 @@
 						"format": "double"
 					},
 					"currency": {
-						"type": "string"
+						"type": "number",
+						"format": "double"
 					},
 					"investorId": {
 						"type": "number",
@@ -896,6 +977,40 @@
 				]
 			}
 		},
+		"/users/with-password": {
+			"post": {
+				"operationId": "CreateUserUsingPassword",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/UserRespDTO"
+										}
+									],
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UserReqDTO"
+							}
+						}
+					}
+				}
+			}
+		},
 		"/users/{id}/roles": {
 			"put": {
 				"operationId": "UpdateUserRoles",
@@ -938,6 +1053,129 @@
 									"format": "double"
 								},
 								"type": "array"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/users/{id}/change-password": {
+			"put": {
+				"operationId": "ChangePassword",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"isFirstLogin": {
+										"type": "boolean"
+									},
+									"newPassword": {
+										"type": "string"
+									},
+									"oldPassword": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"newPassword",
+									"oldPassword"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/users/login": {
+			"post": {
+				"operationId": "Login",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"isFirstLogin": {
+											"type": "boolean"
+										},
+										"isMasterAdmin": {},
+										"userId": {},
+										"message": {
+											"type": "string"
+										},
+										"token": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"isFirstLogin",
+										"isMasterAdmin",
+										"userId",
+										"token"
+									],
+									"type": "object",
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"password": {
+										"type": "string"
+									},
+									"email": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"password",
+									"email"
+								],
+								"type": "object"
 							}
 						}
 					}
@@ -2184,6 +2422,166 @@
 									"address"
 								],
 								"type": "object"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/currencies": {
+			"get": {
+				"operationId": "GetAllCurrencies",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/CurrencyDTO"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			},
+			"post": {
+				"operationId": "CreateCurrency",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CurrencyDTO"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CurrencyDTO"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/currencies/{id}": {
+			"get": {
+				"operationId": "GetCurrencyById",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/CurrencyDTO"
+										}
+									],
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			},
+			"delete": {
+				"operationId": "DeleteCurrency",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "UpdateCurrency",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/CurrencyDTO"
+										}
+									],
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Partial_CurrencyDTO_"
 							}
 						}
 					}

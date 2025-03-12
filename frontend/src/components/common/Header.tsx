@@ -18,27 +18,9 @@ const Header = () => {
         // window.location.href = "/login";
     };
 
-    const { error, token} = useSelector((state: any) => ({
-        loading: state.projectsDetail?.loading,
-        error: state.projectsDetail?.error,
+    const { token} = useSelector((state: any) => ({
         token: state.token.token
     }));
-
-    // if (loading) {
-    //     return (
-    //         <div className="loading-container">
-    //         <p>Loading....</p>
-    //         </div>
-    //     );
-    // }
-    
-    if (error) {
-        return (
-            <div className="error-container">
-            <p>Error: {error}</p>
-            </div>
-        );
-    }
 
     return (
         <>

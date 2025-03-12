@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import ProjectCard from "../utils/ProjectCard";
 import { useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 // import { useDispatch } from "react-redux";
 // import { fetchProjects } from "../redux/actions/projectsActions";
 import ProjectCardMobile from "../components/mobile/ProjectCardMobile";
@@ -9,33 +9,56 @@ import { useAppDispatch } from "../redux/store";
 import { fetchProjects } from "../redux/actions/projectsActions";
 
 const Projects = () => {
+    
 
     const dispatch = useAppDispatch();
+
+    const [projectOptions, setProjectOptions] = useState<any>();
     
-    const { projects, token, images, loading} = useSelector((state: any) => ({
-        loading: state.projectsDetail?.loading,
-        projects: state.projectsDetail?.projects,
-        error: state.projectsDetail?.error,
-        token: state.token.token,
-        images:state.projectImages.images
+    const { projects, token, images, loading, userEntities} = useSelector((state: any) => ({
+      loading: state.projectsDetail?.loading,
+      projects: state.projectsDetail?.projects,
+      userEntities: state.userDetails?.user?.entities,
+      error: state.projectsDetail?.error,
+      token: state.token.token,
+      images:state.projectImages.images
     }));
+
     
     // Always call fetchProjects
     useEffect(() => {
         dispatch(fetchProjects());
     }, []);
 
+    useEffect(() => {
+        if (!userEntities || userEntities.length === 0) {
+          // If no userEntities, show all projects
+          setProjectOptions(projects);
+        } else {
+          // Get entity IDs from userEntities
+          const userEntityIds = userEntities.map((entity: any) => entity.id);
+      
+          // Filter projects that match user entity IDs
+          const filteredProjects = projects.filter((proj: any) =>
+            userEntityIds.includes(proj.entityID)
+          );
+      
+          setProjectOptions(filteredProjects);
+        }
+      }, [userEntities, projects]);
+      
+
     const getProjectImages = (projectName: string) => {
         if (!projectName || !images || images.length === 0) return [];
         const formattedName = projectName.replace(/\s+/g, ''); // Remove spaces
         return images.filter((image: string) =>
             image.includes(`projects/${formattedName}/Default`)
-        );
-    };
+    );
+};
 
-    if (loading) {
-        return (
-          <div className="smart-glass">
+if (loading) {
+    return (
+        <div className="smart-glass">
           <div className="logo">
             <div className="circle">
               <div className="circle">
@@ -50,7 +73,6 @@ const Projects = () => {
         </div>
         );
       }
-
     return (
         <>
             <section className="_avail-projects">
@@ -74,7 +96,7 @@ const Projects = () => {
                     </div>
                     <div className="_avail-projects_list">
                     {
-                        projects && projects.map((project: any, index: any) => {
+                        projectOptions && projectOptions.map((project: any, index: any) => {
                             // Find the corresponding images for each project
                             const projectImages = getProjectImages(project.name);
                             return (

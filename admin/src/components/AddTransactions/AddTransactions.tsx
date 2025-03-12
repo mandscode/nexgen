@@ -7,9 +7,9 @@ import { Col, Form, Row } from 'react-bootstrap';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import { TransactionHistoryStore } from '../TransactionHistory/TransactionHistoryStore';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { getAccountOfInvestor, getEntities, getProjects } from '../../api/apiEndpoints';
+import { getAccountOfInvestor, getCurrencyAll, getEntities, getInvestor, getProjects, getUser } from '../../api/apiEndpoints';
 
 export interface AddTransactionsProps {
  className?: string;
@@ -38,7 +38,6 @@ const AddTransactions = ({ investrId, transactionList }:AddTransactionsProps) =>
   const [addTransactionsStore] = useState(() => new AddTransactionsStore());
 
   const transactionHistoryStore = useOutletContext<TransactionHistoryStore>();
-
   const [projects, setProjects] = useState([]);
   const [accounts, setAccounts] = useState([]);
   const [selectedOption, setSelectedOption] = useState<number | null>(0);
@@ -78,7 +77,6 @@ const AddTransactions = ({ investrId, transactionList }:AddTransactionsProps) =>
           }
         }) 
         
-        setEntitesOptions(entitesOptionsData);
       }
       catch (error) {
         console.error('Error fetching entities:', error);
@@ -87,14 +85,18 @@ const AddTransactions = ({ investrId, transactionList }:AddTransactionsProps) =>
     
     fetchEntities();
   }, []);
-
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
         const projectsData = await getProjects(); // Fetch projects
+        // const projectsData2 = await getInvestor(Number(id)); // Fetch projects
+        const userData = await getUser(Number(investrId)); // Fetch projects
         
         const accountsOfInvestor = await getAccountOfInvestor(Number(investrId)); // Fetch accounts
-
+        if (userData?.entities?.length > 0) {
+          setEntitesOptions(userData.entities);
+        }
         const filteredProjects = projectsData
         .filter((project: any) => { return project.entityID === selectedOption;}) // Filter projects by entity ID
         .map((project: any) => ({
@@ -102,14 +104,20 @@ const AddTransactions = ({ investrId, transactionList }:AddTransactionsProps) =>
           name: project.name,
         }));
           
+        const allCurr = await getCurrencyAll();
 
-        const accountsId = accountsOfInvestor.map((acc:any) => ({id:acc.id, name:acc.currency}))
-        
+        const assignedAcc = accountsOfInvestor.map((acc: any) => {
+          const currency = allCurr.find((curr: any) => curr.id === acc.currency); // Find matching currency
+          return {
+            name: currency ? currency.name : "Unknown", // Use currency name if found
+            id: acc.id,
+          };
+        });
         // Extract only 'id' and 'currency' for accounts
   
         // Set the state with the filtered data
         setProjects(filteredProjects);
-        setAccounts(accountsId);
+        setAccounts(assignedAcc);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -118,30 +126,48 @@ const AddTransactions = ({ investrId, transactionList }:AddTransactionsProps) =>
       fetchData(); // Fetch data only if an entity is selected
     }
   }, [selectedOption, investrId]); // Empty dependency array means it runs once on component mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const investor = await getInvestor(Number(investrId))
+        const userData = await getUser(Number(investor?.userId)); // Fetch projects
+
+        if (userData?.entities?.length > 0) {
+          setEntitesOptions(userData.entities);
+          console.log(userData.entities)
+
+        }
+        
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchData(); // Fetch data only if an entity is selected
+  }, [ investrId]); // Empty dependency array means it runs once on component mount
 
   // Define form fields array and filter out the 'Investor' role
-  const fields = [
-    { name: 'entityId', type: 'select', placeholder: 'Select Entity', options:entitesOptions},
-    { name: 'projectId', type: 'select', placeholder: 'Projects', options:projects},
-    { name: 'accountId', type: 'select', placeholder: 'Accounts', options:accounts},
-    { name: 'amount', type: 'number', placeholder: 'Amount' },
-    { name: 'transactionDate', type: 'date', placeholder: 'Transaction Date' },
-    { name: 'details', type: 'text', placeholder: 'Details' },
+    const fields = [
+      { name: 'entityId', type: 'select', placeholder: 'Select Entity', options:entitesOptions},
+      { name: 'projectId', type: 'select', placeholder: 'Projects', options:projects},
+      { name: 'accountId', type: 'select', placeholder: 'Accounts', options:accounts},
+      { name: 'amount', type: 'number', placeholder: 'Amount' },
+      { name: 'transactionDate', type: 'date', placeholder: 'Transaction Date' },
+      { name: 'details', type: 'text', placeholder: 'Details' },
 
-    { name: 'intrestRate', type: 'number', placeholder: 'Intrest Rate' },
-    { name: 'credited', type: 'select', placeholder: 'Credit/Debit', options:[
-          {
-            id: 1,
-            value: true,
-            name: "Credit",
-          },
-          {
-            id: 2,
-            value: false,
-            name: "Debit",
-          },
-    ]},
-  ];
+      { name: 'intrestRate', type: 'number', placeholder: 'Intrest Rate' },
+      { name: 'credited', type: 'select', placeholder: 'Credit/Debit', options:[
+            {
+              id: 1,
+              value: true,
+              name: "Credit",
+            },
+            {
+              id: 2,
+              value: false,
+              name: "Debit",
+            },
+      ]},
+    ];
 
   function getErrorMessage(name: string): string {
     const fieldError = errors[name as keyof TransactionDTO];
@@ -212,6 +238,7 @@ const AddTransactions = ({ investrId, transactionList }:AddTransactionsProps) =>
                         placeholder={field.placeholder}
                         isInvalid={!!errors[field.name as keyof TransactionDTO]}
                         {...register(field.name as keyof TransactionDTO)}
+                        max={field.type === "date" ? new Date().toISOString().split("T")[0] : undefined} // Prevent future dates
                       />
                 }
                 <Form.Control.Feedback type="invalid" className={getErrorMessage(field.name) ? 'd-block' : 'd-none'}>

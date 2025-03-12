@@ -16,6 +16,7 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom', '@aws-sdk/client-sts'],
+    exclude: ['emailjs-com'],
   },
   resolve: {
     alias: {

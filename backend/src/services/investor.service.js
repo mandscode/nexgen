@@ -47,7 +47,6 @@ class InvestorService {
     assignProjects(investorId, projectIds) {
         return __awaiter(this, void 0, void 0, function* () {
             var _a;
-            let projects = [];
             if (projectIds) {
                 yield ((_a = (yield investor_1.default.findByPk(investorId))) === null || _a === void 0 ? void 0 : _a.setProjects(projectIds));
                 return this.getInvestorById(investorId);

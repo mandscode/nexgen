@@ -29,3 +29,9 @@
 // Components
 @import "./components/components" ;
 
+@media (max-width: 576px) { /* Adjust for mobile */
+    .modal-content {
+      max-width: 90% !important; /* Ensure it takes 90% of the screen */
+      margin: auto;
+    }
+}

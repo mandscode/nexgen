@@ -15,7 +15,7 @@ const Auth: React.FC = () => {
   // useApiCalls(dispatch, token);
 
   useEffect(() => {
-    if (!token || user == "") {
+    if (!token || user == "" || error) {
       console.warn("Redirecting to login");
       navigate("/auth/login");
     } else {
@@ -38,7 +38,7 @@ const Auth: React.FC = () => {
       </div>
     );
 
-  if (error) return <div>Error: {error.message || error}</div>;
+  // if (error) return <div>Error: {error.message || error}</div>;
 
   return <Outlet />;
 };

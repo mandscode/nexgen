@@ -54,6 +54,14 @@ const AddEmergencyContact = ({ }:AddEmergencyContactProps) => {
     return "";
   }
 
+   // Function to restrict input to numbers only
+   const handleNumericInput = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    const allowedKeys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'];
+    if (!allowedKeys.includes(event.key)) {
+      event.preventDefault();
+    }
+  };
+
   return (
     <div className={`addEmergencyContact`}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -67,7 +75,9 @@ const AddEmergencyContact = ({ }:AddEmergencyContactProps) => {
                       className={`form-control ${errors[field.name as keyof InvestorEmergencyDetailsForm] ? 'is-invalid' : ''}`}
                       placeholder={field.placeholder}
                       isInvalid={!!errors[field.name as keyof InvestorEmergencyDetailsForm]}
+                      onKeyDown={field.name === 'number' ? handleNumericInput : undefined} // Restrict input for mobile field
                       {...register(field.name as keyof InvestorEmergencyDetailsForm)}
+                      
                     />
                 <Form.Control.Feedback type="invalid" className={getErrorMessage(field.name) ? 'd-block': 'd-none'}>
                   {

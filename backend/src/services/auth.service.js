@@ -49,6 +49,8 @@ class AuthService {
                     picture: payload.picture,
                     status: 'active',
                     personalDetails: payload.locale ? { locale: payload.locale } : undefined,
+                    isMasterAdmin: false,
+                    isFirstLogin: true
                 });
                 const roles = yield role_1.default.findAll({ where: { name: ['Viewer'] } }); // Can include more roles
                 if (roles.length) {

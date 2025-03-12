@@ -29,10 +29,10 @@ __decorate([
 ], Account.prototype, "id", void 0);
 __decorate([
     (0, sequelize_typescript_1.Column)({
-        type: sequelize_typescript_1.DataType.ENUM('USD', 'EUR', 'GBP', 'JPY', 'INR'),
+        type: sequelize_typescript_1.DataType.INTEGER,
         allowNull: false,
     }),
-    __metadata("design:type", String)
+    __metadata("design:type", Number)
 ], Account.prototype, "currency", void 0);
 __decorate([
     (0, sequelize_typescript_1.ForeignKey)(() => investor_1.default),

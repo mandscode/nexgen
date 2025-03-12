@@ -9,7 +9,7 @@ import { InvestorStore } from '../Investor/InvestorStore';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import { Controller, useForm } from 'react-hook-form';
-import { getInvestor, getUsers } from '../../api/apiEndpoints';
+import { getCurrencyAll, getInvestor, getUsers } from '../../api/apiEndpoints';
 import Select from 'react-select';
 import Accounts from '../Accounts/Accounts';
 
@@ -34,6 +34,7 @@ const AssignAccount = ({ }:AssignAccountProps) => {
   const investorStore = useOutletContext<InvestorStore>();
 
   const [investorOptions, setInvestorOptions] = useState<InvestorOption[]>([]);
+  const [currOptions, setCurrOptions] = useState<any[]>([]);
 
   const [showAccounts, setShowAccounts] = useState<boolean>(false);
 
@@ -63,11 +64,12 @@ const AssignAccount = ({ }:AssignAccountProps) => {
     const fetchInvesters = async () => {
       try {
         const investor = await getInvestor(Number(id)); // Fetch investor by ID
+        const currency = await getCurrencyAll(); // Fetch investor by ID
         const users = await getUsers();                 // Fetch all users
-      
+        setCurrOptions(currency)
         // Find the user that matches the investor's userId
         const user = users.find((user: any) => user.id === investor.userId);
-      
+
         // Set investor options with user's name, handling missing users
         setInvestorOptions([{
           id: investor.id,
@@ -78,7 +80,7 @@ const AssignAccount = ({ }:AssignAccountProps) => {
       }
     };
 
-
+    
     fetchInvesters();
   }, []);
   
@@ -88,13 +90,7 @@ const AssignAccount = ({ }:AssignAccountProps) => {
       name: 'currency', 
       type: 'select', 
       placeholder: 'Select Currency', 
-      options: [
-        { name: 'USD', id: 1 }, // United States Dollar
-        { name: 'EUR', id: 2 }, // Euro
-        { name: 'GBP', id: 3 }, // British Pound
-        { name: 'JPY', id: 4 }, // Japanese Yen
-        { name: 'INR', id: 5 }, // Indian Rupee
-      ] 
+      options: currOptions
     },
   ];
 

@@ -24,8 +24,8 @@ export class AssignAccountStore {
             const investor = await getInvestor(Number(formattedValues?.investorId));
 
             // Check if any account's id matches the investor's currency
-            const isAccountAlreadyAssigned = investor?.accounts?.some((account:any) => account.id === Number(formattedValues.currency));
-
+            const isAccountAlreadyAssigned = investor?.accounts?.some((account:any) => account.currency === Number(formattedValues.currency));
+            
             if (isAccountAlreadyAssigned) {
                 // Show alert if the account is already assigned
                 alert("This account is already assigned to the investor.");

@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite'
 // import { AccountsStore } from "./AccountsStore";
 import  "./Accounts.scss";
 import { useParams } from 'react-router-dom';
-import { getAccountOfInvestor, removeAccountOfInvestor } from '../../api/apiEndpoints';
+import { getAccountOfInvestor, getCurrencyAll, removeAccountOfInvestor } from '../../api/apiEndpoints';
 import { Button, Card } from 'react-bootstrap';
 import NexGenTable from '../NexGenTable/NexGenTable';
 import { ColumnDef } from '@tanstack/react-table';
@@ -30,7 +30,16 @@ const Accounts = ({ setShowAccounts, showAccounts }:AccountsProps) => {
   const fetchAccounts = async () => {
     try {
       const accounts = await getAccountOfInvestor(Number(id));
-      const assignedAcc = accounts.map((acc: any) => {return {accountName:acc.currency, id:acc.id}}); // Map account names
+      const allCurr = await getCurrencyAll();
+
+    // Map accounts and replace acc.curr with the corresponding currency name
+    const assignedAcc = accounts.map((acc: any) => {
+      const currency = allCurr.find((curr: any) => curr.id === acc.currency); // Find matching currency
+      return {
+        accountName: currency ? currency.name : "Unknown", // Use currency name if found
+        id: acc.id,
+      };
+    });
 
       showAccountsData(assignedAcc) // Uncomment if needed
     } catch (error) {

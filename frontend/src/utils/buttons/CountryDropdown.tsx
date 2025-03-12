@@ -50,6 +50,7 @@ const CountryDropdown: React.FC<ProjectsDropdownProps> = ({ projects, setSelectC
     }
   }, [selectedProjectName]);
 
+
   useEffect(() => {
     setSelectCountry(selectedCountry.countryName);
   }, [selectedCountry, setSelectCountry]);
@@ -94,6 +95,7 @@ const CountryDropdown: React.FC<ProjectsDropdownProps> = ({ projects, setSelectC
           }`}
         >
           <div className="_dropdown_button_menu_options">
+
           {Array.from(new Set(projects?.map((account) => account.countryName ?? null))).map((countryName, index) => (
               <div
                 key={index}

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { Cell, Pie, PieChart, Tooltip } from 'recharts';
 import '@splidejs/splide/css'; // Import Splide styles
-import { getProject } from '../../api/apiEndpoints';
+import { getCurrencyAll, getProject } from '../../api/apiEndpoints';
 import CurrencyDropdown from '../../utils/buttons/CurrencyDropdown';
 import CountryDropdown from '../../utils/buttons/CountryDropdown';
 import { useNavigate } from 'react-router-dom';
@@ -17,6 +17,7 @@ const DashboardMobile = () => {
     const [totalAmount, setTotalAmount] = useState(0);
     const [projectCount, setProjectCount] = useState(0);
 
+    const [selectedCurrencyVal, setSelectCurrencyVal] = useState<any>();
 
     const [data, setData] = useState<{ name: string; value: number }[]>([]);
   
@@ -35,6 +36,23 @@ const DashboardMobile = () => {
       accountsData:state.investorAccsDetails?.accounts,
       projects: state.projectsDetail?.projects
     }));
+
+        useEffect(() => {
+          const fetchData = async () => {
+            const allCurr = await getCurrencyAll()
+    
+            const assignedAcc = investor.accounts.map((acc: any) => {
+              const currency = allCurr.find((curr: any) => curr.id === acc.currency); // Find matching currency
+              return {
+                currency: currency ? currency.name : "Unknown", // Use currency name if found
+                id: acc.id,
+                currencySymbol:currency.symbol
+              };
+            });
+            setSelectCurrencyVal(assignedAcc)
+          }
+          fetchData()
+        }, [])
     
     useEffect(() => {
       const fetchTransactions = async () => {
@@ -44,7 +62,7 @@ const DashboardMobile = () => {
           const formattedTransactions = await Promise.all(
             accountsData.map(async (accounts: any) => {
               
-              if (accounts.currency === selectedCurrency.currencyName) {
+              if (accounts.currency === selectedCurrency.id) {
                 const validTransactions = await Promise.all(
                   accounts.transactions.map(async (transaction: any) => {
                     const project = await getProject(Number(transaction.projectId));
@@ -260,7 +278,7 @@ const DashboardMobile = () => {
                     investor?.accounts && investor?.accounts?.length > 0 ? 
                     <div className='_dashboard-mobile_nav_currency'>
                       <div className="_dashboard-mobile_nav_currency-select">
-                        <CurrencyDropdown currency={investor?.accounts} setSelectCurrency={setSelectCurrency}/>
+                        <CurrencyDropdown currency={selectedCurrencyVal} setSelectCurrency={setSelectCurrency}/>
                       </div>
                     </div>
                     :

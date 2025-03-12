@@ -4,11 +4,15 @@
 import express, { Application, Request, Response } from "express";
 import sequelize from "./config/database";
 import bodyParser from 'body-parser';
-import { RegisterRoutes } from './routes/routes';
 import swaggerUi from 'swagger-ui-express';
 import * as swaggerDocument from './swagger.json';
 
+// app.ts or index.ts
+import './createMasterAdmin';
+
+
 import cors from 'cors';
+import { RegisterRoutes } from "./routes/routes";
 
 const environment = process.env.NODE_ENV || 'development';
 

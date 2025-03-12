@@ -3,6 +3,7 @@ import { makeAutoObservable, runInAction  } from "mobx";
 import { ArrowRight } from "react-feather";
 import { Link } from "react-router-dom";
 import { getRoles, getUsers } from "../../api/apiEndpoints";
+import { Button } from "react-bootstrap";
 
 export interface User {
   firstName: string;
@@ -16,34 +17,44 @@ export class UsersStore {
   data: User[] = []; // Initialize as empty array
   roles: {name: string, id: number}[] = [];
 
-  defaultColumns: ColumnDef<User>[] = [
-    {
-      header: 'All Users',
-      columns: [
-        {
-          accessorKey: 'firstName',
-          cell: info => info.getValue(),
-        },
-        {
-          accessorKey: 'lastName',
-          cell: info => info.getValue(),
-        },
-        {
-          accessorKey: 'email',
-          cell: info => info.getValue(),
-        },
-        {
-          accessorKey: 'roles',
-          header:`Roles`,
-          cell: info => info.getValue().join(' , '),
-        },
-        // {
-        //   accessorKey: 'details',
-        //   cell: info => <Link to={info.getValue()}><ArrowRight/></Link>
-        // }
-      ],
-    },
-  ];
+  getColumns(setUserId: (id: string) => void, setShowModalForOldPassword: (show: boolean) => void) {
+    return [
+      {
+        header: 'All Users',
+        columns: [
+          {
+            accessorKey: 'firstName',
+            cell: (info:any) => info.getValue(),
+          },
+          {
+            accessorKey: 'lastName',
+            cell: (info:any) => info.getValue(),
+          },
+          {
+            accessorKey: 'email',
+            cell: (info:any) => info.getValue(),
+          },
+          {
+            accessorKey: 'roles',
+            header: `Roles`,
+            cell: (info:any) => info.getValue().join(' , '),
+          },
+          {
+            accessorKey: 'details',
+            cell: (info:any) => (
+              <span style={{color:"blue", cursor:"pointer"}} onClick={() => {
+                setUserId(info.getValue());  // Set the user ID from the row
+                setShowModalForOldPassword(true); // Open the modal
+              }}>
+                Change Password
+              </span>
+            ),
+          }
+        ],
+      }
+    ];
+  }
+  
 
   // data = [{ firstName: "test", lastName: "test", email: "test@email.com", roles: ['role1', 'role2'] }];
   // data: User[] = exampleData.Users.map((user: any) => ({
@@ -64,15 +75,21 @@ export class UsersStore {
   async fetchUsers() {
     try {
       const users = await getUsers();
-      
-      // Use runInAction to modify observable data inside async functions
+
       runInAction(() => {
         this.data = users.map((user: any) => ({
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
-          roles: user.roles.map((role: any) => role.name.toUpperCase()), // Assuming roles is a single string, adjust if necessary
-          details: `/users/user-detail/${user.id}`
+          isMasterAdmin: user.isMasterAdmin, // ✅ Store isMasterAdmin in user data
+          roles: user.roles.map((role: any) => {
+            let roleName = role.name;
+            // if (user.isMasterAdmin && roleName === "Admin") {
+            //   roleName = "Master Admin"; // ✅ Replace "Admin" with "Master Admin" if user isMasterAdmin
+            // }
+            return roleName.toUpperCase();
+          }),
+          details: user.id
         }));
       });
     } catch (error) {

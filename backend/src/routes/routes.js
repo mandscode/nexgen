@@ -28,6 +28,8 @@ const investment_controller_1 = require("./../controllers/investment.controller"
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 const entity_controller_1 = require("./../controllers/entity.controller");
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+const currency_controller_1 = require("./../controllers/currency.controller");
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 const contents_controller_1 = require("./../controllers/contents.controller");
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 const auth_controller_1 = require("./../controllers/auth.controller");
@@ -52,8 +54,11 @@ const models = {
             "lastName": { "dataType": "string", "required": true },
             "email": { "dataType": "string", "required": true },
             "roles": { "dataType": "array", "array": { "dataType": "refObject", "ref": "RoleDTO" } },
+            "isMasterAdmin": { "dataType": "boolean", "required": true },
             "personalDetails": { "dataType": "nestedObjectLiteral", "nestedProperties": {}, "additionalProperties": { "dataType": "any" } },
             "status": { "dataType": "string" },
+            "entities": { "dataType": "array", "array": { "dataType": "any" } },
+            "isFirstLogin": { "dataType": "boolean", "required": true },
         },
         "additionalProperties": false,
     },
@@ -65,7 +70,11 @@ const models = {
             "firstName": { "dataType": "string", "required": true },
             "lastName": { "dataType": "string", "required": true },
             "email": { "dataType": "string", "required": true },
+            "password": { "dataType": "string" },
             "roleIds": { "dataType": "array", "array": { "dataType": "double" }, "required": true },
+            "entityIds": { "dataType": "array", "array": { "dataType": "double" } },
+            "isMasterAdmin": { "dataType": "boolean", "required": true },
+            "isFirstLogin": { "dataType": "boolean", "required": true },
             "status": { "dataType": "string" },
             "personalDetails": { "dataType": "nestedObjectLiteral", "nestedProperties": {}, "additionalProperties": { "dataType": "any" } },
         },
@@ -115,52 +124,6 @@ const models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "ProjectRespDTO": {
-        "dataType": "refObject",
-        "properties": {
-            "id": { "dataType": "double" },
-            "name": { "dataType": "string", "required": true },
-            "address": { "dataType": "string", "required": true },
-            "countryName": { "dataType": "string", "required": true },
-            "latitude": { "dataType": "double" },
-            "longitude": { "dataType": "double" },
-            "startDate": { "dataType": "datetime", "required": true },
-            "actualMaturityDate": { "dataType": "datetime" },
-            "overallCost": { "dataType": "double" },
-            "description": { "dataType": "string" },
-            "ownerName": { "dataType": "string" },
-            "legalId": { "dataType": "string" },
-            "maturityLockingPeriod": { "dataType": "double" },
-            "settings": { "dataType": "nestedObjectLiteral", "nestedProperties": {}, "additionalProperties": { "dataType": "any" } },
-            "entity": { "ref": "EntityDTO", "required": true },
-            "resources": { "dataType": "array", "array": { "dataType": "refObject", "ref": "ResourceDTO" } },
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "ProjectReqDTO": {
-        "dataType": "refObject",
-        "properties": {
-            "id": { "dataType": "double" },
-            "name": { "dataType": "string", "required": true },
-            "address": { "dataType": "string", "required": true },
-            "latitude": { "dataType": "double" },
-            "countryName": { "dataType": "string", "required": true },
-            "longitude": { "dataType": "double" },
-            "startDate": { "dataType": "string", "required": true },
-            "actualMaturityDate": { "dataType": "string" },
-            "overallCost": { "dataType": "double" },
-            "description": { "dataType": "string" },
-            "ownerName": { "dataType": "string" },
-            "legalId": { "dataType": "string" },
-            "maturityLockingPeriod": { "dataType": "double" },
-            "settings": { "dataType": "nestedObjectLiteral", "nestedProperties": {}, "additionalProperties": { "dataType": "any" } },
-            "entityID": { "dataType": "double", "required": true },
-            "resourceIds": { "dataType": "array", "array": { "dataType": "double" } },
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "InvestmentDTO": {
         "dataType": "refObject",
         "properties": {
@@ -185,6 +148,30 @@ const models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ProjectRespDTO": {
+        "dataType": "refObject",
+        "properties": {
+            "id": { "dataType": "double" },
+            "name": { "dataType": "string", "required": true },
+            "address": { "dataType": "string", "required": true },
+            "countryName": { "dataType": "string", "required": true },
+            "latitude": { "dataType": "double" },
+            "longitude": { "dataType": "double" },
+            "startDate": { "dataType": "datetime", "required": true },
+            "actualMaturityDate": { "dataType": "datetime" },
+            "overallCost": { "dataType": "double" },
+            "description": { "dataType": "string" },
+            "ownerName": { "dataType": "string" },
+            "legalId": { "dataType": "string" },
+            "maturityLockingPeriod": { "dataType": "double" },
+            "settings": { "dataType": "nestedObjectLiteral", "nestedProperties": {}, "additionalProperties": { "dataType": "any" } },
+            "entity": { "ref": "EntityDTO", "required": true },
+            "resources": { "dataType": "array", "array": { "dataType": "refObject", "ref": "ResourceDTO" } },
+            "investors": { "dataType": "array", "array": { "dataType": "refObject", "ref": "InvestorRespDTO" } },
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "InvestorRespDTO": {
         "dataType": "refObject",
         "properties": {
@@ -200,6 +187,29 @@ const models = {
             "projects": { "dataType": "array", "array": { "dataType": "refObject", "ref": "ProjectRespDTO" } },
             "resources": { "dataType": "array", "array": { "dataType": "refObject", "ref": "ResourceDTO" } },
             "documents": { "dataType": "array", "array": { "dataType": "nestedObjectLiteral", "nestedProperties": { "status": { "dataType": "boolean", "required": true }, "docUrl": { "dataType": "string", "required": true }, "docName": { "dataType": "string", "required": true }, "id": { "dataType": "string", "required": true } } } },
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ProjectReqDTO": {
+        "dataType": "refObject",
+        "properties": {
+            "id": { "dataType": "double" },
+            "name": { "dataType": "string", "required": true },
+            "address": { "dataType": "string", "required": true },
+            "latitude": { "dataType": "double" },
+            "countryName": { "dataType": "string", "required": true },
+            "longitude": { "dataType": "double" },
+            "startDate": { "dataType": "string", "required": true },
+            "actualMaturityDate": { "dataType": "string" },
+            "overallCost": { "dataType": "double" },
+            "description": { "dataType": "string" },
+            "ownerName": { "dataType": "string" },
+            "legalId": { "dataType": "string" },
+            "maturityLockingPeriod": { "dataType": "double" },
+            "settings": { "dataType": "nestedObjectLiteral", "nestedProperties": {}, "additionalProperties": { "dataType": "any" } },
+            "entityID": { "dataType": "double", "required": true },
+            "resourceIds": { "dataType": "array", "array": { "dataType": "double" } },
         },
         "additionalProperties": false,
     },
@@ -241,6 +251,22 @@ const models = {
             "projects": { "dataType": "array", "array": { "dataType": "refObject", "ref": "ProjectRespDTO" } },
         },
         "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "CurrencyDTO": {
+        "dataType": "refObject",
+        "properties": {
+            "id": { "dataType": "double" },
+            "code": { "dataType": "string", "required": true },
+            "name": { "dataType": "string", "required": true },
+            "symbol": { "dataType": "string", "required": true },
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Partial_CurrencyDTO_": {
+        "dataType": "refAlias",
+        "type": { "dataType": "nestedObjectLiteral", "nestedProperties": { "id": { "dataType": "double" }, "code": { "dataType": "string" }, "name": { "dataType": "string" }, "symbol": { "dataType": "string" } }, "validators": {} },
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "ContentDTO": {
@@ -371,6 +397,31 @@ function RegisterRoutes(app) {
         });
     });
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    const argsUserController_createUserUsingPassword = {
+        user: { "in": "body", "name": "user", "required": true, "ref": "UserReqDTO" },
+    };
+    app.post('/users/with-password', ...((0, runtime_1.fetchMiddlewares)(users_controller_1.UserController)), ...((0, runtime_1.fetchMiddlewares)(users_controller_1.UserController.prototype.createUserUsingPassword)), function UserController_createUserUsingPassword(request, response, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+            let validatedArgs = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsUserController_createUserUsingPassword, request, response });
+                const controller = new users_controller_1.UserController();
+                yield templateService.apiHandler({
+                    methodName: 'createUserUsingPassword',
+                    controller,
+                    response,
+                    next,
+                    validatedArgs,
+                    successStatus: undefined,
+                });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     const argsUserController_updateUser = {
         user: { "in": "body", "name": "user", "required": true, "ref": "UserReqDTO" },
     };
@@ -409,6 +460,57 @@ function RegisterRoutes(app) {
                 const controller = new users_controller_1.UserController();
                 yield templateService.apiHandler({
                     methodName: 'updateUserRoles',
+                    controller,
+                    response,
+                    next,
+                    validatedArgs,
+                    successStatus: undefined,
+                });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    const argsUserController_changePassword = {
+        id: { "in": "path", "name": "id", "required": true, "dataType": "double" },
+        body: { "in": "body", "name": "body", "required": true, "dataType": "nestedObjectLiteral", "nestedProperties": { "isFirstLogin": { "dataType": "boolean" }, "newPassword": { "dataType": "string", "required": true }, "oldPassword": { "dataType": "string", "required": true } } },
+    };
+    app.put('/users/:id/change-password', ...((0, runtime_1.fetchMiddlewares)(users_controller_1.UserController)), ...((0, runtime_1.fetchMiddlewares)(users_controller_1.UserController.prototype.changePassword)), function UserController_changePassword(request, response, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+            let validatedArgs = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsUserController_changePassword, request, response });
+                const controller = new users_controller_1.UserController();
+                yield templateService.apiHandler({
+                    methodName: 'changePassword',
+                    controller,
+                    response,
+                    next,
+                    validatedArgs,
+                    successStatus: undefined,
+                });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    const argsUserController_login = {
+        body: { "in": "body", "name": "body", "required": true, "dataType": "nestedObjectLiteral", "nestedProperties": { "password": { "dataType": "string", "required": true }, "email": { "dataType": "string", "required": true } } },
+    };
+    app.post('/users/login', ...((0, runtime_1.fetchMiddlewares)(users_controller_1.UserController)), ...((0, runtime_1.fetchMiddlewares)(users_controller_1.UserController.prototype.login)), function UserController_login(request, response, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+            let validatedArgs = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsUserController_login, request, response });
+                const controller = new users_controller_1.UserController();
+                yield templateService.apiHandler({
+                    methodName: 'login',
                     controller,
                     response,
                     next,
@@ -1256,6 +1358,130 @@ function RegisterRoutes(app) {
                 const controller = new entity_controller_1.EntityController();
                 yield templateService.apiHandler({
                     methodName: 'updateEntity',
+                    controller,
+                    response,
+                    next,
+                    validatedArgs,
+                    successStatus: undefined,
+                });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    const argsCurrencyController_getAllCurrencies = {};
+    app.get('/currencies', ...((0, runtime_1.fetchMiddlewares)(currency_controller_1.CurrencyController)), ...((0, runtime_1.fetchMiddlewares)(currency_controller_1.CurrencyController.prototype.getAllCurrencies)), function CurrencyController_getAllCurrencies(request, response, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+            let validatedArgs = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsCurrencyController_getAllCurrencies, request, response });
+                const controller = new currency_controller_1.CurrencyController();
+                yield templateService.apiHandler({
+                    methodName: 'getAllCurrencies',
+                    controller,
+                    response,
+                    next,
+                    validatedArgs,
+                    successStatus: undefined,
+                });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    const argsCurrencyController_getCurrencyById = {
+        id: { "in": "path", "name": "id", "required": true, "dataType": "double" },
+    };
+    app.get('/currencies/:id', ...((0, runtime_1.fetchMiddlewares)(currency_controller_1.CurrencyController)), ...((0, runtime_1.fetchMiddlewares)(currency_controller_1.CurrencyController.prototype.getCurrencyById)), function CurrencyController_getCurrencyById(request, response, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+            let validatedArgs = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsCurrencyController_getCurrencyById, request, response });
+                const controller = new currency_controller_1.CurrencyController();
+                yield templateService.apiHandler({
+                    methodName: 'getCurrencyById',
+                    controller,
+                    response,
+                    next,
+                    validatedArgs,
+                    successStatus: undefined,
+                });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    const argsCurrencyController_createCurrency = {
+        currency: { "in": "body", "name": "currency", "required": true, "ref": "CurrencyDTO" },
+    };
+    app.post('/currencies', ...((0, runtime_1.fetchMiddlewares)(currency_controller_1.CurrencyController)), ...((0, runtime_1.fetchMiddlewares)(currency_controller_1.CurrencyController.prototype.createCurrency)), function CurrencyController_createCurrency(request, response, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+            let validatedArgs = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsCurrencyController_createCurrency, request, response });
+                const controller = new currency_controller_1.CurrencyController();
+                yield templateService.apiHandler({
+                    methodName: 'createCurrency',
+                    controller,
+                    response,
+                    next,
+                    validatedArgs,
+                    successStatus: undefined,
+                });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    const argsCurrencyController_deleteCurrency = {
+        id: { "in": "path", "name": "id", "required": true, "dataType": "double" },
+    };
+    app.delete('/currencies/:id', ...((0, runtime_1.fetchMiddlewares)(currency_controller_1.CurrencyController)), ...((0, runtime_1.fetchMiddlewares)(currency_controller_1.CurrencyController.prototype.deleteCurrency)), function CurrencyController_deleteCurrency(request, response, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+            let validatedArgs = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsCurrencyController_deleteCurrency, request, response });
+                const controller = new currency_controller_1.CurrencyController();
+                yield templateService.apiHandler({
+                    methodName: 'deleteCurrency',
+                    controller,
+                    response,
+                    next,
+                    validatedArgs,
+                    successStatus: undefined,
+                });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    const argsCurrencyController_updateCurrency = {
+        id: { "in": "path", "name": "id", "required": true, "dataType": "double" },
+        currencyData: { "in": "body", "name": "currencyData", "required": true, "ref": "Partial_CurrencyDTO_" },
+    };
+    app.put('/currencies/:id', ...((0, runtime_1.fetchMiddlewares)(currency_controller_1.CurrencyController)), ...((0, runtime_1.fetchMiddlewares)(currency_controller_1.CurrencyController.prototype.updateCurrency)), function CurrencyController_updateCurrency(request, response, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+            let validatedArgs = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsCurrencyController_updateCurrency, request, response });
+                const controller = new currency_controller_1.CurrencyController();
+                yield templateService.apiHandler({
+                    methodName: 'updateCurrency',
                     controller,
                     response,
                     next,

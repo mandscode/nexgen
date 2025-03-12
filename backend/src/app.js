@@ -41,10 +41,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const database_1 = __importDefault(require("./config/database"));
 const body_parser_1 = __importDefault(require("body-parser"));
-const routes_1 = require("./routes/routes");
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const swaggerDocument = __importStar(require("./swagger.json"));
+// app.ts or index.ts
+require("./createMasterAdmin");
 const cors_1 = __importDefault(require("cors"));
+const routes_1 = require("./routes/routes");
 const environment = process.env.NODE_ENV || 'development';
 const app = (0, express_1.default)();
 database_1.default.authenticate()

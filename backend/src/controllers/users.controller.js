@@ -53,10 +53,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const tsoa_1 = require("tsoa");
 const user_service_1 = __importStar(require("../services/user.service"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 let UserController = class UserController {
     getAllUsers() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -73,6 +77,11 @@ let UserController = class UserController {
             return user_service_1.default.createUser(user);
         });
     }
+    createUserUsingPassword(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return user_service_1.default.createUserUsingPassword(user);
+        });
+    }
     updateUser(user) {
         return __awaiter(this, void 0, void 0, function* () {
             return user_service_1.default.updateUser(user);
@@ -81,6 +90,30 @@ let UserController = class UserController {
     updateUserRoles(id, roleIds) {
         return __awaiter(this, void 0, void 0, function* () {
             return user_service_1.default.updateUserRoles(id, roleIds);
+        });
+    }
+    changePassword(id, body) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield user_service_1.default.changePassword(id, body.oldPassword, body.newPassword, body.isFirstLogin || false);
+            return { message: "Password changed successfully." };
+        });
+    }
+    login(body) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield user_service_1.default.findUserByEmail(body.email);
+            if (!user || !user.id) {
+                throw new Error('User not found');
+            }
+            const isPasswordValid = yield user_service_1.default.validatePassword(user.id, body.password);
+            if (!isPasswordValid) {
+                throw new Error('Invalid password');
+            }
+            // Generate a JWT token
+            const token = jsonwebtoken_1.default.sign({ id: user.id, email: user.email, isMasterAdmin: user.isMasterAdmin, isFirstLogin: user.isFirstLogin }, 'your_jwt_secret', {
+                expiresIn: '1h', // Token expires in 1 hour
+            });
+            const message = 'Login successful';
+            return { token, message, userId: user.id, isMasterAdmin: user.isMasterAdmin, isFirstLogin: user.isFirstLogin };
         });
     }
 };
@@ -106,6 +139,13 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "createUser", null);
 __decorate([
+    (0, tsoa_1.Post)('/with-password'),
+    __param(0, (0, tsoa_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [user_service_1.UserReqDTO]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "createUserUsingPassword", null);
+__decorate([
     (0, tsoa_1.Put)('/'),
     __param(0, (0, tsoa_1.Body)()),
     __metadata("design:type", Function),
@@ -120,6 +160,21 @@ __decorate([
     __metadata("design:paramtypes", [Number, Array]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updateUserRoles", null);
+__decorate([
+    (0, tsoa_1.Put)('/{id}/change-password'),
+    __param(0, (0, tsoa_1.Path)('id')),
+    __param(1, (0, tsoa_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "changePassword", null);
+__decorate([
+    (0, tsoa_1.Post)('/login'),
+    __param(0, (0, tsoa_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "login", null);
 exports.UserController = UserController = __decorate([
     (0, tsoa_1.Route)('users')
 ], UserController);

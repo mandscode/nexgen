@@ -9,7 +9,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { Card, Col, Form, Row, Tab, Tabs } from 'react-bootstrap';
 import NexGenTable from '../NexGenTable/NexGenTable';
 import { ProjectBasicDetailInterface, Transaction } from '../Utilities/interface/interface';
-import { getAccountOfInvestor, getInvestor, getProject, getProjects, getUser, updateInvestorDocument } from '../../api/apiEndpoints';
+import { getAccountOfInvestor, getCurrencyAll, getInvestor, getProject, getProjects, getUser, updateInvestorDocument } from '../../api/apiEndpoints';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
@@ -224,7 +224,6 @@ const UserDetail = ({  }:UserDetailProps) => {
             currencyData,
           };
         });
-
         // Convert to array format for PieChart
         setData(Object.values(projectsData));
       } catch (err) {
@@ -257,7 +256,7 @@ const UserDetail = ({  }:UserDetailProps) => {
 
   const navigate = useNavigate();  // Get the navigate function from react-router
   
-  const onSubmit = (data: AssignProjectOption) => userDetailStore.assignAccount(data, setUserProjectListShow, projects, setProjects);
+  const onSubmit = (data: AssignProjectOption) => userDetailStore.assignAccount(data, setUserProjectListShow, projects, setProjects, Number(id));
 
   const transactionTitle = 'Transaction History';
 
@@ -300,16 +299,16 @@ const UserDetail = ({  }:UserDetailProps) => {
           setProjects(investor.projects);
   
         if (investor.nomineeDetails) {
-          const parsedDataNominee = investor.nomineeDetails;
+          const parsedDataNominee = JSON.parse(investor.nomineeDetails);
           setNominee([parsedDataNominee]); // Wrap in an array
         }
   
         if (investor.personalDetails) {
-          setPersonalDetails([investor.personalDetails]); // Wrap in an array
+          setPersonalDetails([JSON.parse(investor.personalDetails)]); // Wrap in an array
         }
-  
+
         if (investor?.emergencyContact) {
-          setEmergencyDetails([investor.emergencyContact]); // Wrap in an array
+          setEmergencyDetails([JSON.parse(investor.emergencyContact)]); // Wrap in an array
         }
       } catch (error) {
         console.error("Failed to fetch users and projects:", error);
@@ -343,18 +342,24 @@ const UserDetail = ({  }:UserDetailProps) => {
         
         const formattedTransactions = await Promise.all(
           accountsData.map(async (item:any) => {
+            const allCurr = await getCurrencyAll();
+    
+
+            const currency = allCurr.find((curr: any) => curr.id === item.currency); // Find matching currency
             const transactionsWithProjects = await Promise.all(
               item.transactions.map(async (transaction:any) => {
                 const project = await getProject(Number(transaction.projectId));
                 const projectName = project.name;
+
                 return {
                   id: transaction.id,
-                  accountId: item.currency,
+                  accountId: currency.name,
                   credited: transaction.credited,
                   amount: transaction.amount,
                   createdDate: transaction.transactionDate,
                   userId: user.firstName, // Example if you want to include user data
-                  projectId: projectName
+                  projectId: projectName,
+                  entityName:project.entity.name
                 };
               })
             );
@@ -685,13 +690,13 @@ const UserDetail = ({  }:UserDetailProps) => {
       header: 'Transaction Details',
       columns: [
         {
-          accessorKey: 'id',
-          header: 'ID',
+          accessorKey: 'entityName',
+          header: 'Entity Name',
           cell: info => info.getValue(),
         },
         {
-          accessorKey: 'accountId',
-          header: 'Account ID',
+          accessorKey: 'projectId',
+          header: 'Project Name',
           cell: info => info.getValue(),
         },
         {
@@ -700,8 +705,8 @@ const UserDetail = ({  }:UserDetailProps) => {
           cell: info => info.getValue(),
         },
         {
-          accessorKey: 'projectId',
-          header: 'Project ID',
+          accessorKey: 'accountId',
+          header: 'Currency',
           cell: info => info.getValue(),
         },
         {

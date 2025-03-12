@@ -23,7 +23,7 @@ export class UserDetailStore {
         makeAutoObservable(this);
     }
 
-    async assignAccount (values: AssignProjectOption, setUserProjectListShow: any, projects:any, setProjects:any) {
+    async assignAccount (values: AssignProjectOption, setUserProjectListShow: any, projects:any, setProjects:any, invId:number) {
 
         // Extract project IDs from values.projectId
         const selectedProjectIds = values.projectId.map((project: any) => project.value);
@@ -57,7 +57,7 @@ export class UserDetailStore {
         };
 
         // Call the createUser function
-        await assignProject(formattedValues.investorId, formattedValues.projectId);
+        await assignProject(invId, formattedValues.projectId);
         await setProjects(allProjects)
 
         setUserProjectListShow(true)

@@ -10,7 +10,7 @@ import { Card, Col, Container, Form, Image, Row, Tab, Tabs } from 'react-bootstr
 import NexGenTable from '../NexGenTable/NexGenTable';
 import { ColumnDef } from '@tanstack/react-table';
 import fetchAwsImages from '../Utilities/FetchImagesComponent';
-import { updateProjectSettings } from '../../api/apiEndpoints';
+import { getAccountOfInvestor, getProject, getUser, updateProjectSettings } from '../../api/apiEndpoints';
 import UpdateProject from '../UpdateProject/UpdateProject';
 
 
@@ -22,7 +22,7 @@ export interface ProjectDetailProps {
 const ProjectDetail = ({ }:ProjectDetailProps) => {
   const [projectDetailStore] = useState(() => new ProjectDetailStore());
 
-  const [projectDetail, setProjectDetail] = useState<ProjectDetailInterface>();
+  const [projectDetail, setProjectDetail] = useState<any>();
 
   const [projectBasicDetail, setProjectBasicDetail] = useState<ProjectBasicDetailsInterface>();
   
@@ -52,67 +52,65 @@ const ProjectDetail = ({ }:ProjectDetailProps) => {
   const {id} = useParams();
   
   useEffect(() => {
-    let projectDetailsAPIData:any = projectDetailStore.data;
-    if (projectDetailsAPIData.length > 0 ) {
-      
-      const project = projectDetailsAPIData.find((p:any) => p.id === Number(id));
-      if (project) {
-          // If a matching project is found, return an object with the project and entity name
-          // console.log(project, "projecta")
-            // const investorsList = project.investors.map((investor:any) => {
-          //     let investorProfile = exampleData.Users.find(user => user.investorProfile?.id == investor.investorId)
-              
-          //     // Calculate total investment amount
-          //     const totalInvestedAmount = investor.account.investments.reduce(
-          //       (total, investment) => total + investment.amount,
-          //       0
-          //     );
-
-          //     if(investorProfile) {
-          //       return {
-          //         id: <Link to={`/users/user-detail/${investorProfile.id}`}>{Number(investorProfile.id)}</Link>,
-          //         investorId: Number(investorProfile?.investorProfile?.id),
-          //         firstName: investorProfile.firstName,
-          //         lastName:investorProfile.lastName,
-          //         emailId:investorProfile.email,
-          //         totalInvestedAmount:totalInvestedAmount 
-          //       };
-          //     }
-            // })
-          //   return {
-          //     entityId: ent.id,
-          //     entityName: ent.name,
-          //     project: project,
-          //     investorsList:investorsList
-          //   };
-          // }
-          
-          // // If no matching project is found, return an empty array (so flatMap ignores it)
-          // return []
-
-        // if(projectData[0].project && projectData[0]?.entityName && projectData[0]?.investorsList) {
-
-        //   setProjectDetail(projectData[0]?.project as ProjectDetailInterface)        
-
-        setProjectDetail(project)
-
-        setProjectBasicDetail({
-          entityName: project.entityName,
-          name: project.name,
-          countryName: project.countryName,
-          description: project.description,
-          ownerName: project.ownerName
-        })
-
-        setProjectInvestors([{
-          firstName: "",
-          lastName:"",
-          emailId:"",
-          totalInvestedAmount:0
-        }])
+    const fetchProjectDetails = async () => {
+      try {
+        const project = await getProject(Number(id)); // Fetch project data
+  
+        if (project) {
+          setProjectDetail(project);
+  
+          setProjectBasicDetail({
+            entityName: project.entity?.name || "",
+            name: project.name,
+            countryName: project.countryName,
+            description: project.description,
+            ownerName: project.ownerName,
+          });
+  
+          if (project.investors?.length) {
+            // Fetch user details for each investor
+            const investorDetails = await Promise.all(
+              project.investors.map(async (investor: any) => {
+                const user = await getUser(Number(investor.userId)); // Fetch user details
+  
+                // Fetch investor's account transactions
+                const accounts = await getAccountOfInvestor(Number(investor.id));
+  
+                let totalInvestedAmount = 0;
+  
+                accounts.forEach((account: any) => {
+                  totalInvestedAmount += account.transactions.reduce(
+                    (total: number, transaction: any) => total + transaction.amount,
+                    0
+                  );
+                });
+  
+                return {
+                  firstName: user.firstName || "",
+                  lastName: user.lastName || "",
+                  emailId: user.email || "",
+                  totalInvestedAmount,
+                };
+              })
+            );
+  
+            setProjectInvestors(investorDetails);
+          } else {
+            setProjectInvestors([
+              { firstName: "", lastName: "", emailId: "", totalInvestedAmount: 0 },
+            ]);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch project:", error);
       }
-    }
-  }, [projectDetailStore.data, id])
+    };
+  
+    fetchProjectDetails();
+  }, [id]); // Runs when `id` changes
+  
+  
+  
 
   useEffect(() => {
     let projectDetailsAPIData:any = projectDetailStore.data;
@@ -131,8 +129,8 @@ const ProjectDetail = ({ }:ProjectDetailProps) => {
   }, [images, projectDetailStore.data, id])
 
   useEffect(() => {
-    if (projectDetail?.settings?.status) {
-      setStatus(projectDetail.settings.status === 'active');
+    if (projectDetail?.settings) {
+      setStatus(JSON.parse(projectDetail?.settings)?.status === 'active');
     }
   }, [projectDetail]);
 
@@ -179,7 +177,7 @@ const ProjectDetail = ({ }:ProjectDetailProps) => {
   const onChangeStatus = async (projectId: number) => {
     try {
       if(projectDetail) {
-        const currentStatus = projectDetail.settings?.status || 'inactive';
+        const currentStatus = JSON.parse(projectDetail.settings)?.status || 'inactive';
         const updatedStatus = currentStatus === 'active' ? 'inactive' : 'active';
         
 
@@ -188,12 +186,10 @@ const ProjectDetail = ({ }:ProjectDetailProps) => {
             status: updatedStatus
           }
         }
-      
+        
         await updateProjectSettings(Number(id), data)
         await projectDetailStore.fetchProjects();
       }
-      
-
     }
     catch (error) {
       console.log(error)
@@ -208,16 +204,16 @@ const ProjectDetail = ({ }:ProjectDetailProps) => {
           accessorKey: 'entityName',
           cell: info => info.getValue(),
         },
-        {
-          accessorKey: 'id',
-          header: 'Project Status',
-          cell: info => <Form.Check
-            type="switch"
-            checked={status} // Set the checked state based on the status
-            id={`custom-switch-${info.getValue()}`}
-            onChange={() => onChangeStatus(info.getValue())}
-          />
-        },
+        // {
+        //   accessorKey: 'id',
+        //   header: 'Project Status',
+        //   cell: info => <Form.Check
+        //     type="switch"
+        //     checked={status} // Set the checked state based on the status
+        //     id={`custom-switch-${info.getValue()}`}
+        //     onChange={() => onChangeStatus(info.getValue())}
+        //   />
+        // },
         {
           accessorKey: 'countryName',
           cell: info => info.getValue(),
@@ -262,16 +258,6 @@ const ProjectDetail = ({ }:ProjectDetailProps) => {
     {
       header: 'Entity Details',
       columns: [
-        {
-          accessorKey: 'id',
-          header: 'ID',
-          cell: info => info.getValue(),
-        },
-        {
-          accessorKey: 'investorId',
-          header: 'Investor Profile Id',
-          cell: info => info.getValue(),
-        },
         {
           accessorKey: 'firstName',
           header: 'First Name',

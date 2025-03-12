@@ -3,7 +3,8 @@ import { tokenFailure, tokenRequest, tokenSuccess } from "../../redux/actions/to
 import { createUser } from "../../api/apiEndpoints";
 import { fetchUserById } from "../../redux/actions/userActions";
 import { Link } from "react-router-dom";
-import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
+import LoginMDB from "../layout/LoginMDB";
+// import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 
 const LoginLayoutMobile = () => {
 
@@ -41,17 +42,16 @@ const LoginLayoutMobile = () => {
 
                     <div className="_login-mobile_auth">
                         <a className="_login-mobile_auth_link">
-                            <GoogleOAuthProvider clientId="799373350915-tjcsjie1ph3kgboco6fha7lcg5b0dn6u.apps.googleusercontent.com">
+                            {/* <GoogleOAuthProvider clientId="799373350915-tjcsjie1ph3kgboco6fha7lcg5b0dn6u.apps.googleusercontent.com">
                                 <div className="_login-mobile_auth_google">
-                                    {/* <img src="/assets/media/images/pages/login/login/google_login.png"/> */}
                                     <GoogleLogin
                                         onSuccess={handleLoginSuccess}
                                         onError={handleLoginFailure}
                                     />
                                 </div>
-                            </GoogleOAuthProvider>
+                            </GoogleOAuthProvider> */}
                         </a>
-
+                        <LoginMDB isResponsive={true}/>
                     </div>
 
                     <div className="_login-mobile_discover">

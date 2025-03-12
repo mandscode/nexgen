@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { CartesianGrid, Cell, Line, LineChart, Pie, PieChart, Tooltip, XAxis, YAxis } from 'recharts';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/splide/css'; // Import Splide styles
-import { getProject, getProjects } from '../../api/apiEndpoints';
+import { getCurrencyAll, getProject, getProjects } from '../../api/apiEndpoints';
 import CurrencyDropdown from '../../utils/buttons/CurrencyDropdown';
 import { InvestorDetails } from '../../redux/actions/investorActions';
 import CountryDropdown from '../../utils/buttons/CountryDropdown';
@@ -25,6 +25,7 @@ const Dashboard = () => {
     const [graphProject, setGraphProject] = useState<number | null>(null); // Store the selected project ID
   
     const [selectedCurrency, setSelectCurrency] = useState<any>();
+    const [selectedCurrencyVal, setSelectCurrencyVal] = useState<any>();
     const [countryWiseProjects, setCountryWiseProjects] = useState<any[]>([]);
     
     const [investorData, setInvestorData] = useState<InvestorDetails>();
@@ -40,10 +41,27 @@ const Dashboard = () => {
 
     const [selectedCountry, setSelectCountry] = useState<any>();
 
-    
+    useEffect(() => {
+      const fetchData = async () => {
+        const allCurr = await getCurrencyAll()
+
+        const assignedAcc = investor.accounts.map((acc: any) => {
+          const currency = allCurr.find((curr: any) => curr.id === acc.currency); // Find matching currency
+          return {
+            currency: currency ? currency.name : "Unknown", // Use currency name if found
+            id: acc.id,
+            currencySymbol:currency.symbol
+          };
+        });
+        setSelectCurrencyVal(assignedAcc)
+      }
+      fetchData()
+    }, [])
+
     useEffect(() => {
       if(investor?.projects && selectedCountry) {
         const filteredProjects = investor?.projects?.filter((p:any) => p.countryName === selectedCountry)
+
         setCountryWiseProjects(filteredProjects);
       }
     }, [investor?.projects, selectedCountry])
@@ -88,7 +106,7 @@ const Dashboard = () => {
           const formattedTransactions = await Promise.all(
             accountsData.map(async (accounts: any) => {
               
-              if (accounts.currency === selectedCurrency.currencyName) {
+              if (accounts.currency === selectedCurrency.id) {
                 const validTransactions = await Promise.all(
                   accounts.transactions.map(async (transaction: any) => {
                     const project = await getProject(Number(transaction.projectId));
@@ -319,7 +337,7 @@ const Dashboard = () => {
                       <div className='_dashboard_nav_bottom_left'>
                         <p className="_dashboard_nav_currency-label">Currency</p>
                         <div className="_dashboard_nav_currency-select">
-                          <CurrencyDropdown currency={investor?.accounts} setSelectCurrency={setSelectCurrency} />
+                          <CurrencyDropdown currency={selectedCurrencyVal} setSelectCurrency={setSelectCurrency} />
                         </div>
                       </div>
                       <div className='_dashboard_nav_bottom_right'>
@@ -507,7 +525,7 @@ const Dashboard = () => {
                                       </SplideSlide>
                                                                                             ))
                                                   ) : (
-                                                    <div className='_dashboard_project_details_card_info_value'>{selectedCurrency?.currencySymbol}0</div>
+                                                    <div className='_dashboard_project_details_card_info_value'></div>
                                                   )
                                                 ) : (
                                                   <div className='_dashboard_project_details_card_info_value'>{selectedCurrency?.currencySymbol}0</div>

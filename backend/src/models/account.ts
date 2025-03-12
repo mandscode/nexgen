@@ -19,10 +19,10 @@ export default class Account extends Model<InferAttributes<Account>, InferCreati
     id!: CreationOptional<number>;  // Auto-incrementing primary key
 
     @Column({
-        type: DataType.ENUM('USD', 'EUR', 'GBP', 'JPY', 'INR'),
+        type: DataType.INTEGER,
         allowNull: false,
     })
-    currency!: string;
+    currency!: number;
 
     @ForeignKey(() => Investor)
     @Column({

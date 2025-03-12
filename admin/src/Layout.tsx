@@ -1,14 +1,34 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Dropdown, DropdownMenu } from "react-bootstrap";
 import { User } from "react-feather";
 import { Navigate, Outlet } from "react-router-dom";
 import { AppContext } from "./AppContext";
 import Sidenav from "./components/Sidenav/Sidenav";
+import OldPasswordChangeModal from "./components/Utilities/OldPasswordChangeModal";
 
-const Layout = ({isAuthenticated}: {isAuthenticated: boolean}) =>  {
+const Layout = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
+  const appContext = useContext(AppContext);
 
-  const {setAuthenticated} = useContext(AppContext)
+  const [userId, setUserId] = useState("");
 
+  useEffect(() => {
+
+    setUserId(userId)
+  }, [])
+
+    const [showModalForOldPassword, setShowModalForOldPassword] = useState(false);
+
+  if (!appContext || appContext.isLoading) {
+      return <p>Loading...</p>; // Handle case where context is not ready or still loading
+  }
+
+  const { setAuthenticated } = appContext;
+
+  const logout = () => {
+    localStorage.clear();
+    setAuthenticated(false);
+  }
+ 
 return <>
 <div data-bs-theme="">
   <nav className="navbar navbar-vertical fixed-start navbar-expand-md" id="sidebar">
@@ -45,9 +65,9 @@ return <>
         </Dropdown.Toggle>
           <DropdownMenu>
             <Dropdown.Item eventKey="1">Profile</Dropdown.Item>
-            <Dropdown.Item eventKey="2">Settings</Dropdown.Item>
+            <Dropdown.Item onClick={() => setShowModalForOldPassword(true)} eventKey="2">Change Password</Dropdown.Item>
             <Dropdown.Divider />
-            <Dropdown.Item eventKey="4" onClick={() => setAuthenticated(false)}>Logout</Dropdown.Item>
+            <Dropdown.Item eventKey="4" onClick={() => logout()}>Logout</Dropdown.Item>
           </DropdownMenu>
         </Dropdown>
       </div>
@@ -57,6 +77,7 @@ return <>
   <div className="container-fluid">
     {isAuthenticated ?  <Outlet/> : <Navigate to="/login"></Navigate>}
   </div>
+  <OldPasswordChangeModal show={showModalForOldPassword} onHide={() => setShowModalForOldPassword(false)} userId={userId}/>
 </div>
 </>
 };

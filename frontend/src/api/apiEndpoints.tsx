@@ -12,6 +12,16 @@ export const createUser = async ( token: any) => {
   }
 };
 
+export const getCurrencyAll = async () => {
+  try {
+    const response = await api.get('/currencies');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    throw error;
+  }
+};
+
 export const getUser = async (id:number) => {
   try {
     const response = await api.get(`/users/${id}`);

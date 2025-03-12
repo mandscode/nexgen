@@ -3,6 +3,8 @@ import Role from './role';
 import UserRole from './user-role';
 import { BelongsToManyAddAssociationMixin, BelongsToManyGetAssociationsMixin, BelongsToManySetAssociationsMixin, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 import { Exclude } from 'class-transformer';
+import Entity from './entity';
+import UserEntities from './user-entities';
 
 @Table({
     timestamps: true,
@@ -37,6 +39,19 @@ export default class User extends Model<InferAttributes<User>, InferCreationAttr
     email!: string;
 
     @Column({
+        type: DataType.STRING,
+        allowNull: true
+    })
+    password?: string;
+
+    @Column({
+        type: DataType.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+    })
+    isMasterAdmin!: boolean;
+
+    @Column({
         type: DataType.JSON,
         allowNull: true
     })
@@ -61,6 +76,13 @@ export default class User extends Model<InferAttributes<User>, InferCreationAttr
     })
     picture?: string;
 
+    @Column({
+        type: DataType.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,  // Default to true for new users
+    })
+    isFirstLogin!: boolean;
+
     addRoles!: BelongsToManyAddAssociationMixin<Role[], number>;
     setRoles!: BelongsToManySetAssociationsMixin<Role[], number>;
     getRoles!: BelongsToManyGetAssociationsMixin<Role[]>;
@@ -69,4 +91,12 @@ export default class User extends Model<InferAttributes<User>, InferCreationAttr
     @BelongsToMany(() => Role, () => UserRole)
     roles?: Role[]
 
+
+    addEntities!: BelongsToManyAddAssociationMixin<Entity[], number>;
+    setEntities!: BelongsToManySetAssociationsMixin<Entity[], number>;
+    getEntities!: BelongsToManyGetAssociationsMixin<Role[]>;
+
+    @Exclude()
+    @BelongsToMany(() => Entity, () => UserEntities)
+    entities?: Entity[];
 }

@@ -47,6 +47,13 @@ const AddNominee = ({nomineeList, setNominee }:AddNomineeProps) => {
     { name: 'relation', type: 'text', placeholder: 'Relation' },
   ];
 
+     // Function to restrict input to numbers only
+     const handleNumericInput = (event: React.KeyboardEvent<HTMLInputElement>) => {
+      const allowedKeys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'];
+      if (!allowedKeys.includes(event.key)) {
+        event.preventDefault();
+      }
+    };
 
   function getErrorMessage(name: string): string {
     const fieldError = errors[name as keyof NomineeDetails];
@@ -71,6 +78,7 @@ const AddNominee = ({nomineeList, setNominee }:AddNomineeProps) => {
                       type={field.type}
                       className={`form-control ${errors[field.name as keyof NomineeDetails] ? 'is-invalid' : ''}`}
                       placeholder={field.placeholder}
+                      onKeyDown={field.type === 'number' ? handleNumericInput : undefined} // Restrict input for mobile field
                       isInvalid={!!errors[field.name as keyof NomineeDetails]}
                       {...register(field.name as keyof NomineeDetails)}
                     />

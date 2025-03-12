@@ -38,6 +38,22 @@ class RoleService {
         }
         return null;
     }
+
+    async getRoleByName(name: string): Promise<RoleDTO | null> {
+        const role = await Role.findOne({ where: { name } });
+        return role ? toRoleDTO(role) : null;
+    }
+
+    async ensureRolesExist() {
+        const roles = ["Admin", "Viewer", "Investor", "Master Admin"];
+        for (const roleName of roles) {
+            const existingRole = await this.getRoleByName(roleName);
+            if (!existingRole) {
+                await this.createRole({ name: roleName });
+                console.log(`Role '${roleName}' created.`);
+            }
+        }
+    }
 }
 
 const roleService = new RoleService();

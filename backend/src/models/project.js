@@ -16,6 +16,9 @@ const sequelize_typescript_1 = require("sequelize-typescript");
 const entity_1 = __importDefault(require("./entity"));
 const project_resource_1 = __importDefault(require("./project-resource"));
 const resource_1 = __importDefault(require("./resource"));
+const class_transformer_1 = require("class-transformer");
+const project_investor_1 = __importDefault(require("./project-investor"));
+const investor_1 = __importDefault(require("./investor"));
 let Project = class Project extends sequelize_typescript_1.Model {
 };
 __decorate([
@@ -124,6 +127,11 @@ __decorate([
     sequelize_typescript_1.Column,
     __metadata("design:type", Number)
 ], Project.prototype, "entityID", void 0);
+__decorate([
+    (0, class_transformer_1.Exclude)(),
+    (0, sequelize_typescript_1.BelongsToMany)(() => investor_1.default, () => project_investor_1.default),
+    __metadata("design:type", Array)
+], Project.prototype, "investors", void 0);
 __decorate([
     (0, sequelize_typescript_1.BelongsTo)(() => entity_1.default),
     __metadata("design:type", entity_1.default)

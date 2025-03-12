@@ -47,6 +47,8 @@ class AuthService {
                 picture: payload.picture,
                 status:'active',
                 personalDetails: payload.locale ? { locale: payload.locale } : undefined,
+                isMasterAdmin:false,
+                isFirstLogin:true
             });
 
             const roles = await Role.findAll({ where: { name: ['Viewer'] } }); // Can include more roles

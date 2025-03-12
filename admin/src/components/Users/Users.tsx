@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Card } from 'react-bootstrap';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import NexGenTable from '../NexGenTable/NexGenTable';
@@ -7,6 +7,7 @@ import "./Users.scss";
 import { User, UsersStore } from "./UsersStore";
 import { ArrowLeft } from 'react-feather';
 import UseSearch from '../Utilities/Forms/useSearch';
+import OldPasswordChangeModal from '../Utilities/OldPasswordChangeModal';
 
 
 export interface UsersProps {
@@ -18,6 +19,11 @@ const Users = ({ }: UsersProps) => {
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const navigate = useNavigate();
   const { pathname } = useLocation();
+
+  const [userId, setUserId] = useState("");
+  
+  const [showModalForOldPassword, setShowModalForOldPassword] = useState(false);
+  
 
   const title = pathname.includes('add')
   ? 'Add Users'
@@ -73,7 +79,9 @@ const Users = ({ }: UsersProps) => {
             Users
           </Card.Header>
           <Card.Body>
-            <NexGenTable columns={usersStore.defaultColumns} data={filteredUsers} ></NexGenTable>
+            <NexGenTable 
+              columns={usersStore.getColumns(setUserId, setShowModalForOldPassword)} 
+              data={filteredUsers} ></NexGenTable>
           </Card.Body>
         </Card>
         :
@@ -81,6 +89,7 @@ const Users = ({ }: UsersProps) => {
       }
         <Outlet context={usersStore}/>
       </div>
+      <OldPasswordChangeModal show={showModalForOldPassword} onHide={() => setShowModalForOldPassword(false)} userId={userId} isFirstLogin={true}/>
     </>
   );
 };

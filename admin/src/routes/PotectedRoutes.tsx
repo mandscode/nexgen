@@ -1,9 +1,9 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import Home from "../Home";
 import Layout from "../Layout";
 import { AppStore } from "../AppStore";
 import {AppContext} from "../AppContext";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import Users from "../components/Users/Users";
 import AddUser from "../components/AddUser/AddUser";
 import Project from "../components/Project/Project";
@@ -25,44 +25,76 @@ import UpdateProject from "../components/UpdateProject/UpdateProject";
 import Academy from "../components/Academy/Academy";
 import AddAcademy from "../components/AddAcademy/AddAcademy";
 
-const ProtectedRoutes = () => 
-{
 
-const { isAuthenticated } = useContext<AppStore>(AppContext);
+const ProtectedRoute = () => {
+    const { isAuthenticated, isLoading } = useContext<AppStore>(AppContext);
 
-return <Routes>
-    <Route element={<Layout isAuthenticated={!!isAuthenticated}/>}>
-        <Route path="/" element={<Home />} />
-        <Route path="/dashboard" element={<Home />} />
-        <Route path="/roles" element={<Roles />}>
-            <Route path="add" element={<AddRole />} />
-        </Route>
-        <Route path="/transactions" element={<TransactionHistory />}>
-            <Route path="add" element={<AddTransactions transactionList={undefined} />} />
-        </Route>
-        <Route path="/projects" element={<Project />}>
-            <Route path="add" element={<AddProject />} />
-            <Route path="project/:id" element={<ProjectDetail />} />
-        </Route>
-        <Route path="/users" element={<Users />}>
-            <Route path="add" element={<AddUser />} />
-        </Route>
-        <Route path="/entities" element={<Entity />}>
-            <Route path="add" element={<AddEntity />} />
-            <Route path="entity/:id" element={<EntityDetail/>}/>
-        </Route>
-        <Route path="/investors" element={<Investor />}>
-            <Route path="add" element={<AssignProject />} />
-            <Route path="assign/account/:id" element={<AssignAccount />} />
-            <Route path="accounts" element={<Accounts setShowAccounts={undefined} showAccounts={undefined} />} />
-            <Route path="investor-detail/:id" element={<UserDetail/>}/>
-        </Route>
-        <Route path="/academy" element={<Academy/>}>
-            <Route path="add" element={<AddAcademy/>}/>
-        </Route>
-    </Route>
-</Routes>
+    if (isLoading) {
+        return <div>Loading..zzzzzzzzzzzzzzzz.</div>; // Or any other loading indicator
+    }
 
-}
+    return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
+};
+
+
+const ProtectedRoutes = () => {
+    const { isAuthenticated, setAuthenticated, isLoading } = useContext<AppStore>(AppContext);
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            setAuthenticated(true); // Restore authentication
+        }
+    }, [setAuthenticated]);
+
+    if (isLoading) {
+        return <div>Loading...</div>; // Or any other loading indicator
+    }
+    
+    return (
+      <Routes>
+        <Route element={<Layout isAuthenticated={!!isAuthenticated} />}>
+          {/* Protected Routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/dashboard" element={<Home />} />
+  
+            <Route path="/roles" element={<Roles />}>
+              <Route path="add" element={<AddRole />} />
+            </Route>
+  
+            <Route path="/transactions" element={<TransactionHistory />}>
+              <Route path="add" element={<AddTransactions transactionList={undefined} />} />
+            </Route>
+  
+            <Route path="/projects" element={<Project />}>
+              <Route path="add" element={<AddProject />} />
+              <Route path="project/:id" element={<ProjectDetail />} />
+            </Route>
+  
+            <Route path="/users" element={<Users />}>
+              <Route path="add" element={<AddUser />} />
+            </Route>
+  
+            <Route path="/entities" element={<Entity />}>
+              <Route path="add" element={<AddEntity />} />
+              <Route path="entity/:id" element={<EntityDetail />} />
+            </Route>
+  
+            <Route path="/investors" element={<Investor />}>
+              <Route path="add" element={<AssignProject />} />
+              <Route path="assign/account/:id" element={<AssignAccount />} />
+              <Route path="accounts" element={<Accounts setShowAccounts={undefined} showAccounts={undefined} />} />
+              <Route path="investor-detail/:id" element={<UserDetail />} />
+            </Route>
+  
+            <Route path="/academy" element={<Academy />}>
+              <Route path="add" element={<AddAcademy />} />
+            </Route>
+          </Route>
+        </Route>
+      </Routes>
+    );
+  };
 
 export default ProtectedRoutes;

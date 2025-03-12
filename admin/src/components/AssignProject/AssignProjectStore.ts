@@ -2,7 +2,7 @@ import { makeAutoObservable } from "mobx"
 import { Investor } from "../Utilities/interface/interface";
 import { InvestorStore } from "../Investor/InvestorStore";
 import { NavigateFunction } from "react-router-dom";
-import { createInvestors, getRoles, getUser, updateUserRoles } from "../../api/apiEndpoints";
+import { assignProject, createInvestors, getRoles, getUser, updateUserRoles } from "../../api/apiEndpoints";
 
 export class AssignProjectStore {
     
@@ -12,19 +12,21 @@ export class AssignProjectStore {
 
     async assignProject(values: Investor, investorStore: InvestorStore, navigate: NavigateFunction) {
         // usersStore.addUser({...values, roles: values.roles.split(",").map((role: string) => role.trim())});
+
         try {
             // Prepare roles as an array
+
             let formattedValues = {
                 ...values,
                 projectIds:[values.projectIds]
             };
-            
             const roles = await getRoles();
             const investorRole = roles.find((role: any) => role.name.includes("nve"));
 
             if (investorRole) {
                 // Call the createUser function
                 const user = await getUser(Number(formattedValues?.userId));
+                // await assignProject(formattedValues?.projectIds);
                 
                 let formattedValue = {
                     projectIds:[values.projectIds],

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { updateInvestorDocument } from '../api/apiEndpoints';
 
 const MarkAllAsVerified:React.FC <any> = ({id, docs}) => {

@@ -6,6 +6,8 @@ import { toProjectDTO, toProjectsDTO } from './project.mapper';
 import { EntityDTO } from './entity.service';
 import { ResourceDTO } from './resource.service';
 import Resource from '../models/resource';
+import Investor from '../models/investor';
+import { InvestorRespDTO } from './investor.service';
 
 export class ProjectReqDTO {
     id?: number;
@@ -42,6 +44,7 @@ export class ProjectRespDTO {
     settings?: { [key: string]: any };
     entity!: EntityDTO;
     resources?: ResourceDTO[];
+    investors?: InvestorRespDTO[];
 }
 
 class ProjectService {
@@ -75,7 +78,7 @@ class ProjectService {
     }
 
     async getProjectById(id: number): Promise<ProjectRespDTO | null> {
-        return Project.findByPk(id, { include: [Entity, Resource] }).then(project => project ? toProjectDTO(project) : null);
+        return Project.findByPk(id, { include: [Entity, Resource, Investor] }).then(project => project ? toProjectDTO(project) : null);
     }
 
     async updateProject(

@@ -6,10 +6,15 @@ import { toRolesDTO } from './role.mapper';
 export function toUserDTO(user: User): UserRespDTO {
 
     const roles = user.dataValues.roles;
+    const entities = user.dataValues.entities;
     delete user.dataValues.roles;
+    delete user.dataValues.entities;
     const userDto = plainToInstance(UserRespDTO, user.dataValues);
     if (roles) {
         userDto.roles = toRolesDTO(roles);
+    }
+    if (entities) {
+        userDto.entities = toRolesDTO(entities);
     }
     userDto.status = user.status; // Map status
     return userDto;

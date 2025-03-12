@@ -1,5 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx"
-import { getEntities, getProjects } from "../../api/apiEndpoints";
+import { getEntities, getProject, getProjects } from "../../api/apiEndpoints";
 import { ProjectDetailInterface } from "../Utilities/interface/interface";
 
 export class ProjectDetailStore {

@@ -70,8 +70,6 @@ let ProjectController = class ProjectController {
     }
     createProject(project) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log('In createProject handler');
-            console.log('Received project data:', project);
             return project_service_1.default.createProject(project);
         });
     }

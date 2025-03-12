@@ -18,6 +18,7 @@ const entity_1 = __importDefault(require("../models/entity"));
 const project_1 = __importDefault(require("../models/project"));
 const project_mapper_1 = require("./project.mapper");
 const resource_1 = __importDefault(require("../models/resource"));
+const investor_1 = __importDefault(require("../models/investor"));
 class ProjectReqDTO {
 }
 exports.ProjectReqDTO = ProjectReqDTO;
@@ -49,7 +50,7 @@ class ProjectService {
     }
     getProjectById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return project_1.default.findByPk(id, { include: [entity_1.default, resource_1.default] }).then(project => project ? (0, project_mapper_1.toProjectDTO)(project) : null);
+            return project_1.default.findByPk(id, { include: [entity_1.default, resource_1.default, investor_1.default] }).then(project => project ? (0, project_mapper_1.toProjectDTO)(project) : null);
         });
     }
     updateProject(id, updateData) {
