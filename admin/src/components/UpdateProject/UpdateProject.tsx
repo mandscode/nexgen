@@ -44,7 +44,7 @@ const UpdateProject = ({ className="" }:UpdateProjectProps) => {
       placeholder: 'Image Type', 
       options: [
         { name: 'Default', id: 1 }, // United States Dollar
-        { name: 'Others', id: 2 }, // Euro
+        // { name: 'Others', id: 2 }, // Euro
       ] 
     },
   ];

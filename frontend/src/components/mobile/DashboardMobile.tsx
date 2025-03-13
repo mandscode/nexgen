@@ -40,19 +40,21 @@ const DashboardMobile = () => {
         useEffect(() => {
           const fetchData = async () => {
             const allCurr = await getCurrencyAll()
-    
-            const assignedAcc = investor.accounts.map((acc: any) => {
-              const currency = allCurr.find((curr: any) => curr.id === acc.currency); // Find matching currency
-              return {
-                currency: currency ? currency.name : "Unknown", // Use currency name if found
-                id: acc.id,
-                currencySymbol:currency.symbol
-              };
-            });
-            setSelectCurrencyVal(assignedAcc)
-          }
+            if(investor) {
+
+              const assignedAcc = investor.accounts.map((acc: any) => {
+                const currency = allCurr.find((curr: any) => curr.id === acc.currency); // Find matching currency
+                return {
+                  currency: currency ? currency.name : "Unknown", // Use currency name if found
+                  id: acc.id,
+                  currencySymbol:currency.symbol
+                };
+              });
+              setSelectCurrencyVal(assignedAcc)
+            }
+            }
           fetchData()
-        }, [])
+        }, [investor])
     
     useEffect(() => {
       const fetchTransactions = async () => {

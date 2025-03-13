@@ -42,8 +42,8 @@ const Profile = () => {
           </div>
         </div>
         );
-      }
-
+    }
+    
     if (error || user.length == 0) {
         return (
             <div className="error-container">
@@ -51,11 +51,14 @@ const Profile = () => {
             </div>
         );
     }
-
+    
     const personalDetails = investor?.personalDetails ? JSON.parse(investor.personalDetails) : null;
     const nomineeDetails = investor?.nomineeDetails ? JSON.parse(investor.nomineeDetails) : null;
     const emergencyContact = investor?.emergencyContact ? JSON.parse(investor.emergencyContact) : null
-
+    
+    // const parsedDocs = typeof docs === 'string' ? JSON.parse(docs) : docs;
+    // console.log(parsedDocs, "✅ Properly parsed docs");
+    
     return (
         <>
             <section className="_user-profile">
@@ -126,12 +129,11 @@ const Profile = () => {
     </div>
 </div>
 
-
 <div className="_user-profile_info_section">
     <h6 className="_user-profile_info_section_title _title_h2">Your documents</h6>
     <div className="_user-profile_info_section_details _user-profile_info_section_details_docs">
-        {docs &&
-            docs.map((doc: any, index: number) => (
+        {typeof docs == 'string' && docs && JSON.parse(docs) !== undefined &&
+            JSON.parse(docs).map((doc: any, index: number) => (
                 <div key={index} className="_user-profile_info_section_detail">
                     <div style={{ position: "relative", display: "inline-block" }} className="_user-profile_info_section_label">
                         {/* File Icon */}
@@ -170,23 +172,24 @@ const Profile = () => {
 
                     {/* Open in New Tab */}
                     <a href={doc.docUrl} target="_blank" rel="noopener noreferrer" className="_user-profile_info_section_detail_link">
-                        Open
+                        
                     </a>
 
-                    {/* Download Document */}
+                    {/* Download Document
                     <a href={doc.docUrl} download className="_user-profile_info_section_detail_link">
                         Download
-                    </a>
+                    </a> */}
 
                     {/* View in Google Docs (for PDFs, DOCs, etc.) */}
-                    {doc.docUrl.endsWith(".pdf") || doc.docUrl.endsWith(".docx") || doc.docUrl.endsWith(".pptx") ? (
+                    {/* {doc.docUrl.endsWith(".pdf") || doc.docUrl.endsWith(".docx") || doc.docUrl.endsWith(".pptx") ? (
                         <a href={`https://docs.google.com/gview?url=${doc.docUrl}&embedded=true`} target="_blank" rel="noopener noreferrer" className="_user-profile_info_section_detail_link">
                             View in Google Docs
                         </a>
-                    ) : null}
+                    ) : null} */}
                 </div>
             ))}
     </div>
+
     <MarkAllAsVerified id={Number(investor?.id)} docs={docs} />
 </div>
 

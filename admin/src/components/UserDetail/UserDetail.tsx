@@ -177,7 +177,6 @@ const UserDetail = ({  }:UserDetailProps) => {
       try {
         const investorAccounts = await getAccountOfInvestor(Number(id)); // Fetch the investor data
 
-        // const investor = investorDetails;
 
         // Step 1: Group transactions by project
         const projectsData = projects.map((project) => {
@@ -232,7 +231,6 @@ const UserDetail = ({  }:UserDetailProps) => {
         setLoading(false);
       }
     };
-
     fetchInvestments();
   }, [projects]);
 
@@ -491,29 +489,6 @@ const UserDetail = ({  }:UserDetailProps) => {
     },
   ];
 
-  // // Columns for an admin user (you can add admin-specific data here)
-  // const adminPersonalDetailColumns: ColumnDef<UserData>[] = [
-  //   {
-  //     header: 'Admin Details',
-  //     columns: [
-  //       {
-  //         accessorKey: 'firstName',
-  //         header: 'First Name',
-  //         cell: info => info.getValue(),
-  //       },
-  //       {
-  //         accessorKey: 'lastName',
-  //         header: 'Last Name',
-  //         cell: info => info.getValue(),
-  //       },
-  //       {
-  //         accessorKey: 'email',
-  //         header: 'Email',
-  //         cell: info => info.getValue(),
-  //       },
-  //     ],
-  //   },
-  // ];
 
   const investorNomineeDetailColumns: ColumnDef<NomineeDetails>[] = [
     {
@@ -538,31 +513,6 @@ const UserDetail = ({  }:UserDetailProps) => {
       ],
     },
   ];
-
-  // const investorBasicDetailColumns: ColumnDef<BasicDetails>[] = [
-  //   {
-  //     header: 'All Investors',
-  //     columns: [
-  //       {
-  //         accessorKey: 'firstName',
-  //         cell: info => info.getValue(),
-  //       },
-  //       {
-  //         accessorKey: 'lastName',
-  //         cell: info => info.getValue(),
-  //       },
-  //       {
-  //         accessorKey: 'email',
-  //         cell: info => info.getValue(),
-  //       },
-  //       {
-  //         accessorKey: 'accounts',
-  //         accessorFn: (row) => row.accounts.map(accs => accs.accountName).join(","), 
-  //         cell: info => info.getValue(),
-  //       },
-  //     ],
-  //   },
-  // ];
 
   const changeDocStatus = async (e:any, doc: InvestorDocumentsForm) => {
     const newStatus = e.target.checked; // New status from the checkbox
@@ -629,45 +579,6 @@ const UserDetail = ({  }:UserDetailProps) => {
     setEmergencyList(!emergencyList);
   };
 
-  // const investorTransactionDetailsColumns: ColumnDef<Transaction>[] = [
-  //   {
-  //     header: 'All Transactios',
-  //     columns: [
-  //       {
-  //         accessorKey: 'id',
-  //         cell: info => info.getValue(),
-  //       },
-  //       {
-  //         accessorKey: 'accountId',
-  //         cell: info => info.getValue(),
-  //       },
-  //       {
-  //         accessorKey: 'investmentId',
-  //         cell: info => info.getValue(),
-  //       },
-  //       {
-  //         accessorKey: 'userId',
-  //         cell: info => info.getValue(),
-  //       },
-  //       {
-  //         accessorKey: 'projectId',
-  //         cell: info => info.getValue(),
-  //       },
-  //       {
-  //         accessorKey: 'credited',
-  //         cell: info => info.getValue(),
-  //       },
-  //       {
-  //         accessorKey: 'amount',
-  //         cell: info => info.getValue(),
-  //       },
-  //       {
-  //         accessorKey: 'createdDate',
-  //         cell: info => info.getValue(),
-  //       }
-  //     ],
-  //   },
-  // ];
 
   const projectsDetailsColumns: ColumnDef<ProjectBasicDetailInterface>[] = [
     {
@@ -1158,7 +1069,7 @@ const UserDetail = ({  }:UserDetailProps) => {
               <Card>
                 <Card.Header>Docs Details of {userDetails?.firstName} {userDetails?.lastName}</Card.Header>
                 <Card.Body>
-                    <NexGenTable columns={investorDocsColumns} data={investorDetails?.documents || []} />
+                    <NexGenTable columns={investorDocsColumns} data={ typeof investorDetails?.documents === "string" && JSON.parse(investorDetails?.documents) || []} />
                 </Card.Body>
               </Card>
               :

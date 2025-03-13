@@ -3,23 +3,39 @@ import { updateInvestorDocument } from '../api/apiEndpoints';
 
 const MarkAllAsVerified:React.FC <any> = ({id, docs}) => {
   const [isChecked, setIsChecked] = useState(false);
-
+  const [localDocs, setLocalDocs] = useState<Document[]>([]);
   useEffect(() => {
     // Assuming you fetch documents data from an API or have it already available
-    const allDocsVerified = docs?.every((doc:any) => doc.status); // Check if all docs are verified
+    const allDocsVerified = typeof docs == 'string' && docs && JSON.parse(docs)?.every((doc:any) => doc.status); // Check if all docs are verified
     setIsChecked(allDocsVerified);
+  }, [docs]);
+
+  useEffect(() => {
+    const parsedDocs = typeof docs === 'string' ? JSON.parse(docs) : docs;
+    setLocalDocs(parsedDocs);
   }, [docs]);
 
   const handleCheckboxChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const checked = event.target.checked;
-
     try {
-      // Assuming `documents` is an array of documents that needs to be updated
-      for (const doc of docs) {
-        // Assuming that the document object has `id`, and `status`
-        await updateInvestorDocument(checked, id, doc.id);
-      }
-      alert("All documents updated successfully!");
+
+  // Update the status of each document in the local state
+  const updatedDocs = localDocs.map((doc:any) => ({
+    ...doc,
+    status: checked, // Update the status based on the checkbox
+  }));
+
+  // Update the local state
+  setLocalDocs(updatedDocs);
+
+
+  // Save the updated status to the backend
+  for (const doc of updatedDocs) {
+    console.log(doc)
+    await updateInvestorDocument(checked, id, doc.id);
+  }
+
+  alert("All documents updated successfully!");
     } catch (error) {
       console.error('Error verifying documents:', error);
       alert("Error occurred while updating documents. Please try again.");

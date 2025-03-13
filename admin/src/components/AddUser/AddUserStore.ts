@@ -41,11 +41,11 @@ export class AddUserStore {
             // Call the createUser function
             let res = await createUser(endpoint, data);
 
-            // await sendEmail(
-            //     values.email,
-            //     "Welcome to Our Platform!",
-            //     `Hi ${values.firstName},\n\nWelcome to our platform! Your account has been successfully created.\n\nEmail: ${values.email}\nPassword: ${values.password}\n\nThank you,\nThe Team`
-            // );
+            await sendEmail(
+                values.email,
+                "Welcome to Our Platform!",
+                `Hi ${values.firstName},\n\nWelcome to our platform! Your account has been successfully created.\n\nEmail: ${values.email}\nPassword: ${values.password}\n\nThank you,\nThe Team`
+            );
               
 
             // Add the new user to the local store

@@ -131,17 +131,27 @@ class InvestorService {
             throw new Error('Investor not found');
         }
 
-        const documentIndex = investor.documents?.findIndex((doc) => doc.id === documentId);
-        if (documentIndex === undefined || documentIndex < 0) {
-            throw new Error('Document not found');
-        }
+        let documentsArray = typeof investor.documents === 'string' 
+        ? JSON.parse(investor.documents) 
+        : investor.documents;
 
-        // Update the document
-        investor.documents![documentIndex] = {
-            ...investor.documents![documentIndex],
-            ...updates,
-        };
+          if (!Array.isArray(documentsArray)) {
+                throw new Error('Documents is not an array');
+            }
 
+            const documentIndex = documentsArray?.findIndex((doc: any) => doc.id === documentId);
+
+            if (documentIndex === undefined || documentIndex < 0) {
+                throw new Error('Document not found');
+            }
+            
+            // Update the document
+            documentsArray[documentIndex] = {
+                ...documentsArray[documentIndex],
+                ...updates
+            };
+            
+            investor.documents = documentsArray; // Ensure correct format before saving
         // Explicitly mark the 'documents' field as changed
         investor.changed('documents', true);
 

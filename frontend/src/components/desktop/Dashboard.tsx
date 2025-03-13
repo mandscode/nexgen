@@ -44,7 +44,7 @@ const Dashboard = () => {
     useEffect(() => {
       const fetchData = async () => {
         const allCurr = await getCurrencyAll()
-
+        if(investor) {
         const assignedAcc = investor.accounts.map((acc: any) => {
           const currency = allCurr.find((curr: any) => curr.id === acc.currency); // Find matching currency
           return {
@@ -55,8 +55,9 @@ const Dashboard = () => {
         });
         setSelectCurrencyVal(assignedAcc)
       }
+    }
       fetchData()
-    }, [])
+    }, [investor])
 
     useEffect(() => {
       if(investor?.projects && selectedCountry) {

@@ -115,17 +115,23 @@ class InvestorService {
     }
     updateDocumentById(investorId, documentId, updates) {
         return __awaiter(this, void 0, void 0, function* () {
-            var _a;
             const investor = yield investor_1.default.findByPk(investorId);
             if (!investor) {
                 throw new Error('Investor not found');
             }
-            const documentIndex = (_a = investor.documents) === null || _a === void 0 ? void 0 : _a.findIndex((doc) => doc.id === documentId);
+            let documentsArray = typeof investor.documents === 'string'
+                ? JSON.parse(investor.documents)
+                : investor.documents;
+            if (!Array.isArray(documentsArray)) {
+                throw new Error('Documents is not an array');
+            }
+            const documentIndex = documentsArray === null || documentsArray === void 0 ? void 0 : documentsArray.findIndex((doc) => doc.id === documentId);
             if (documentIndex === undefined || documentIndex < 0) {
                 throw new Error('Document not found');
             }
             // Update the document
-            investor.documents[documentIndex] = Object.assign(Object.assign({}, investor.documents[documentIndex]), updates);
+            documentsArray[documentIndex] = Object.assign(Object.assign({}, documentsArray[documentIndex]), updates);
+            investor.documents = documentsArray; // Ensure correct format before saving
             // Explicitly mark the 'documents' field as changed
             investor.changed('documents', true);
             // Save the changes

@@ -140,7 +140,7 @@ const models = {
         "dataType": "refObject",
         "properties": {
             "id": { "dataType": "double" },
-            "currency": { "dataType": "string", "required": true },
+            "currency": { "dataType": "double", "required": true },
             "investorId": { "dataType": "double", "required": true },
             "transactions": { "dataType": "array", "array": { "dataType": "refObject", "ref": "TransactionDTO" } },
             "investments": { "dataType": "array", "array": { "dataType": "refObject", "ref": "InvestmentDTO" } },
@@ -310,7 +310,7 @@ const models = {
         "dataType": "refObject",
         "properties": {
             "id": { "dataType": "double" },
-            "currency": { "dataType": "string", "required": true },
+            "currency": { "dataType": "double", "required": true },
             "investorId": { "dataType": "double", "required": true },
         },
         "additionalProperties": false,
