@@ -145,11 +145,11 @@ const Dashboard = () => {
   
     useEffect(() => {
       const accTransaction =
-        transactions?.filter((t) => t?.accountId === selectedCurrency?.currencyName) || [];
+        transactions?.filter((t) => t?.accountId === selectedCurrency?.id) || [];
   
         const projectWiseTransaction =
         transactions?.filter((t) => t.projectId === graphProject) || null;
-    
+
       setAccTransactions(accTransaction);
       setSelectedProjectTransactions(projectWiseTransaction)
     }, [selectedCurrency, transactions]);
@@ -171,7 +171,7 @@ const Dashboard = () => {
       setTotalAmount(total);
       // Calculate unique project count
       const uniqueProjects = new Set(accTransactions.map((t) => t.projectId)).size;
-  
+
       setProjectCount(uniqueProjects);
 
       const fetchTransactions = async () => {

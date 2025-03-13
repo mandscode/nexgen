@@ -96,7 +96,7 @@ const DashboardMobile = () => {
 
     useEffect(() => {
       const accTransaction =
-        transactions?.filter((t) => t.accountId === selectedCurrency?.currencyName) || [];
+        transactions?.filter((t) => t.accountId === selectedCurrency?.id) || [];
     
       setAccTransactions(accTransaction);
   

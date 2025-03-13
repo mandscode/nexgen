@@ -81,6 +81,7 @@ const CurrencyDropdown: React.FC<any> = ({ currency, setSelectCurrency }) => {
                 data-select="currencyDropdownButton"
                 className="_dropdown_button _dropdown_button_modified"
                 onClick={handleButtonClick}
+                style={{whiteSpace:'nowrap'}}
               >
                 <span>{selectedCurrency?.currencySymbol}</span>{" "}
                 {selectedCurrency.currencyName}
@@ -122,7 +123,7 @@ const CurrencyDropdown: React.FC<any> = ({ currency, setSelectCurrency }) => {
                       setIsActive(false); // Close the menu
                     }}
                   >
-                    {getCurrencyDetails(account.currency).symbol} {account.currency}
+                    {account.currencySymbol} {account.currency}
                   </div>
                 ))}
               </div>
