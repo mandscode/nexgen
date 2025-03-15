@@ -14,6 +14,8 @@ const runtime_1 = require("@tsoa/runtime");
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 const users_controller_1 = require("./../controllers/users.controller");
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+const userDetails_controller_1 = require("./../controllers/userDetails.controller");
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 const transacction_controller_1 = require("./../controllers/transacction.controller");
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 const roles_controller_1 = require("./../controllers/roles.controller");
@@ -46,41 +48,6 @@ const models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "UserRespDTO": {
-        "dataType": "refObject",
-        "properties": {
-            "id": { "dataType": "double" },
-            "firstName": { "dataType": "string", "required": true },
-            "lastName": { "dataType": "string", "required": true },
-            "email": { "dataType": "string", "required": true },
-            "roles": { "dataType": "array", "array": { "dataType": "refObject", "ref": "RoleDTO" } },
-            "isMasterAdmin": { "dataType": "boolean", "required": true },
-            "personalDetails": { "dataType": "nestedObjectLiteral", "nestedProperties": {}, "additionalProperties": { "dataType": "any" } },
-            "status": { "dataType": "string" },
-            "entities": { "dataType": "array", "array": { "dataType": "any" } },
-            "isFirstLogin": { "dataType": "boolean", "required": true },
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "UserReqDTO": {
-        "dataType": "refObject",
-        "properties": {
-            "id": { "dataType": "double" },
-            "firstName": { "dataType": "string", "required": true },
-            "lastName": { "dataType": "string", "required": true },
-            "email": { "dataType": "string", "required": true },
-            "password": { "dataType": "string" },
-            "roleIds": { "dataType": "array", "array": { "dataType": "double" }, "required": true },
-            "entityIds": { "dataType": "array", "array": { "dataType": "double" } },
-            "isMasterAdmin": { "dataType": "boolean", "required": true },
-            "isFirstLogin": { "dataType": "boolean", "required": true },
-            "status": { "dataType": "string" },
-            "personalDetails": { "dataType": "nestedObjectLiteral", "nestedProperties": {}, "additionalProperties": { "dataType": "any" } },
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "TransactionDTO": {
         "dataType": "refObject",
         "properties": {
@@ -93,33 +60,6 @@ const models = {
             "modifiedBy": { "dataType": "string" },
             "intrestRate": { "dataType": "double", "required": true },
             "transactionDate": { "dataType": "datetime" },
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "ResourceDTO": {
-        "dataType": "refObject",
-        "properties": {
-            "id": { "dataType": "double" },
-            "location": { "dataType": "string", "required": true },
-            "sourceId": { "dataType": "string" },
-            "type": { "dataType": "string", "required": true },
-            "group": { "dataType": "string", "required": true },
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "EntityDTO": {
-        "dataType": "refObject",
-        "properties": {
-            "id": { "dataType": "double" },
-            "name": { "dataType": "string", "required": true },
-            "address": { "dataType": "string", "required": true },
-            "country": { "dataType": "string", "required": true },
-            "regId": { "dataType": "string", "required": true },
-            "ownerId": { "dataType": "string" },
-            "caId": { "dataType": "string" },
-            "settings": { "dataType": "nestedObjectLiteral", "nestedProperties": {}, "additionalProperties": { "dataType": "any" } },
         },
         "additionalProperties": false,
     },
@@ -148,6 +88,52 @@ const models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "EntityDTO": {
+        "dataType": "refObject",
+        "properties": {
+            "id": { "dataType": "double" },
+            "name": { "dataType": "string", "required": true },
+            "address": { "dataType": "string", "required": true },
+            "country": { "dataType": "string", "required": true },
+            "regId": { "dataType": "string", "required": true },
+            "ownerId": { "dataType": "string" },
+            "caId": { "dataType": "string" },
+            "settings": { "dataType": "nestedObjectLiteral", "nestedProperties": {}, "additionalProperties": { "dataType": "any" } },
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ResourceDTO": {
+        "dataType": "refObject",
+        "properties": {
+            "id": { "dataType": "double" },
+            "location": { "dataType": "string", "required": true },
+            "sourceId": { "dataType": "string" },
+            "type": { "dataType": "string", "required": true },
+            "group": { "dataType": "string", "required": true },
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "InvestorRespDTO": {
+        "dataType": "refObject",
+        "properties": {
+            "id": { "dataType": "double" },
+            "nomineeDetails": { "dataType": "nestedObjectLiteral", "nestedProperties": {}, "additionalProperties": { "dataType": "any" } },
+            "emergencyContact": { "dataType": "nestedObjectLiteral", "nestedProperties": {}, "additionalProperties": { "dataType": "any" }, "required": true },
+            "personalDetails": { "dataType": "nestedObjectLiteral", "nestedProperties": {}, "additionalProperties": { "dataType": "any" } },
+            "userId": { "dataType": "double", "required": true },
+            "ownerId": { "dataType": "string" },
+            "caId": { "dataType": "string" },
+            "settings": { "dataType": "nestedObjectLiteral", "nestedProperties": {}, "additionalProperties": { "dataType": "any" } },
+            "accounts": { "dataType": "array", "array": { "dataType": "refObject", "ref": "AccountRespDTO" } },
+            "projects": { "dataType": "array", "array": { "dataType": "refObject", "ref": "ProjectRespDTO" } },
+            "resources": { "dataType": "array", "array": { "dataType": "refObject", "ref": "ResourceDTO" } },
+            "documents": { "dataType": "array", "array": { "dataType": "nestedObjectLiteral", "nestedProperties": { "status": { "dataType": "boolean", "required": true }, "docUrl": { "dataType": "string", "required": true }, "docName": { "dataType": "string", "required": true }, "id": { "dataType": "string", "required": true } } } },
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "ProjectRespDTO": {
         "dataType": "refObject",
         "properties": {
@@ -172,21 +158,63 @@ const models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "InvestorRespDTO": {
+    "UserRespDTO": {
         "dataType": "refObject",
         "properties": {
             "id": { "dataType": "double" },
-            "nomineeDetails": { "dataType": "nestedObjectLiteral", "nestedProperties": {}, "additionalProperties": { "dataType": "any" } },
-            "emergencyContact": { "dataType": "nestedObjectLiteral", "nestedProperties": {}, "additionalProperties": { "dataType": "any" }, "required": true },
+            "firstName": { "dataType": "string", "required": true },
+            "lastName": { "dataType": "string", "required": true },
+            "email": { "dataType": "string", "required": true },
+            "roles": { "dataType": "array", "array": { "dataType": "refObject", "ref": "RoleDTO" } },
+            "investor": { "ref": "InvestorRespDTO" },
+            "isMasterAdmin": { "dataType": "boolean", "required": true },
             "personalDetails": { "dataType": "nestedObjectLiteral", "nestedProperties": {}, "additionalProperties": { "dataType": "any" } },
-            "userId": { "dataType": "double", "required": true },
-            "ownerId": { "dataType": "string" },
-            "caId": { "dataType": "string" },
-            "settings": { "dataType": "nestedObjectLiteral", "nestedProperties": {}, "additionalProperties": { "dataType": "any" } },
-            "accounts": { "dataType": "array", "array": { "dataType": "refObject", "ref": "AccountRespDTO" } },
-            "projects": { "dataType": "array", "array": { "dataType": "refObject", "ref": "ProjectRespDTO" } },
-            "resources": { "dataType": "array", "array": { "dataType": "refObject", "ref": "ResourceDTO" } },
-            "documents": { "dataType": "array", "array": { "dataType": "nestedObjectLiteral", "nestedProperties": { "status": { "dataType": "boolean", "required": true }, "docUrl": { "dataType": "string", "required": true }, "docName": { "dataType": "string", "required": true }, "id": { "dataType": "string", "required": true } } } },
+            "status": { "dataType": "string" },
+            "entities": { "dataType": "array", "array": { "dataType": "refObject", "ref": "EntityDTO" } },
+            "isFirstLogin": { "dataType": "boolean", "required": true },
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "UserReqDTO": {
+        "dataType": "refObject",
+        "properties": {
+            "id": { "dataType": "double" },
+            "firstName": { "dataType": "string", "required": true },
+            "lastName": { "dataType": "string", "required": true },
+            "email": { "dataType": "string", "required": true },
+            "password": { "dataType": "string" },
+            "roleIds": { "dataType": "array", "array": { "dataType": "double" }, "required": true },
+            "entityIds": { "dataType": "array", "array": { "dataType": "double" } },
+            "isMasterAdmin": { "dataType": "boolean", "required": true },
+            "isFirstLogin": { "dataType": "boolean", "required": true },
+            "status": { "dataType": "string" },
+            "personalDetails": { "dataType": "nestedObjectLiteral", "nestedProperties": {}, "additionalProperties": { "dataType": "any" } },
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Record_string.any_": {
+        "dataType": "refAlias",
+        "type": { "dataType": "nestedObjectLiteral", "nestedProperties": {}, "additionalProperties": { "dataType": "any" }, "validators": {} },
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "UserDetailsRespDTO": {
+        "dataType": "refObject",
+        "properties": {
+            "id": { "dataType": "double", "required": true },
+            "firstName": { "dataType": "string", "required": true },
+            "lastName": { "dataType": "string", "required": true },
+            "email": { "dataType": "string", "required": true },
+            "status": { "dataType": "string", "required": true },
+            "isFirstLogin": { "dataType": "boolean", "required": true },
+            "isMasterAdmin": { "dataType": "boolean", "required": true },
+            "personalDetails": { "ref": "Record_string.any_" },
+            "roles": { "dataType": "array", "array": { "dataType": "refObject", "ref": "RoleDTO" } },
+            "entities": { "dataType": "array", "array": { "dataType": "refObject", "ref": "EntityDTO" } },
+            "investor": { "ref": "InvestorRespDTO" },
+            "dashboard": { "dataType": "nestedObjectLiteral", "nestedProperties": { "transactionsSummary": { "dataType": "nestedObjectLiteral", "nestedProperties": { "projects": { "dataType": "array", "array": { "dataType": "nestedObjectLiteral", "nestedProperties": { "totalTransactionAmount": { "dataType": "double", "required": true }, "projectName": { "dataType": "string", "required": true }, "projectId": { "dataType": "double", "required": true } } }, "required": true }, "totalAmount": { "dataType": "double", "required": true }, "totalTransactions": { "dataType": "double", "required": true } }, "required": true }, "totalProjects": { "dataType": "double", "required": true } } },
+            "portfolio": { "dataType": "nestedObjectLiteral", "nestedProperties": { "projects": { "dataType": "array", "array": { "dataType": "nestedObjectLiteral", "nestedProperties": { "transactions": { "dataType": "array", "array": { "dataType": "nestedObjectLiteral", "nestedProperties": { "currency": { "dataType": "string", "required": true }, "amount": { "dataType": "double", "required": true }, "date": { "dataType": "string", "required": true }, "id": { "dataType": "double", "required": true } } }, "required": true }, "totalInvested": { "dataType": "double", "required": true }, "currency": { "dataType": "string", "required": true }, "country": { "dataType": "string", "required": true }, "name": { "dataType": "string", "required": true }, "id": { "dataType": "double", "required": true } } }, "required": true }, "totalProjects": { "dataType": "double", "required": true } } },
         },
         "additionalProperties": false,
     },
@@ -511,6 +539,31 @@ function RegisterRoutes(app) {
                 const controller = new users_controller_1.UserController();
                 yield templateService.apiHandler({
                     methodName: 'login',
+                    controller,
+                    response,
+                    next,
+                    validatedArgs,
+                    successStatus: undefined,
+                });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    const argsUserDetailsController_getUserDetails = {
+        id: { "in": "path", "name": "id", "required": true, "dataType": "double" },
+    };
+    app.get('/users/details/:id', ...((0, runtime_1.fetchMiddlewares)(userDetails_controller_1.UserDetailsController)), ...((0, runtime_1.fetchMiddlewares)(userDetails_controller_1.UserDetailsController.prototype.getUserDetails)), function UserDetailsController_getUserDetails(request, response, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+            let validatedArgs = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsUserDetailsController_getUserDetails, request, response });
+                const controller = new userDetails_controller_1.UserDetailsController();
+                yield templateService.apiHandler({
+                    methodName: 'getUserDetails',
                     controller,
                     response,
                     next,

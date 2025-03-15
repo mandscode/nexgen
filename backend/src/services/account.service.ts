@@ -2,6 +2,7 @@
 import Account from '../models/account';
 import Transaction from '../models/transaction';
 import { toAccountDTO, toAccountsDTO } from './account.mapper';
+import { CurrencyDTO } from './currency.service';
 import { InvestmentDTO } from './investment.service';
 import { TransactionDTO } from './transaction.service';
 
@@ -14,6 +15,7 @@ export class AccountReqDTO {
 export class AccountRespDTO {
     id?: number;
     currency!: number;
+    currencyDetails?:CurrencyDTO;
     investorId!: number;
     transactions?: TransactionDTO[];
     investments?: InvestmentDTO[];

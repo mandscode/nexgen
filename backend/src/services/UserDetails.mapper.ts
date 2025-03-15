@@ -1,17 +1,17 @@
 import { plainToInstance } from 'class-transformer';
 import User from '../models/user';
-import { UserRespDTO } from './user.service';
 import { toRolesDTO } from './role.mapper';
-import { toEntitiesDTO } from './entity.mapper';
 
-export function toUserDTO(user: User): UserRespDTO {
+import { toEntitiesDTO } from './entity.mapper';
+import { UserDetailsRespDTO } from './UserDetails.service';
+
+export function toUserDetailsDTO(user: User): UserDetailsRespDTO {
 
     const roles = user.dataValues.roles;
     const entities = user.dataValues.entities;
     delete user.dataValues.roles;
     delete user.dataValues.entities;
-    const userDto = plainToInstance(UserRespDTO, user.dataValues);
-    
+    const userDto = plainToInstance(UserDetailsRespDTO, user.dataValues);
     if (roles) {
         userDto.roles = toRolesDTO(roles);
     }
@@ -20,11 +20,4 @@ export function toUserDTO(user: User): UserRespDTO {
     }
     userDto.status = user.status; // Map status
     return userDto;
-}
-
-export function toUsersDTO(users: User[]): UserRespDTO[] {
-    return users.map(user => {
-        return toUserDTO(user);
-    }
-    )
 }

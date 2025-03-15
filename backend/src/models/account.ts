@@ -3,6 +3,7 @@ import Investor from './investor';
 import Investment from './investment';
 import { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 import Transaction from './transaction';
+import Currency from './currency';
 
 @Table({
     timestamps: true,
@@ -23,6 +24,9 @@ export default class Account extends Model<InferAttributes<Account>, InferCreati
         allowNull: false,
     })
     currency!: number;
+
+    @BelongsTo(() => Currency, { foreignKey: 'currency' }) // Map `currency` field to Currency
+    currencyDetails?: Currency; // Add this property to access the Currency model
 
     @ForeignKey(() => Investor)
     @Column({

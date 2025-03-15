@@ -23,114 +23,6 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"UserRespDTO": {
-				"properties": {
-					"id": {
-						"type": "number",
-						"format": "double"
-					},
-					"firstName": {
-						"type": "string"
-					},
-					"lastName": {
-						"type": "string"
-					},
-					"email": {
-						"type": "string"
-					},
-					"roles": {
-						"items": {
-							"$ref": "#/components/schemas/RoleDTO"
-						},
-						"type": "array"
-					},
-					"isMasterAdmin": {
-						"type": "boolean"
-					},
-					"personalDetails": {
-						"properties": {},
-						"additionalProperties": {},
-						"type": "object"
-					},
-					"status": {
-						"type": "string"
-					},
-					"entities": {
-						"items": {},
-						"type": "array"
-					},
-					"isFirstLogin": {
-						"type": "boolean"
-					}
-				},
-				"required": [
-					"firstName",
-					"lastName",
-					"email",
-					"isMasterAdmin",
-					"isFirstLogin"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"UserReqDTO": {
-				"properties": {
-					"id": {
-						"type": "number",
-						"format": "double"
-					},
-					"firstName": {
-						"type": "string"
-					},
-					"lastName": {
-						"type": "string"
-					},
-					"email": {
-						"type": "string"
-					},
-					"password": {
-						"type": "string"
-					},
-					"roleIds": {
-						"items": {
-							"type": "number",
-							"format": "double"
-						},
-						"type": "array"
-					},
-					"entityIds": {
-						"items": {
-							"type": "number",
-							"format": "double"
-						},
-						"type": "array"
-					},
-					"isMasterAdmin": {
-						"type": "boolean"
-					},
-					"isFirstLogin": {
-						"type": "boolean"
-					},
-					"status": {
-						"type": "string"
-					},
-					"personalDetails": {
-						"properties": {},
-						"additionalProperties": {},
-						"type": "object"
-					}
-				},
-				"required": [
-					"firstName",
-					"lastName",
-					"email",
-					"roleIds",
-					"isMasterAdmin",
-					"isFirstLogin"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
 			"TransactionDTO": {
 				"properties": {
 					"id": {
@@ -176,72 +68,6 @@
 					"amount",
 					"credited",
 					"intrestRate"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"ResourceDTO": {
-				"properties": {
-					"id": {
-						"type": "number",
-						"format": "double"
-					},
-					"location": {
-						"type": "string"
-					},
-					"sourceId": {
-						"type": "string"
-					},
-					"type": {
-						"type": "string"
-					},
-					"group": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"location",
-					"type",
-					"group"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"EntityDTO": {
-				"properties": {
-					"id": {
-						"type": "number",
-						"format": "double"
-					},
-					"name": {
-						"type": "string"
-					},
-					"address": {
-						"type": "string"
-					},
-					"country": {
-						"type": "string"
-					},
-					"regId": {
-						"type": "string"
-					},
-					"ownerId": {
-						"type": "string"
-					},
-					"caId": {
-						"type": "string"
-					},
-					"settings": {
-						"properties": {},
-						"additionalProperties": {},
-						"type": "object"
-					}
-				},
-				"required": [
-					"name",
-					"address",
-					"country",
-					"regId"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -309,7 +135,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"ProjectRespDTO": {
+			"EntityDTO": {
 				"properties": {
 					"id": {
 						"type": "number",
@@ -321,69 +147,56 @@
 					"address": {
 						"type": "string"
 					},
-					"countryName": {
+					"country": {
 						"type": "string"
 					},
-					"latitude": {
-						"type": "number",
-						"format": "double"
-					},
-					"longitude": {
-						"type": "number",
-						"format": "double"
-					},
-					"startDate": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"actualMaturityDate": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"overallCost": {
-						"type": "number",
-						"format": "double"
-					},
-					"description": {
+					"regId": {
 						"type": "string"
 					},
-					"ownerName": {
+					"ownerId": {
 						"type": "string"
 					},
-					"legalId": {
+					"caId": {
 						"type": "string"
-					},
-					"maturityLockingPeriod": {
-						"type": "number",
-						"format": "double"
 					},
 					"settings": {
 						"properties": {},
 						"additionalProperties": {},
 						"type": "object"
-					},
-					"entity": {
-						"$ref": "#/components/schemas/EntityDTO"
-					},
-					"resources": {
-						"items": {
-							"$ref": "#/components/schemas/ResourceDTO"
-						},
-						"type": "array"
-					},
-					"investors": {
-						"items": {
-							"$ref": "#/components/schemas/InvestorRespDTO"
-						},
-						"type": "array"
 					}
 				},
 				"required": [
 					"name",
 					"address",
-					"countryName",
-					"startDate",
-					"entity"
+					"country",
+					"regId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ResourceDTO": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"location": {
+						"type": "string"
+					},
+					"sourceId": {
+						"type": "string"
+					},
+					"type": {
+						"type": "string"
+					},
+					"group": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"location",
+					"type",
+					"group"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -472,6 +285,388 @@
 				"required": [
 					"emergencyContact",
 					"userId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ProjectRespDTO": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"name": {
+						"type": "string"
+					},
+					"address": {
+						"type": "string"
+					},
+					"countryName": {
+						"type": "string"
+					},
+					"latitude": {
+						"type": "number",
+						"format": "double"
+					},
+					"longitude": {
+						"type": "number",
+						"format": "double"
+					},
+					"startDate": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"actualMaturityDate": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"overallCost": {
+						"type": "number",
+						"format": "double"
+					},
+					"description": {
+						"type": "string"
+					},
+					"ownerName": {
+						"type": "string"
+					},
+					"legalId": {
+						"type": "string"
+					},
+					"maturityLockingPeriod": {
+						"type": "number",
+						"format": "double"
+					},
+					"settings": {
+						"properties": {},
+						"additionalProperties": {},
+						"type": "object"
+					},
+					"entity": {
+						"$ref": "#/components/schemas/EntityDTO"
+					},
+					"resources": {
+						"items": {
+							"$ref": "#/components/schemas/ResourceDTO"
+						},
+						"type": "array"
+					},
+					"investors": {
+						"items": {
+							"$ref": "#/components/schemas/InvestorRespDTO"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"address",
+					"countryName",
+					"startDate",
+					"entity"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"UserRespDTO": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"firstName": {
+						"type": "string"
+					},
+					"lastName": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"roles": {
+						"items": {
+							"$ref": "#/components/schemas/RoleDTO"
+						},
+						"type": "array"
+					},
+					"investor": {
+						"$ref": "#/components/schemas/InvestorRespDTO"
+					},
+					"isMasterAdmin": {
+						"type": "boolean"
+					},
+					"personalDetails": {
+						"properties": {},
+						"additionalProperties": {},
+						"type": "object"
+					},
+					"status": {
+						"type": "string"
+					},
+					"entities": {
+						"items": {
+							"$ref": "#/components/schemas/EntityDTO"
+						},
+						"type": "array"
+					},
+					"isFirstLogin": {
+						"type": "boolean"
+					}
+				},
+				"required": [
+					"firstName",
+					"lastName",
+					"email",
+					"isMasterAdmin",
+					"isFirstLogin"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"UserReqDTO": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"firstName": {
+						"type": "string"
+					},
+					"lastName": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"password": {
+						"type": "string"
+					},
+					"roleIds": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array"
+					},
+					"entityIds": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array"
+					},
+					"isMasterAdmin": {
+						"type": "boolean"
+					},
+					"isFirstLogin": {
+						"type": "boolean"
+					},
+					"status": {
+						"type": "string"
+					},
+					"personalDetails": {
+						"properties": {},
+						"additionalProperties": {},
+						"type": "object"
+					}
+				},
+				"required": [
+					"firstName",
+					"lastName",
+					"email",
+					"roleIds",
+					"isMasterAdmin",
+					"isFirstLogin"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Record_string.any_": {
+				"properties": {},
+				"additionalProperties": {},
+				"type": "object",
+				"description": "Construct a type with a set of properties K of type T"
+			},
+			"UserDetailsRespDTO": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"firstName": {
+						"type": "string"
+					},
+					"lastName": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"status": {
+						"type": "string"
+					},
+					"isFirstLogin": {
+						"type": "boolean"
+					},
+					"isMasterAdmin": {
+						"type": "boolean"
+					},
+					"personalDetails": {
+						"$ref": "#/components/schemas/Record_string.any_"
+					},
+					"roles": {
+						"items": {
+							"$ref": "#/components/schemas/RoleDTO"
+						},
+						"type": "array"
+					},
+					"entities": {
+						"items": {
+							"$ref": "#/components/schemas/EntityDTO"
+						},
+						"type": "array"
+					},
+					"investor": {
+						"$ref": "#/components/schemas/InvestorRespDTO"
+					},
+					"dashboard": {
+						"properties": {
+							"transactionsSummary": {
+								"properties": {
+									"projects": {
+										"items": {
+											"properties": {
+												"totalTransactionAmount": {
+													"type": "number",
+													"format": "double"
+												},
+												"projectName": {
+													"type": "string"
+												},
+												"projectId": {
+													"type": "number",
+													"format": "double"
+												}
+											},
+											"required": [
+												"totalTransactionAmount",
+												"projectName",
+												"projectId"
+											],
+											"type": "object"
+										},
+										"type": "array"
+									},
+									"totalAmount": {
+										"type": "number",
+										"format": "double"
+									},
+									"totalTransactions": {
+										"type": "number",
+										"format": "double"
+									}
+								},
+								"required": [
+									"projects",
+									"totalAmount",
+									"totalTransactions"
+								],
+								"type": "object"
+							},
+							"totalProjects": {
+								"type": "number",
+								"format": "double"
+							}
+						},
+						"required": [
+							"transactionsSummary",
+							"totalProjects"
+						],
+						"type": "object"
+					},
+					"portfolio": {
+						"properties": {
+							"projects": {
+								"items": {
+									"properties": {
+										"transactions": {
+											"items": {
+												"properties": {
+													"currency": {
+														"type": "string"
+													},
+													"amount": {
+														"type": "number",
+														"format": "double"
+													},
+													"date": {
+														"type": "string"
+													},
+													"id": {
+														"type": "number",
+														"format": "double"
+													}
+												},
+												"required": [
+													"currency",
+													"amount",
+													"date",
+													"id"
+												],
+												"type": "object"
+											},
+											"type": "array"
+										},
+										"totalInvested": {
+											"type": "number",
+											"format": "double"
+										},
+										"currency": {
+											"type": "string"
+										},
+										"country": {
+											"type": "string"
+										},
+										"name": {
+											"type": "string"
+										},
+										"id": {
+											"type": "number",
+											"format": "double"
+										}
+									},
+									"required": [
+										"transactions",
+										"totalInvested",
+										"currency",
+										"country",
+										"name",
+										"id"
+									],
+									"type": "object"
+								},
+								"type": "array"
+							},
+							"totalProjects": {
+								"type": "number",
+								"format": "double"
+							}
+						},
+						"required": [
+							"projects",
+							"totalProjects"
+						],
+						"type": "object"
+					}
+				},
+				"required": [
+					"id",
+					"firstName",
+					"lastName",
+					"email",
+					"status",
+					"isFirstLogin",
+					"isMasterAdmin"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -1180,6 +1375,43 @@
 						}
 					}
 				}
+			}
+		},
+		"/users/details/{id}": {
+			"get": {
+				"operationId": "GetUserDetails",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/UserDetailsRespDTO"
+										}
+									],
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Users"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
 			}
 		},
 		"/transactions": {
