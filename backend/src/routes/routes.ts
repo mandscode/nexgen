@@ -16,6 +16,8 @@ import { ResourceController } from './../controllers/resouce.controller';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { ProjectController } from './../controllers/project.controller';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { ProfileDetailsController } from './../controllers/profile.controller';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { InvestorController } from './../controllers/investor.controller';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { InvestmentController } from './../controllers/investment.controller';
@@ -41,6 +43,17 @@ const models: TsoaRoute.Models = {
         "properties": {
             "id": {"dataType":"double"},
             "name": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "CurrencyDTO": {
+        "dataType": "refObject",
+        "properties": {
+            "id": {"dataType":"double"},
+            "code": {"dataType":"string","required":true},
+            "name": {"dataType":"string","required":true},
+            "symbol": {"dataType":"string","required":true},
         },
         "additionalProperties": false,
     },
@@ -78,6 +91,7 @@ const models: TsoaRoute.Models = {
         "properties": {
             "id": {"dataType":"double"},
             "currency": {"dataType":"double","required":true},
+            "currencyDetails": {"ref":"CurrencyDTO"},
             "investorId": {"dataType":"double","required":true},
             "transactions": {"dataType":"array","array":{"dataType":"refObject","ref":"TransactionDTO"}},
             "investments": {"dataType":"array","array":{"dataType":"refObject","ref":"InvestmentDTO"}},
@@ -191,27 +205,20 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Record_string.any_": {
-        "dataType": "refAlias",
-        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{},"additionalProperties":{"dataType":"any"},"validators":{}},
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "UserDetailsRespDTO": {
         "dataType": "refObject",
         "properties": {
             "id": {"dataType":"double","required":true},
             "firstName": {"dataType":"string","required":true},
             "lastName": {"dataType":"string","required":true},
-            "email": {"dataType":"string","required":true},
-            "status": {"dataType":"string","required":true},
-            "isFirstLogin": {"dataType":"boolean","required":true},
-            "isMasterAdmin": {"dataType":"boolean","required":true},
-            "personalDetails": {"ref":"Record_string.any_"},
+            "status": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"string"}],"required":true},
+            "message": {"dataType":"string","required":true},
             "roles": {"dataType":"array","array":{"dataType":"refObject","ref":"RoleDTO"}},
             "entities": {"dataType":"array","array":{"dataType":"refObject","ref":"EntityDTO"}},
-            "investor": {"ref":"InvestorRespDTO"},
-            "dashboard": {"dataType":"nestedObjectLiteral","nestedProperties":{"transactionsSummary":{"dataType":"nestedObjectLiteral","nestedProperties":{"projects":{"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"totalTransactionAmount":{"dataType":"double","required":true},"projectName":{"dataType":"string","required":true},"projectId":{"dataType":"double","required":true}}},"required":true},"totalAmount":{"dataType":"double","required":true},"totalTransactions":{"dataType":"double","required":true}},"required":true},"totalProjects":{"dataType":"double","required":true}}},
-            "portfolio": {"dataType":"nestedObjectLiteral","nestedProperties":{"projects":{"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"transactions":{"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"currency":{"dataType":"string","required":true},"amount":{"dataType":"double","required":true},"date":{"dataType":"string","required":true},"id":{"dataType":"double","required":true}}},"required":true},"totalInvested":{"dataType":"double","required":true},"currency":{"dataType":"string","required":true},"country":{"dataType":"string","required":true},"name":{"dataType":"string","required":true},"id":{"dataType":"double","required":true}}},"required":true},"totalProjects":{"dataType":"double","required":true}}},
+            "InvestedCurrencies": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"symbol":{"dataType":"string","required":true},"name":{"dataType":"string","required":true},"id":{"dataType":"double","required":true}}}},
+            "Investments": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"transactions":{"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"amount":{"dataType":"string","required":true},"status":{"dataType":"string","required":true},"date":{"dataType":"string","required":true},"title":{"dataType":"string","required":true},"id":{"dataType":"double","required":true}}},"required":true},"totalValue":{"dataType":"string","required":true},"intrestGenerated":{"dataType":"string","required":true},"investedAmount":{"dataType":"string","required":true},"maturityLockingPeriod":{"dataType":"double","required":true},"status":{"dataType":"double","required":true},"currencyId":{"dataType":"string","required":true},"ProjectId":{"dataType":"string","required":true},"id":{"dataType":"double","required":true}}}},
+            "projects": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"legalId":{"dataType":"string","required":true},"ownerName":{"dataType":"string","required":true},"description":{"dataType":"string","required":true},"overallCost":{"dataType":"double","required":true},"actualMaturityDate":{"dataType":"string","required":true},"startDate":{"dataType":"string","required":true},"longitude":{"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},"latitude":{"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},"country":{"dataType":"string","required":true},"address":{"dataType":"string","required":true},"name":{"dataType":"string","required":true},"id":{"dataType":"double","required":true}}}},
+            "Currencies": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"symbol":{"dataType":"string","required":true},"name":{"dataType":"string","required":true},"id":{"dataType":"double","required":true}}}},
         },
         "additionalProperties": false,
     },
@@ -235,6 +242,20 @@ const models: TsoaRoute.Models = {
             "settings": {"dataType":"nestedObjectLiteral","nestedProperties":{},"additionalProperties":{"dataType":"any"}},
             "entityID": {"dataType":"double","required":true},
             "resourceIds": {"dataType":"array","array":{"dataType":"double"}},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ProfileDetailsRespDTO": {
+        "dataType": "refObject",
+        "properties": {
+            "userId": {"dataType":"double","required":true},
+            "FirstName": {"dataType":"string","required":true},
+            "LastName": {"dataType":"string","required":true},
+            "PersonalDetails": {"dataType":"nestedObjectLiteral","nestedProperties":{"MailingAdress":{"dataType":"string","required":true},"ResidentailAddress":{"dataType":"string","required":true},"DOB":{"dataType":"string","required":true},"Mobile":{"dataType":"string","required":true},"Email":{"dataType":"string","required":true}}},
+            "NomineeDetails": {"dataType":"nestedObjectLiteral","nestedProperties":{"Relation":{"dataType":"string","required":true},"Name":{"dataType":"string","required":true},"Mobile":{"dataType":"string","required":true},"Email":{"dataType":"string","required":true}}},
+            "EmergencyContactDetails": {"dataType":"nestedObjectLiteral","nestedProperties":{"Relation":{"dataType":"string","required":true},"Name":{"dataType":"string","required":true},"Mobile":{"dataType":"string","required":true},"Email":{"dataType":"string","required":true}}},
+            "Documents": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"Status":{"dataType":"double","required":true},"URL":{"dataType":"string","required":true},"Name":{"dataType":"string","required":true},"id":{"dataType":"double","required":true}}}},
         },
         "additionalProperties": false,
     },
@@ -274,17 +295,6 @@ const models: TsoaRoute.Models = {
             "caId": {"dataType":"string"},
             "settings": {"dataType":"nestedObjectLiteral","nestedProperties":{},"additionalProperties":{"dataType":"any"}},
             "projects": {"dataType":"array","array":{"dataType":"refObject","ref":"ProjectRespDTO"}},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "CurrencyDTO": {
-        "dataType": "refObject",
-        "properties": {
-            "id": {"dataType":"double"},
-            "code": {"dataType":"string","required":true},
-            "name": {"dataType":"string","required":true},
-            "symbol": {"dataType":"string","required":true},
         },
         "additionalProperties": false,
     },
@@ -1016,6 +1026,36 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsProjectController_getProjectsByEntityId: Record<string, TsoaRoute.ParameterSchema> = {
+                id: {"in":"path","name":"id","required":true,"dataType":"double"},
+        };
+        app.get('/projects/Entity/:id',
+            ...(fetchMiddlewares<RequestHandler>(ProjectController)),
+            ...(fetchMiddlewares<RequestHandler>(ProjectController.prototype.getProjectsByEntityId)),
+
+            async function ProjectController_getProjectsByEntityId(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsProjectController_getProjectsByEntityId, request, response });
+
+                const controller = new ProjectController();
+
+              await templateService.apiHandler({
+                methodName: 'getProjectsByEntityId',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsProjectController_createProject: Record<string, TsoaRoute.ParameterSchema> = {
                 project: {"in":"body","name":"project","required":true,"ref":"ProjectReqDTO"},
         };
@@ -1066,6 +1106,36 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'updateProject',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsProfileDetailsController_getProfileDetails: Record<string, TsoaRoute.ParameterSchema> = {
+                id: {"in":"path","name":"id","required":true,"dataType":"double"},
+        };
+        app.get('/profile/details/:id',
+            ...(fetchMiddlewares<RequestHandler>(ProfileDetailsController)),
+            ...(fetchMiddlewares<RequestHandler>(ProfileDetailsController.prototype.getProfileDetails)),
+
+            async function ProfileDetailsController_getProfileDetails(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsProfileDetailsController_getProfileDetails, request, response });
+
+                const controller = new ProfileDetailsController();
+
+              await templateService.apiHandler({
+                methodName: 'getProfileDetails',
                 controller,
                 response,
                 next,

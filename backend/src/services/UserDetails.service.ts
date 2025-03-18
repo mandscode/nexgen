@@ -12,7 +12,7 @@ import { RoleDTO } from "./role.service";
 import { toUserDetailsDTO } from "./UserDetails.mapper";
 import Currency from '../models/currency';
 
-export class UserDetailsRespDTO {
+export class UserDetailsDTO {
     id!: number;
     firstName!: string;
     lastName!: string;
@@ -21,7 +21,7 @@ export class UserDetailsRespDTO {
     isFirstLogin!: boolean;
     isMasterAdmin!: boolean;
     personalDetails?: Record<string, any>;
-    
+
     roles?: RoleDTO[];
     entities?: EntityDTO[];
 
@@ -65,6 +65,62 @@ export class UserDetailsRespDTO {
     };
 }
 
+export class UserDetailsRespDTO {
+    id!: number;
+    firstName!: string;
+    lastName!: string;
+    status!: number | string;
+    message!: string;
+    roles?: RoleDTO[];
+    entities?: EntityDTO[];
+
+    InvestedCurrencies?: {
+        id: number;
+        name: string;
+        symbol: string;
+    }[];
+
+    Investments?: {
+        id: number;
+        ProjectId: string;
+        currencyId: string;
+        status: number;
+        maturityLockingPeriod: number;
+        investedAmount: string;
+        intrestGenerated: string;
+        totalValue: string;
+        transactions: {
+            id: number;
+            title: string;
+            date: string;
+            status: string;
+            amount: string;
+        }[];
+    }[];
+
+    projects?: {
+        id: number;
+        name: string;
+        address: string;
+        country: string;
+        latitude: number | null;
+        longitude: number | null;
+        startDate: string;
+        actualMaturityDate: string;
+        overallCost: number;
+        description: string;
+        ownerName: string;
+        legalId: string;
+    }[];
+
+    Currencies?: {
+        id: number;
+        name: string;
+        symbol: string;
+    }[];
+}
+
+
 class UserDetailsService {
     async getUserDetails(id: number): Promise<UserDetailsRespDTO | null> {
         // Fetch user with roles and entities (excluding sensitive fields)
@@ -73,7 +129,7 @@ class UserDetailsService {
                 { model: Role, attributes: ["id", "name"], through: { attributes: [] } },
                 { model: Entity, attributes: ["id", "name"], through: { attributes: [] } }
             ],
-            attributes: { exclude: ["password", "googleId", "isMasterAdmin"] }
+            attributes: { exclude: ["password", "googleId", "isMasterAdmin", "email", "personalDetails", "picture", "isFirstLogin", "updatedAt"] }
         });
 
         if (!user) return null;
@@ -81,98 +137,145 @@ class UserDetailsService {
         // Convert to DTO
         const userDTO = toUserDetailsDTO(user);
 
+        const { roles, entities, ...filteredUserDTO } = userDTO;
         // Check if user is an investor
         const isInvestor = user.roles?.some(role => role.name === "Investor");
+        const isViewer = user.roles?.some(role => role.name === "Viewer");
 
-        if (isInvestor) {
+        let userJSON: UserDetailsRespDTO = {
+            ...filteredUserDTO,
+            message: '',
+            InvestedCurrencies: [],
+            Investments: [],
+            projects: [],
+            Currencies: []
+        };
+
+
+
+        if (isViewer) {
+            userJSON.projects = undefined;
+            userJSON.Investments = undefined;
+            userJSON.InvestedCurrencies = undefined;
+            userJSON.Currencies = undefined;
+            userJSON.message = "You dont have any active investments now, please contact 93232345 to start your investment journey"
+        }
+        else if (isInvestor) {
             const investorDetails = await Investor.findOne({
                 where: { userId: id },
                 include: [
-                    { 
+                    {
                         model: Account,
                         include: [
                             {
                                 model: Transaction,
-                                attributes: { exclude: [ "accountId", "modifiedBy"] } // Exclude unwanted fields
+                                attributes: { exclude: ["accountId", "modifiedBy"] } // Exclude unwanted fields
                             },
                             {
                                 model: Currency
                             }
-                        ] 
+                        ]
                     },
                     { model: Project, through: { attributes: [] } }
                 ],
                 attributes: { exclude: ["userId"] }
             });
 
-            if (investorDetails) {
-                userDTO.investor = toInvestorDTO(investorDetails); // Convert to DTO if needed
+            const groupedInvestments = new Map();
 
-                userDTO.dashboard = {
-                    accounts: [],
-                    projectSummary: {
-                        projects: []
+            investorDetails?.accounts?.forEach((account: any) => {
+                account.transactions.forEach((transaction: any) => {
+                    const projectId = transaction.projectId;
+                    const currencyId = account.currencyDetails.id;
+                    
+                    const key = `${projectId}-${currencyId}`; // Unique key for investments per project & currency
+
+                    if (!groupedInvestments.has(key)) {
+                        groupedInvestments.set(key, {
+                            id: transaction.id, // First transaction ID, can be adjusted
+                            ProjectId: projectId,
+                            currencyId: currencyId,
+                            maturityLockingPeriod: investorDetails.projects?.find(p => p.id === projectId)?.maturityLockingPeriod || 0,
+                            investedAmount: transaction.amount.toString(),
+                            intrestGenerated: ((transaction.amount * transaction.intrestRate) / 100).toFixed(2),
+                            totalValue: (transaction.amount + (transaction.amount * transaction.intrestRate) / 100).toFixed(2),
+                            transactions: [] // Will collect transactions below
+                        });
+                    } else {
+                        const existingInvestment = groupedInvestments.get(key);
+                        existingInvestment.investedAmount = (parseFloat(existingInvestment.investedAmount) + transaction.amount).toString();
+                        existingInvestment.intrestGenerated = (parseFloat(existingInvestment.intrestGenerated) + (transaction.amount * transaction.intrestRate) / 100).toFixed(2);
+                        existingInvestment.totalValue = (parseFloat(existingInvestment.totalValue) + transaction.amount + (transaction.amount * transaction.intrestRate) / 100).toFixed(2);
                     }
-                };
+                    
 
-                const accountsMap = new Map<number, { id: number; currency: {id:number; name:string;}; totalProjects: number; transactionsTotal: number }>();
-                const projectsMap = new Map<number, { projectId: number; projectName: string; totalTransactionAmount: number }>();
-
-                if (investorDetails.accounts) {
-                    investorDetails.accounts.forEach(account => {
-                        // Initialize account data
-                        if (!accountsMap.has(account.id)) {
-
-                            if (!account.currencyDetails) {
-                                throw new Error(`Currency details are missing for account ID ${account.id}`);
-                            }
-
-                            accountsMap.set(account.id, {
-                                id: account.id,
-                                currency: { // currency is now an object
-                                    id: account.currencyDetails.id,
-                                    name: account.currencyDetails.name
-                                },
-                                totalProjects: investorDetails.projects?.length || 0,
-                                transactionsTotal: 0
-                            });
-                        }
-                
-                        const accountData = accountsMap.get(account.id)!;
-                
-                        // Process transactions
-                        if (account.transactions) {
-                            accountData.transactionsTotal += account.transactions.length;
-                
-                            account.transactions.forEach(transaction => {
-                                if (!projectsMap.has(transaction.projectId)) {
-                                    const project = investorDetails.projects?.find(p => p.id === transaction.projectId);
-                                    if (project) {
-                                        projectsMap.set(transaction.projectId, {
-                                            projectId: project.id,
-                                            projectName: project.name,
-                                            totalTransactionAmount: 0
-                                        });
-                                    }
-                                }
-
-                                // Safely access projectData
-                                const projectData = projectsMap.get(transaction.projectId);
-                                if (projectData) {
-                                    projectData.totalTransactionAmount += transaction.amount;
-                                }
-                            });
-                        }
+                    // Add transaction to the existing project investment
+                    groupedInvestments.get(key).transactions.push({
+                        id: transaction.id,
+                        title: transaction.details, // Assuming `details` contains the transaction title
+                        date: transaction.transactionDate,
+                        status: transaction.credited ? "credit" : "debit",
+                        amount: transaction.amount.toString(),
                     });
-                
-                    // Convert maps to arrays
-                    userDTO.dashboard.accounts = Array.from(accountsMap.values());
-                    userDTO.dashboard.projectSummary.projects = Array.from(projectsMap.values());
-                }
+                });
+            });
+
+            // Convert the grouped investments into an array
+            const Investments = Array.from(groupedInvestments.values());
+
+
+            userJSON = {
+                ...filteredUserDTO,
+                "message": 'You dont have any active investments now, please contact 93232345 to start your investment journey',
+                Currencies: investorDetails?.accounts?.map((account: any) => ({
+                    id: account?.currencyDetails.id || 0,
+                    name: account?.currencyDetails.code || '',
+                    symbol: account?.currencyDetails.symbol || ''
+                })) || [],
+                Investments: Investments || [],
+                projects: investorDetails?.projects?.map((project: any) => ({
+                    id: project.id,
+                    name: project.name,
+                    address: project.address,
+                    country: project.country ?? "Unknown", // Ensure 'country' is always provided
+                    latitude: project.latitude ?? null,
+                    longitude: project.longitude ?? null,
+                    startDate: project.startDate,
+                    actualMaturityDate: project.actualMaturityDate,
+                    overallCost: project.overallCost,
+                    description: project.description,
+                    ownerName: project.ownerName,
+                    legalId: project.legalId
+                })) || []
+            }
+
+
+            if (investorDetails?.accounts?.length == 0) {
+                userJSON.InvestedCurrencies = undefined
+                userJSON.Currencies = []
+            } else if (Investments.length === 0) {
+                userJSON.InvestedCurrencies = undefined
+                userJSON.Currencies = investorDetails?.accounts?.map((account: any) => ({
+                    id: account?.currencyDetails.id || 0,
+                    name: account?.currencyDetails.name || '',
+                    symbol: account?.currencyDetails.symbol || ''
+                })) || []
+            }
+            // ✅ If no projects, set it as `undefined`
+            if (investorDetails && !investorDetails.projects || investorDetails?.projects && investorDetails.projects.length === 0) {
+                userJSON.projects = undefined;
+            }
+
+            // ✅ If no investments, set it as `undefined`
+            if (Investments.length === 0) {
+                userJSON.Investments = undefined;
+            } else {
+                userJSON.Investments = Investments;
             }
         }
 
-        return userDTO;
+
+        return userJSON;
     }
 }
 

@@ -9,7 +9,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { Card, Col, Form, Row, Tab, Tabs } from 'react-bootstrap';
 import NexGenTable from '../NexGenTable/NexGenTable';
 import { ProjectBasicDetailInterface, Transaction } from '../Utilities/interface/interface';
-import { getAccountOfInvestor, getCurrencyAll, getInvestor, getProject, getProjects, getUser, updateInvestorDocument } from '../../api/apiEndpoints';
+import { getAccountOfInvestor, getCurrencyAll, getEntities, getInvestor, getProject, getProjects, getUser, updateInvestorDocument } from '../../api/apiEndpoints';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
@@ -109,6 +109,7 @@ export interface InvestorOption {
 export interface AssignProjectOption {
   investorId: number;
   projectId: any;
+  entityType:number;
 }
 
 interface CurrencyData {
@@ -151,6 +152,11 @@ const UserDetail = ({  }:UserDetailProps) => {
 
   const [userOptions, setUserOptions] = useState<InvestorOption[]>([]);
   const [projectOptions, setProjectOptions] = useState([]);
+  const [option, setOptions] = useState([
+    {id:0, name:"Entity"},
+    {id:1, name:"Project"}
+  ]);
+  const [entityOptions, setEntityOptions] = useState([]);
   const [projects, setProjects] = useState<ProjectBasicDetailInterface[]>([]);
 
   const [investorDetails, setInvestorDetails] = useState<InvestorInterface>();
@@ -169,6 +175,7 @@ const UserDetail = ({  }:UserDetailProps) => {
   const [userProjectListShow, setUserProjectListShow] = useState(false);
   const [updatedDocData, setUpdatedDocData] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState<readonly {value: number, label: string}[]>([]);
+  const [selectedOption, setSelectedOption] = useState();
 
   const { id } = useParams();
 
@@ -246,6 +253,7 @@ const UserDetail = ({  }:UserDetailProps) => {
   .object({
     investorId: yup.number().required('User ID is required'),
     projectId:  yup.array().min(1, "select atleast one role").required(),
+    entityType:  yup.number().required("select atleast one entity"),
   })
   .required()
   const { register, handleSubmit, formState: { errors }, control } = useForm<AssignProjectOption>({
@@ -316,14 +324,19 @@ const UserDetail = ({  }:UserDetailProps) => {
     const fetchProjects = async () => {
       try {
         const projects = await getProjects();
+        const entities = await getEntities();
         setProjectOptions(
           projects.map((project: any) => ({ value: project.id, label: project.name }))
         );
+        setEntityOptions(
+          entities.map((e: any) => ({ value: e.id, label: e.name }))
+        );
+
       } catch (error) {
         console.error("Failed to fetch projects:", error);
       }
     };
-  
+
     fetchUsersAndProjects();
     fetchProjects();
   }, [id, userAccountlistShow, updatedDocData, docDetailList]); // Ensure id and store are in dependency array
@@ -378,16 +391,24 @@ const UserDetail = ({  }:UserDetailProps) => {
     setInvestorId(Number(id))
   }, [id])
 
-  // Define form fields array
+
   const fields = [
     { name: 'investorId', type: 'select', placeholder: 'Select User', options:userOptions },
+    {
+      name: 'entityType',
+      type: 'select',
+      placeholder: 'Select Option',
+      options: option
+    },
     {
       name: 'projectId',
       type: 'multiselect',
       placeholder: 'Select Projects',
-      options: projectOptions
+      options: selectedOption == 1 ? projectOptions : entityOptions
     },
   ];
+
+
 
   function getErrorMessage(name: string): string {
     const fieldError = errors[name as keyof AssignProjectOption];
@@ -827,7 +848,8 @@ const UserDetail = ({  }:UserDetailProps) => {
                             <Form.Select
                               aria-label="Default select example"
                               className={`form-control ${errors[field.name as keyof AssignProjectOption] ? 'is-invalid' : ''}`}
-                              {...register(field.name as keyof AssignProjectOption)} // Register the select field
+                              {...register(field.name as keyof AssignProjectOption)}
+                              onChange={(e:any) => setSelectedOption(e.target.value)}
                             >
                               <option>Open this select menu</option>
                               {
@@ -849,7 +871,7 @@ const UserDetail = ({  }:UserDetailProps) => {
                                   setSelectedOptions(selected || []);
                                   field.onChange(selected);
                                 }}
-                                options={projectOptions}
+                                options={selectedOption == 1 ? projectOptions : entityOptions}
                                 value={selectedOptions}/>
                               } />
                               :

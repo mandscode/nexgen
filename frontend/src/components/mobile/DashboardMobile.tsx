@@ -45,8 +45,8 @@ const DashboardMobile = () => {
               const assignedAcc = investor.accounts.map((acc: any) => {
                 const currency = allCurr.find((curr: any) => curr.id === acc.currency); // Find matching currency
                 return {
-                  currency: currency ? currency.name : "Unknown", // Use currency name if found
-                  id: acc.id,
+                  currency: currency ? currency.code : "Unknown", // Use currency name if found
+                  id: currency.id,
                   currencySymbol:currency.symbol
                 };
               });
@@ -59,8 +59,8 @@ const DashboardMobile = () => {
     useEffect(() => {
       const fetchTransactions = async () => {
         try {
-          
           setLoader(true)
+
           const formattedTransactions = await Promise.all(
             accountsData.map(async (accounts: any) => {
               

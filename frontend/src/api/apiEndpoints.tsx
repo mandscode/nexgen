@@ -55,6 +55,7 @@ export const getInvestors = async () => {
 export const getAccountOfInvestor = async (id:number) => {
   try {
     const response = await api.get(`/accounts/investor/${id}`);
+
     return response.data;
   } catch (error) {
     console.error('Error fetching users:', error);

@@ -89,23 +89,22 @@ const AddTransactions = ({ investrId, transactionList }:AddTransactionsProps) =>
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const projectsData = await getProjects(); // Fetch projects
+        const investor = await getInvestor(Number(investrId)); // Fetch projects
+
+        const projectsData = investor.projects;
+
         // const projectsData2 = await getInvestor(Number(id)); // Fetch projects
-        const userData = await getUser(Number(investrId)); // Fetch projects
-        
         const accountsOfInvestor = await getAccountOfInvestor(Number(investrId)); // Fetch accounts
-        if (userData?.entities?.length > 0) {
-          setEntitesOptions(userData.entities);
-        }
+
         const filteredProjects = projectsData
         .filter((project: any) => { return project.entityID === selectedOption;}) // Filter projects by entity ID
         .map((project: any) => ({
           id: project.id,
           name: project.name,
         }));
-          
+        
         const allCurr = await getCurrencyAll();
-
+        
         const assignedAcc = accountsOfInvestor.map((acc: any) => {
           const currency = allCurr.find((curr: any) => curr.id === acc.currency); // Find matching currency
           return {
@@ -114,7 +113,7 @@ const AddTransactions = ({ investrId, transactionList }:AddTransactionsProps) =>
           };
         });
         // Extract only 'id' and 'currency' for accounts
-  
+        
         // Set the state with the filtered data
         setProjects(filteredProjects);
         setAccounts(assignedAcc);
@@ -130,12 +129,12 @@ const AddTransactions = ({ investrId, transactionList }:AddTransactionsProps) =>
     const fetchData = async () => {
       try {
         const investor = await getInvestor(Number(investrId))
+
         const userData = await getUser(Number(investor?.userId)); // Fetch projects
 
         if (userData?.entities?.length > 0) {
           setEntitesOptions(userData.entities);
-          console.log(userData.entities)
-
+          
         }
         
       } catch (error) {

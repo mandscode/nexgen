@@ -81,6 +81,12 @@ class ProjectService {
         return Project.findByPk(id, { include: [Entity, Resource, Investor] }).then(project => project ? toProjectDTO(project) : null);
     }
 
+    async getProjectsByEntityId(id: number): Promise<ProjectRespDTO[] | null> {
+        return Project.findAll({ where: { entityID: id } })
+            .then(projects => projects.length ? projects.map(toProjectDTO) : null);
+    }
+
+
     async updateProject(
         id: number,
         updateData: {

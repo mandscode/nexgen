@@ -53,6 +53,12 @@ class ProjectService {
             return project_1.default.findByPk(id, { include: [entity_1.default, resource_1.default, investor_1.default] }).then(project => project ? (0, project_mapper_1.toProjectDTO)(project) : null);
         });
     }
+    getProjectsByEntityId(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return project_1.default.findAll({ where: { entityID: id } })
+                .then(projects => projects.length ? projects.map(project_mapper_1.toProjectDTO) : null);
+        });
+    }
     updateProject(id, updateData) {
         return __awaiter(this, void 0, void 0, function* () {
             const project = yield project_1.default.findByPk(id);

@@ -68,6 +68,11 @@ let ProjectController = class ProjectController {
             return project_service_1.default.getProjectById(id);
         });
     }
+    getProjectsByEntityId(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return project_service_1.default.getProjectsByEntityId(id);
+        });
+    }
     createProject(project) {
         return __awaiter(this, void 0, void 0, function* () {
             return project_service_1.default.createProject(project);
@@ -99,6 +104,13 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], ProjectController.prototype, "getProjectById", null);
+__decorate([
+    (0, tsoa_1.Get)('/Entity/{id}'),
+    __param(0, (0, tsoa_1.Path)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], ProjectController.prototype, "getProjectsByEntityId", null);
 __decorate([
     (0, tsoa_1.Post)('/'),
     __param(0, (0, tsoa_1.Body)()),

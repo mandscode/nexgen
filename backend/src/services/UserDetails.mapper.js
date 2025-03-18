@@ -10,7 +10,7 @@ function toUserDetailsDTO(user) {
     const entities = user.dataValues.entities;
     delete user.dataValues.roles;
     delete user.dataValues.entities;
-    const userDto = (0, class_transformer_1.plainToInstance)(UserDetails_service_1.UserDetailsRespDTO, user.dataValues);
+    const userDto = (0, class_transformer_1.plainToInstance)(UserDetails_service_1.UserDetailsDTO, user.dataValues);
     if (roles) {
         userDto.roles = (0, role_mapper_1.toRolesDTO)(roles);
     }

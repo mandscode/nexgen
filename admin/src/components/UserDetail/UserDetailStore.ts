@@ -25,42 +25,44 @@ export class UserDetailStore {
 
     async assignAccount (values: AssignProjectOption, setUserProjectListShow: any, projects:any, setProjects:any, invId:number) {
 
-        // Extract project IDs from values.projectId
-        const selectedProjectIds = values.projectId.map((project: any) => project.value);
-
-        // Extract project IDs from the projects array
-        const allProjectIds = projects.map((project: any) => project.id);
-        
-        // Merge both arrays and remove duplicates
-        const mergedProjectIds = Array.from(new Set([...selectedProjectIds, ...allProjectIds]));
-
-        const filteredProjects = await getProjects();
-        const allInputProjects = await filteredProjects.filter((e:any) => selectedProjectIds.includes(e.id))
-
-        // Merge both arrays and deduplicate based on `id`
-        const allProjects = [
-            ...projects,
-            ...allInputProjects,
-        ].reduce((unique: any[], item: any) => {
-            // Check if the `id` is already in the unique array
-            if (!unique.some((proj) => proj.id === item.id)) {
-                unique.push(item);
-            }
-            return unique;
-        }, []);
-        
-
-        // Prepare the formatted values
-        const formattedValues = {
-            investorId: values.investorId,
-            projectId: mergedProjectIds // Send only the array of project IDs
-        };
-
-        // Call the createUser function
-        await assignProject(invId, formattedValues.projectId);
-        await setProjects(allProjects)
-
-        setUserProjectListShow(true)
+        if (values.entityType == 1) {
+            // Extract project IDs from values.projectId
+            const selectedProjectIds = values.projectId.map((project: any) => project.value);
+    
+            // Extract project IDs from the projects array
+            const allProjectIds = projects.map((project: any) => project.id);
+            
+            // Merge both arrays and remove duplicates
+            const mergedProjectIds = Array.from(new Set([...selectedProjectIds, ...allProjectIds]));
+    
+            const filteredProjects = await getProjects();
+            const allInputProjects = await filteredProjects.filter((e:any) => selectedProjectIds.includes(e.id))
+    
+            // Merge both arrays and deduplicate based on `id`
+            const allProjects = [
+                ...projects,
+                ...allInputProjects,
+            ].reduce((unique: any[], item: any) => {
+                // Check if the `id` is already in the unique array
+                if (!unique.some((proj) => proj.id === item.id)) {
+                    unique.push(item);
+                }
+                return unique;
+            }, []);
+            
+    
+            // Prepare the formatted values
+            const formattedValues = {
+                investorId: values.investorId,
+                projectId: mergedProjectIds // Send only the array of project IDs
+            };
+    
+            // Call the createUser function
+            await assignProject(invId, formattedValues.projectId);
+            await setProjects(allProjects)
+    
+            setUserProjectListShow(true)
+        }
 
     }
 

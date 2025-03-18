@@ -72,13 +72,14 @@ const AddUser = ({ }:AddUserProps) => {
         if(res.roles) {
           let isAdmin = res.roles.find((role:any) => role.name === "Admin");
           if (isAdmin) {
-            let filteredRoles = roles.filter(role => role.name !== "Master Admin");
+            let filteredRoles = roles.filter(role => role.name !== "Master Admin" && role.name.toLowerCase() !== "investor");
 
             const a = filteredRoles.map(role => ({ value: role.id, label: role.name }));
             
             setRoles(a)
           } else {
-            const a = roles.map(role => ({ value: role.id, label: role.name }));
+            let filteredRoles = roles.filter(role => role.name.toLowerCase() !== "investor");
+            const a = filteredRoles.map(role => ({ value: role.id, label: role.name }));
             setRoles(a)
             
           }

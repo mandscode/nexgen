@@ -23,6 +23,30 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"CurrencyDTO": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"symbol": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"code",
+					"name",
+					"symbol"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"TransactionDTO": {
 				"properties": {
 					"id": {
@@ -110,6 +134,9 @@
 					"currency": {
 						"type": "number",
 						"format": "double"
+					},
+					"currencyDetails": {
+						"$ref": "#/components/schemas/CurrencyDTO"
 					},
 					"investorId": {
 						"type": "number",
@@ -481,12 +508,6 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"Record_string.any_": {
-				"properties": {},
-				"additionalProperties": {},
-				"type": "object",
-				"description": "Construct a type with a set of properties K of type T"
-			},
 			"UserDetailsRespDTO": {
 				"properties": {
 					"id": {
@@ -499,20 +520,19 @@
 					"lastName": {
 						"type": "string"
 					},
-					"email": {
-						"type": "string"
-					},
 					"status": {
+						"anyOf": [
+							{
+								"type": "number",
+								"format": "double"
+							},
+							{
+								"type": "string"
+							}
+						]
+					},
+					"message": {
 						"type": "string"
-					},
-					"isFirstLogin": {
-						"type": "boolean"
-					},
-					"isMasterAdmin": {
-						"type": "boolean"
-					},
-					"personalDetails": {
-						"$ref": "#/components/schemas/Record_string.any_"
 					},
 					"roles": {
 						"items": {
@@ -526,147 +546,200 @@
 						},
 						"type": "array"
 					},
-					"investor": {
-						"$ref": "#/components/schemas/InvestorRespDTO"
-					},
-					"dashboard": {
-						"properties": {
-							"transactionsSummary": {
-								"properties": {
-									"projects": {
-										"items": {
-											"properties": {
-												"totalTransactionAmount": {
-													"type": "number",
-													"format": "double"
-												},
-												"projectName": {
-													"type": "string"
-												},
-												"projectId": {
-													"type": "number",
-													"format": "double"
-												}
-											},
-											"required": [
-												"totalTransactionAmount",
-												"projectName",
-												"projectId"
-											],
-											"type": "object"
-										},
-										"type": "array"
-									},
-									"totalAmount": {
-										"type": "number",
-										"format": "double"
-									},
-									"totalTransactions": {
-										"type": "number",
-										"format": "double"
-									}
+					"InvestedCurrencies": {
+						"items": {
+							"properties": {
+								"symbol": {
+									"type": "string"
 								},
-								"required": [
-									"projects",
-									"totalAmount",
-									"totalTransactions"
-								],
-								"type": "object"
-							},
-							"totalProjects": {
-								"type": "number",
-								"format": "double"
-							}
-						},
-						"required": [
-							"transactionsSummary",
-							"totalProjects"
-						],
-						"type": "object"
-					},
-					"portfolio": {
-						"properties": {
-							"projects": {
-								"items": {
-									"properties": {
-										"transactions": {
-											"items": {
-												"properties": {
-													"currency": {
-														"type": "string"
-													},
-													"amount": {
-														"type": "number",
-														"format": "double"
-													},
-													"date": {
-														"type": "string"
-													},
-													"id": {
-														"type": "number",
-														"format": "double"
-													}
-												},
-												"required": [
-													"currency",
-													"amount",
-													"date",
-													"id"
-												],
-												"type": "object"
-											},
-											"type": "array"
-										},
-										"totalInvested": {
-											"type": "number",
-											"format": "double"
-										},
-										"currency": {
-											"type": "string"
-										},
-										"country": {
-											"type": "string"
-										},
-										"name": {
-											"type": "string"
-										},
-										"id": {
-											"type": "number",
-											"format": "double"
-										}
-									},
-									"required": [
-										"transactions",
-										"totalInvested",
-										"currency",
-										"country",
-										"name",
-										"id"
-									],
-									"type": "object"
+								"name": {
+									"type": "string"
 								},
-								"type": "array"
+								"id": {
+									"type": "number",
+									"format": "double"
+								}
 							},
-							"totalProjects": {
-								"type": "number",
-								"format": "double"
-							}
+							"required": [
+								"symbol",
+								"name",
+								"id"
+							],
+							"type": "object"
 						},
-						"required": [
-							"projects",
-							"totalProjects"
-						],
-						"type": "object"
+						"type": "array"
+					},
+					"Investments": {
+						"items": {
+							"properties": {
+								"transactions": {
+									"items": {
+										"properties": {
+											"amount": {
+												"type": "string"
+											},
+											"status": {
+												"type": "string"
+											},
+											"date": {
+												"type": "string"
+											},
+											"title": {
+												"type": "string"
+											},
+											"id": {
+												"type": "number",
+												"format": "double"
+											}
+										},
+										"required": [
+											"amount",
+											"status",
+											"date",
+											"title",
+											"id"
+										],
+										"type": "object"
+									},
+									"type": "array"
+								},
+								"totalValue": {
+									"type": "string"
+								},
+								"intrestGenerated": {
+									"type": "string"
+								},
+								"investedAmount": {
+									"type": "string"
+								},
+								"maturityLockingPeriod": {
+									"type": "number",
+									"format": "double"
+								},
+								"status": {
+									"type": "number",
+									"format": "double"
+								},
+								"currencyId": {
+									"type": "string"
+								},
+								"ProjectId": {
+									"type": "string"
+								},
+								"id": {
+									"type": "number",
+									"format": "double"
+								}
+							},
+							"required": [
+								"transactions",
+								"totalValue",
+								"intrestGenerated",
+								"investedAmount",
+								"maturityLockingPeriod",
+								"status",
+								"currencyId",
+								"ProjectId",
+								"id"
+							],
+							"type": "object"
+						},
+						"type": "array"
+					},
+					"projects": {
+						"items": {
+							"properties": {
+								"legalId": {
+									"type": "string"
+								},
+								"ownerName": {
+									"type": "string"
+								},
+								"description": {
+									"type": "string"
+								},
+								"overallCost": {
+									"type": "number",
+									"format": "double"
+								},
+								"actualMaturityDate": {
+									"type": "string"
+								},
+								"startDate": {
+									"type": "string"
+								},
+								"longitude": {
+									"type": "number",
+									"format": "double",
+									"nullable": true
+								},
+								"latitude": {
+									"type": "number",
+									"format": "double",
+									"nullable": true
+								},
+								"country": {
+									"type": "string"
+								},
+								"address": {
+									"type": "string"
+								},
+								"name": {
+									"type": "string"
+								},
+								"id": {
+									"type": "number",
+									"format": "double"
+								}
+							},
+							"required": [
+								"legalId",
+								"ownerName",
+								"description",
+								"overallCost",
+								"actualMaturityDate",
+								"startDate",
+								"longitude",
+								"latitude",
+								"country",
+								"address",
+								"name",
+								"id"
+							],
+							"type": "object"
+						},
+						"type": "array"
+					},
+					"Currencies": {
+						"items": {
+							"properties": {
+								"symbol": {
+									"type": "string"
+								},
+								"name": {
+									"type": "string"
+								},
+								"id": {
+									"type": "number",
+									"format": "double"
+								}
+							},
+							"required": [
+								"symbol",
+								"name",
+								"id"
+							],
+							"type": "object"
+						},
+						"type": "array"
 					}
 				},
 				"required": [
 					"id",
 					"firstName",
 					"lastName",
-					"email",
 					"status",
-					"isFirstLogin",
-					"isMasterAdmin"
+					"message"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -740,6 +813,128 @@
 					"countryName",
 					"startDate",
 					"entityID"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ProfileDetailsRespDTO": {
+				"properties": {
+					"userId": {
+						"type": "number",
+						"format": "double"
+					},
+					"FirstName": {
+						"type": "string"
+					},
+					"LastName": {
+						"type": "string"
+					},
+					"PersonalDetails": {
+						"properties": {
+							"MailingAdress": {
+								"type": "string"
+							},
+							"ResidentailAddress": {
+								"type": "string"
+							},
+							"DOB": {
+								"type": "string"
+							},
+							"Mobile": {
+								"type": "string"
+							},
+							"Email": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"MailingAdress",
+							"ResidentailAddress",
+							"DOB",
+							"Mobile",
+							"Email"
+						],
+						"type": "object"
+					},
+					"NomineeDetails": {
+						"properties": {
+							"Relation": {
+								"type": "string"
+							},
+							"Name": {
+								"type": "string"
+							},
+							"Mobile": {
+								"type": "string"
+							},
+							"Email": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"Relation",
+							"Name",
+							"Mobile",
+							"Email"
+						],
+						"type": "object"
+					},
+					"EmergencyContactDetails": {
+						"properties": {
+							"Relation": {
+								"type": "string"
+							},
+							"Name": {
+								"type": "string"
+							},
+							"Mobile": {
+								"type": "string"
+							},
+							"Email": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"Relation",
+							"Name",
+							"Mobile",
+							"Email"
+						],
+						"type": "object"
+					},
+					"Documents": {
+						"items": {
+							"properties": {
+								"Status": {
+									"type": "number",
+									"format": "double"
+								},
+								"URL": {
+									"type": "string"
+								},
+								"Name": {
+									"type": "string"
+								},
+								"id": {
+									"type": "number",
+									"format": "double"
+								}
+							},
+							"required": [
+								"Status",
+								"URL",
+								"Name",
+								"id"
+							],
+							"type": "object"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"userId",
+					"FirstName",
+					"LastName"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -885,30 +1080,6 @@
 					"address",
 					"country",
 					"regId"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"CurrencyDTO": {
-				"properties": {
-					"id": {
-						"type": "number",
-						"format": "double"
-					},
-					"code": {
-						"type": "string"
-					},
-					"name": {
-						"type": "string"
-					},
-					"symbol": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"code",
-					"name",
-					"symbol"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -1910,6 +2081,76 @@
 						}
 					}
 				}
+			}
+		},
+		"/projects/Entity/{id}": {
+			"get": {
+				"operationId": "GetProjectsByEntityId",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/ProjectRespDTO"
+									},
+									"type": "array",
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/profile/details/{id}": {
+			"get": {
+				"operationId": "GetProfileDetails",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/ProfileDetailsRespDTO"
+										}
+									],
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Users"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
 			}
 		},
 		"/investors": {

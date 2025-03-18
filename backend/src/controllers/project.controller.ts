@@ -14,6 +14,11 @@ export class ProjectController {
         return projectService.getProjectById(id);
     }
 
+    @Get('/Entity/{id}')
+    public async getProjectsByEntityId(@Path() id: number): Promise<ProjectRespDTO[] | null> {
+        return projectService.getProjectsByEntityId(id);
+    }
+
     @Post('/')
     public async createProject(@Body() project: ProjectReqDTO): Promise<ProjectRespDTO | null> {
         return projectService.createProject(project);

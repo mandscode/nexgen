@@ -37,6 +37,7 @@ const CurrencyDropdown: React.FC<any> = ({ currency, setSelectCurrency }) => {
   const [isActive, setIsActive] = useState(false);
   const [selectedCurrency, setSelectedCurrency] = useState<any>();
   useEffect(() => {
+
     setSelectedCurrency({
       id:currency?.[0]?.id,
       currencyName: currency?.[0]?.currency || null, // Default to first item or "USD"

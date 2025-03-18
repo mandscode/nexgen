@@ -24,6 +24,8 @@ const resouce_controller_1 = require("./../controllers/resouce.controller");
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 const project_controller_1 = require("./../controllers/project.controller");
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+const profile_controller_1 = require("./../controllers/profile.controller");
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 const investor_controller_1 = require("./../controllers/investor.controller");
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 const investment_controller_1 = require("./../controllers/investment.controller");
@@ -44,6 +46,17 @@ const models = {
         "properties": {
             "id": { "dataType": "double" },
             "name": { "dataType": "string", "required": true },
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "CurrencyDTO": {
+        "dataType": "refObject",
+        "properties": {
+            "id": { "dataType": "double" },
+            "code": { "dataType": "string", "required": true },
+            "name": { "dataType": "string", "required": true },
+            "symbol": { "dataType": "string", "required": true },
         },
         "additionalProperties": false,
     },
@@ -81,6 +94,7 @@ const models = {
         "properties": {
             "id": { "dataType": "double" },
             "currency": { "dataType": "double", "required": true },
+            "currencyDetails": { "ref": "CurrencyDTO" },
             "investorId": { "dataType": "double", "required": true },
             "transactions": { "dataType": "array", "array": { "dataType": "refObject", "ref": "TransactionDTO" } },
             "investments": { "dataType": "array", "array": { "dataType": "refObject", "ref": "InvestmentDTO" } },
@@ -194,27 +208,20 @@ const models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Record_string.any_": {
-        "dataType": "refAlias",
-        "type": { "dataType": "nestedObjectLiteral", "nestedProperties": {}, "additionalProperties": { "dataType": "any" }, "validators": {} },
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "UserDetailsRespDTO": {
         "dataType": "refObject",
         "properties": {
             "id": { "dataType": "double", "required": true },
             "firstName": { "dataType": "string", "required": true },
             "lastName": { "dataType": "string", "required": true },
-            "email": { "dataType": "string", "required": true },
-            "status": { "dataType": "string", "required": true },
-            "isFirstLogin": { "dataType": "boolean", "required": true },
-            "isMasterAdmin": { "dataType": "boolean", "required": true },
-            "personalDetails": { "ref": "Record_string.any_" },
+            "status": { "dataType": "union", "subSchemas": [{ "dataType": "double" }, { "dataType": "string" }], "required": true },
+            "message": { "dataType": "string", "required": true },
             "roles": { "dataType": "array", "array": { "dataType": "refObject", "ref": "RoleDTO" } },
             "entities": { "dataType": "array", "array": { "dataType": "refObject", "ref": "EntityDTO" } },
-            "investor": { "ref": "InvestorRespDTO" },
-            "dashboard": { "dataType": "nestedObjectLiteral", "nestedProperties": { "transactionsSummary": { "dataType": "nestedObjectLiteral", "nestedProperties": { "projects": { "dataType": "array", "array": { "dataType": "nestedObjectLiteral", "nestedProperties": { "totalTransactionAmount": { "dataType": "double", "required": true }, "projectName": { "dataType": "string", "required": true }, "projectId": { "dataType": "double", "required": true } } }, "required": true }, "totalAmount": { "dataType": "double", "required": true }, "totalTransactions": { "dataType": "double", "required": true } }, "required": true }, "totalProjects": { "dataType": "double", "required": true } } },
-            "portfolio": { "dataType": "nestedObjectLiteral", "nestedProperties": { "projects": { "dataType": "array", "array": { "dataType": "nestedObjectLiteral", "nestedProperties": { "transactions": { "dataType": "array", "array": { "dataType": "nestedObjectLiteral", "nestedProperties": { "currency": { "dataType": "string", "required": true }, "amount": { "dataType": "double", "required": true }, "date": { "dataType": "string", "required": true }, "id": { "dataType": "double", "required": true } } }, "required": true }, "totalInvested": { "dataType": "double", "required": true }, "currency": { "dataType": "string", "required": true }, "country": { "dataType": "string", "required": true }, "name": { "dataType": "string", "required": true }, "id": { "dataType": "double", "required": true } } }, "required": true }, "totalProjects": { "dataType": "double", "required": true } } },
+            "InvestedCurrencies": { "dataType": "array", "array": { "dataType": "nestedObjectLiteral", "nestedProperties": { "symbol": { "dataType": "string", "required": true }, "name": { "dataType": "string", "required": true }, "id": { "dataType": "double", "required": true } } } },
+            "Investments": { "dataType": "array", "array": { "dataType": "nestedObjectLiteral", "nestedProperties": { "transactions": { "dataType": "array", "array": { "dataType": "nestedObjectLiteral", "nestedProperties": { "amount": { "dataType": "string", "required": true }, "status": { "dataType": "string", "required": true }, "date": { "dataType": "string", "required": true }, "title": { "dataType": "string", "required": true }, "id": { "dataType": "double", "required": true } } }, "required": true }, "totalValue": { "dataType": "string", "required": true }, "intrestGenerated": { "dataType": "string", "required": true }, "investedAmount": { "dataType": "string", "required": true }, "maturityLockingPeriod": { "dataType": "double", "required": true }, "status": { "dataType": "double", "required": true }, "currencyId": { "dataType": "string", "required": true }, "ProjectId": { "dataType": "string", "required": true }, "id": { "dataType": "double", "required": true } } } },
+            "projects": { "dataType": "array", "array": { "dataType": "nestedObjectLiteral", "nestedProperties": { "legalId": { "dataType": "string", "required": true }, "ownerName": { "dataType": "string", "required": true }, "description": { "dataType": "string", "required": true }, "overallCost": { "dataType": "double", "required": true }, "actualMaturityDate": { "dataType": "string", "required": true }, "startDate": { "dataType": "string", "required": true }, "longitude": { "dataType": "union", "subSchemas": [{ "dataType": "double" }, { "dataType": "enum", "enums": [null] }], "required": true }, "latitude": { "dataType": "union", "subSchemas": [{ "dataType": "double" }, { "dataType": "enum", "enums": [null] }], "required": true }, "country": { "dataType": "string", "required": true }, "address": { "dataType": "string", "required": true }, "name": { "dataType": "string", "required": true }, "id": { "dataType": "double", "required": true } } } },
+            "Currencies": { "dataType": "array", "array": { "dataType": "nestedObjectLiteral", "nestedProperties": { "symbol": { "dataType": "string", "required": true }, "name": { "dataType": "string", "required": true }, "id": { "dataType": "double", "required": true } } } },
         },
         "additionalProperties": false,
     },
@@ -238,6 +245,20 @@ const models = {
             "settings": { "dataType": "nestedObjectLiteral", "nestedProperties": {}, "additionalProperties": { "dataType": "any" } },
             "entityID": { "dataType": "double", "required": true },
             "resourceIds": { "dataType": "array", "array": { "dataType": "double" } },
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ProfileDetailsRespDTO": {
+        "dataType": "refObject",
+        "properties": {
+            "userId": { "dataType": "double", "required": true },
+            "FirstName": { "dataType": "string", "required": true },
+            "LastName": { "dataType": "string", "required": true },
+            "PersonalDetails": { "dataType": "nestedObjectLiteral", "nestedProperties": { "MailingAdress": { "dataType": "string", "required": true }, "ResidentailAddress": { "dataType": "string", "required": true }, "DOB": { "dataType": "string", "required": true }, "Mobile": { "dataType": "string", "required": true }, "Email": { "dataType": "string", "required": true } } },
+            "NomineeDetails": { "dataType": "nestedObjectLiteral", "nestedProperties": { "Relation": { "dataType": "string", "required": true }, "Name": { "dataType": "string", "required": true }, "Mobile": { "dataType": "string", "required": true }, "Email": { "dataType": "string", "required": true } } },
+            "EmergencyContactDetails": { "dataType": "nestedObjectLiteral", "nestedProperties": { "Relation": { "dataType": "string", "required": true }, "Name": { "dataType": "string", "required": true }, "Mobile": { "dataType": "string", "required": true }, "Email": { "dataType": "string", "required": true } } },
+            "Documents": { "dataType": "array", "array": { "dataType": "nestedObjectLiteral", "nestedProperties": { "Status": { "dataType": "double", "required": true }, "URL": { "dataType": "string", "required": true }, "Name": { "dataType": "string", "required": true }, "id": { "dataType": "double", "required": true } } } },
         },
         "additionalProperties": false,
     },
@@ -277,17 +298,6 @@ const models = {
             "caId": { "dataType": "string" },
             "settings": { "dataType": "nestedObjectLiteral", "nestedProperties": {}, "additionalProperties": { "dataType": "any" } },
             "projects": { "dataType": "array", "array": { "dataType": "refObject", "ref": "ProjectRespDTO" } },
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "CurrencyDTO": {
-        "dataType": "refObject",
-        "properties": {
-            "id": { "dataType": "double" },
-            "code": { "dataType": "string", "required": true },
-            "name": { "dataType": "string", "required": true },
-            "symbol": { "dataType": "string", "required": true },
         },
         "additionalProperties": false,
     },
@@ -895,6 +905,31 @@ function RegisterRoutes(app) {
         });
     });
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    const argsProjectController_getProjectsByEntityId = {
+        id: { "in": "path", "name": "id", "required": true, "dataType": "double" },
+    };
+    app.get('/projects/Entity/:id', ...((0, runtime_1.fetchMiddlewares)(project_controller_1.ProjectController)), ...((0, runtime_1.fetchMiddlewares)(project_controller_1.ProjectController.prototype.getProjectsByEntityId)), function ProjectController_getProjectsByEntityId(request, response, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+            let validatedArgs = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsProjectController_getProjectsByEntityId, request, response });
+                const controller = new project_controller_1.ProjectController();
+                yield templateService.apiHandler({
+                    methodName: 'getProjectsByEntityId',
+                    controller,
+                    response,
+                    next,
+                    validatedArgs,
+                    successStatus: undefined,
+                });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     const argsProjectController_createProject = {
         project: { "in": "body", "name": "project", "required": true, "ref": "ProjectReqDTO" },
     };
@@ -933,6 +968,31 @@ function RegisterRoutes(app) {
                 const controller = new project_controller_1.ProjectController();
                 yield templateService.apiHandler({
                     methodName: 'updateProject',
+                    controller,
+                    response,
+                    next,
+                    validatedArgs,
+                    successStatus: undefined,
+                });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    const argsProfileDetailsController_getProfileDetails = {
+        id: { "in": "path", "name": "id", "required": true, "dataType": "double" },
+    };
+    app.get('/profile/details/:id', ...((0, runtime_1.fetchMiddlewares)(profile_controller_1.ProfileDetailsController)), ...((0, runtime_1.fetchMiddlewares)(profile_controller_1.ProfileDetailsController.prototype.getProfileDetails)), function ProfileDetailsController_getProfileDetails(request, response, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+            let validatedArgs = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsProfileDetailsController_getProfileDetails, request, response });
+                const controller = new profile_controller_1.ProfileDetailsController();
+                yield templateService.apiHandler({
+                    methodName: 'getProfileDetails',
                     controller,
                     response,
                     next,
