@@ -43,11 +43,10 @@ export const fetchProjects = () => {
     dispatch(fetchProjectsRequest());
 
     try {
-      const response = await getProjects(); // Fetch projects from your API
-
-      dispatch(fetchProjectsSuccess(response)); // Dispatch the projects with image URLs
+      const response = await getProjects();
+      dispatch(fetchProjectsSuccess(response));
     } catch (error: any) {
-      dispatch(fetchProjectsFailure(error.message)); // Handle failure if API call fails
+      dispatch(fetchProjectsFailure(error.message));
     }
   };
 };

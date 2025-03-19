@@ -174,24 +174,5 @@
     ), $section-colors);
 
 
-// Brand colors
-    $brand-colors: ();
-    $brand-colors: map-merge((
-        "facebook":     $facebook,
-        "twitter":      $twitter,
-        "google-plus":  $google-plus,
-        "instagram":    $instagram,
-        "pinterest":    $pinterest,
-        "youtube":      $youtube,
-        "slack":        $slack,
-        "dribbble":     $dribbble,
-        "dropbox":      $dropbox,
-        "twitch":       $twitch,
-        "paypal":       $paypal,
-        "behance":      $behance,
-        "reddit" :      $reddit,  
-        "github":       $github
-    ), $brand-colors);
-
 
 @import "./main/index";

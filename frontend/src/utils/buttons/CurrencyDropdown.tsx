@@ -40,10 +40,11 @@ const CurrencyDropdown: React.FC<any> = ({ currency, setSelectCurrency }) => {
 
     setSelectedCurrency({
       id:currency?.[0]?.id,
-      currencyName: currency?.[0]?.currency || null, // Default to first item or "USD"
-      currencySymbol: currency?.[0]?.currencySymbol, // Default symbol
+      name: currency?.[0]?.name || null, // Default to first item or "USD"
+      symbol: currency?.[0]?.symbol // Default symbol
     })
   }, [currency])
+
   const buttonWrapperRef = useRef<HTMLDivElement>(null);
 
   const handleButtonClick = () => setIsActive((prev) => !prev);
@@ -84,8 +85,8 @@ const CurrencyDropdown: React.FC<any> = ({ currency, setSelectCurrency }) => {
                 onClick={handleButtonClick}
                 style={{whiteSpace:'nowrap'}}
               >
-                <span>{selectedCurrency?.currencySymbol}</span>{" "}
-                {selectedCurrency.currencyName}
+                <span>{selectedCurrency?.symbol}</span>{" "}
+                {selectedCurrency.name}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
@@ -118,13 +119,13 @@ const CurrencyDropdown: React.FC<any> = ({ currency, setSelectCurrency }) => {
                     onClick={() => {
                       setSelectedCurrency({
                         id:account.id,
-                        currencyName: account.currency,
-                        currencySymbol: account.currencySymbol,
+                        name: account.name,
+                        symbol: account.symbol,
                       });
                       setIsActive(false); // Close the menu
                     }}
                   >
-                    {account.currencySymbol} {account.currency}
+                    {account.symbol} {account.name}
                   </div>
                 ))}
               </div>

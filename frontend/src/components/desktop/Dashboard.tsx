@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { CartesianGrid, Cell, Line, LineChart, Pie, PieChart, Tooltip, XAxis, YAxis } from 'recharts';
@@ -7,89 +7,98 @@ import '@splidejs/splide/css'; // Import Splide styles
 import { getCurrencyAll, getProject, getProjects } from '../../api/apiEndpoints';
 import CurrencyDropdown from '../../utils/buttons/CurrencyDropdown';
 import { InvestorDetails } from '../../redux/actions/investorActions';
-import CountryDropdown from '../../utils/buttons/CountryDropdown';
 import TransactionTable from '../../utils/TransactionTable';
 
+export class UserRespDTO {
+  id!:number;
+  firstName!:string;
+  lastName!:string;
+  status!:number;
+  createdAt!:string;
+  message?:string;
+  Currencies?:CurrenciesRespDTO[];
+  Investments?:InvestmentRespDTO[];
+  projects?:ProjectRespDTO[];
+}
+
+export class ProjectRespDTO {
+  id!:number;
+  name!:string;
+  address!:string;
+  country!:string;
+  latitude?:string;
+  longitude?:string;
+  startDate!:string;
+  actualMaturityDate!:string;
+  overallCost!:number;
+  description!:string;
+  ownerName!:string;
+  legalId!:number;
+}
+
+export class InvestmentRespDTO {
+  id!:number;
+  ProjectId!:number;
+  currencyId!:number;
+  maturityLockingPeriod!:number;
+  investedAmount!:number;
+  totalValue!:number;
+  transactions!:TransactionRespDTO[];
+}
+
+export class TransactionRespDTO {
+  id!:number;
+  title!:string;
+  date!:string;
+  credited!:boolean;
+  amount!:number;
+}
+
+export class CurrenciesRespDTO {
+  id!:number;
+  name!:string;
+  symbol!:string;
+}
+
 const Dashboard = () => {
-    const [transactions, setTransactions] = useState<any[]>([]);
+    const [userDetails, setUserDetails] = useState<UserRespDTO | null>(null);
+
     
+    const [selectedCurrencyTransactions, setSelectedCurrencyTransactions] = useState<any[]>([]);
+    const [selectedCurrencyInvestments, setSelectedCurrencyInvestments] = useState<any[]>([]);
+    const [selectedCurrencyProjects, setSelectedCurrencyProjects] = useState<any[]>([]);
     const [selectedProjectTransactions, setSelectedProjectTransactions] = useState<any[]>([]);
-    
-    const [accTransactions, setAccTransactions] = useState<any[]>([]);
+  
   
     const [totalAmount, setTotalAmount] = useState(0);
     const [projectCount, setProjectCount] = useState(0);
   
     const [data, setData] = useState<{ name: string; value: number }[]>([]);
-    const [transactionsData, setTransactionsData] = useState<{ name: string; value: number }[]>([]);
-    const [graphProject, setGraphProject] = useState<number | null>(null); // Store the selected project ID
-  
+
+    const [graphProject, setGraphProject] = useState<number | null>(null);
+
     const [selectedCurrency, setSelectCurrency] = useState<any>();
-    const [selectedCurrencyVal, setSelectCurrencyVal] = useState<any>();
-    const [countryWiseProjects, setCountryWiseProjects] = useState<any[]>([]);
-    
-    const [investorData, setInvestorData] = useState<InvestorDetails>();
-  
-    const { user, error, investor, accountsData, loading, projects } = useSelector((state: any) => ({
+
+    const { user, error, loading } = useSelector((state: any) => ({
       loading: state.userDetails?.loading,
       user: state.userDetails?.user,
-      error: state.userDetails?.error,
-      investor: state.investorDetails?.investor,
-      accountsData:state.investorAccsDetails?.accounts,
-      projects: state.projectsDetail?.projects
+      error: state.userDetails?.error
     }));
 
-    const [selectedCountry, setSelectCountry] = useState<any>();
 
     useEffect(() => {
-      const fetchData = async () => {
-        const allCurr = await getCurrencyAll()
-        if(investor) {
-        const assignedAcc = investor.accounts.map((acc: any) => {
-          const currency = allCurr.find((curr: any) => curr.id === acc.currency); // Find matching currency
-          return {
-            currency: currency ? currency.name : "Unknown", // Use currency name if found
-            id: acc.id,
-            currencySymbol:currency.symbol
-          };
-        });
-        setSelectCurrencyVal(assignedAcc)
+      if(user && user.id) {
+        setUserDetails(user);
       }
-    }
-      fetchData()
-    }, [investor])
+    }, [user])
 
-    useEffect(() => {
-      if(investor?.projects && selectedCountry) {
-        const filteredProjects = investor?.projects?.filter((p:any) => p.countryName === selectedCountry)
 
-        setCountryWiseProjects(filteredProjects);
-      }
-    }, [investor?.projects, selectedCountry])
-
-    useEffect(() => {
-      if(countryWiseProjects) {
-        setGraphProject(countryWiseProjects[0]?.name)
-      }
-      setInvestorData(investor);
-    }, [countryWiseProjects])
 
     const chartData = useMemo(() => {
-      if (selectedProjectTransactions.length !== 0) {
-
-        return selectedProjectTransactions;
-      }
-      return []; // Return an empty array or default value when there are no transactions
+      return selectedProjectTransactions.length > 0 ? selectedProjectTransactions : [];
     }, [selectedProjectTransactions]);
     
     // ================================================================================================Line Chart
-
-    
-    // const formatAmount = (num:any) => {
-    //   if (num >= 1_000_000) return `${(num / 1_000_000).toFixed(1)}m`;
-    //   if (num >= 1_000) return `${(num / 1_000).toFixed(1)}k`;
-    //   return num.toString();
-    // };
 
     const formatAmount = (num:any) => {
       if (num >= 1_000_000_000_000) return `${(num / 1_000_000_000_000).toFixed(1)}t`; // Trillion
@@ -104,163 +113,117 @@ const Dashboard = () => {
       const fetchTransactions = async () => {
         try {
           
-          const formattedTransactions = await Promise.all(
-            accountsData.map(async (accounts: any) => {
-              
-              if (accounts.currency === selectedCurrency.id) {
-                const validTransactions = await Promise.all(
-                  accounts.transactions.map(async (transaction: any) => {
-                    const project = await getProject(Number(transaction.projectId));
-                    if (project.countryName === selectedCountry) {
+          if(
+            userDetails?.Investments && 
+            userDetails.Investments.length > 0 &&
+            selectedCurrency 
+          ) {
+            const UniqueInvestment:any[] = []
+            const formattedTransactions = await Promise.all(
+              userDetails.Investments.map(async (investment: any) => {
+                if (investment.currencyId === selectedCurrency.id) {
+                  UniqueInvestment.push(investment);
+                  const projectId = investment?.ProjectId
+                  const currencies = userDetails.Currencies || []
+                  const currency = currencies.find(p => p.id === investment.currencyId);
+
+                  const validTransactions = await Promise.all(
+                    investment.transactions.map(async (transaction: any) => {
                       return {
                         id: transaction.id,
-                        accountId: accounts.currency,
+                        currency: currency,
                         credited: transaction.credited,
                         amount: transaction.amount,
-                        createdDate: transaction.transactionDate,
-                        userId: user.firstName, // Example if you want to include user data
-                        projectId: project?.name,
-                        details:transaction.details
+                        createdDate: transaction.date,
+                        projectId: projectId,
+                        details:transaction.title
                       };
-                    }
-                    return null;
-                  })
-                );
-                return validTransactions.filter((t) => t !== null);
-              }
-              return []; // Return an empty array if currency does not match
-            })
-          );
-        
-          
-          // setInvestorId(Number(id))
-          setTransactions(formattedTransactions.flat()); // Set the fetched and formatted data to state
+                    })
+                  );
+
+                  return validTransactions;
+                }
+                return [];
+              })
+            );
+            setSelectedCurrencyInvestments(UniqueInvestment);
+            setSelectedCurrencyTransactions(formattedTransactions.flat());
+          }
         } catch (err) {
           console.log('Failed to fetch transactions');
         }
       };
   
       fetchTransactions(); // Call the fetch function
-    }, [accountsData, selectedCountry, selectedCurrency]);
-  
+    }, [selectedCurrency, userDetails]);
   
     useEffect(() => {
-      const accTransaction =
-        transactions?.filter((t) => t?.accountId === selectedCurrency?.id) || [];
   
         const projectWiseTransaction =
-        transactions?.filter((t) => t.projectId === graphProject) || null;
-
-      setAccTransactions(accTransaction);
-      setSelectedProjectTransactions(projectWiseTransaction)
-    }, [selectedCurrency, transactions]);
-  
-    useEffect(() => {
-      const projectWiseTransaction =
-      transactions?.filter((t) => t.projectId === graphProject) || null;
-  
-      setSelectedProjectTransactions(projectWiseTransaction)
-    }, [graphProject, transactions]);
-  
-    useEffect(() => {
-      // Calculate total transaction amount
-      const total = transactions.reduce(
-        (sum, t) => (t.credited ? sum + t.amount : sum),
-        0
-      );
-
-      setTotalAmount(total);
-      // Calculate unique project count
-      const uniqueProjects = new Set(accTransactions.map((t) => t.projectId)).size;
-
-      setProjectCount(uniqueProjects);
-
-      const fetchTransactions = async () => {
-        try {
-          
-          const formattedTransactions = await Promise.all(
-            accountsData.map(async (accounts: any) => {              
-              const validTransactions = await Promise.all(
-                accounts.transactions.map(async (transaction: any) => {
-                  if(transaction.credited){
-                    const project = await getProject(Number(transaction.projectId));
-                      return {
-                        id: transaction.id,
-                        accountId: accounts.currency,
-                        credited: transaction.credited,
-                        amount: transaction.amount,
-                        createdDate: transaction.transactionDate,
-                        userId: user.firstName, // Example if you want to include user data
-                        projectId: project?.name
-                      };
-                    } else return null
-                  })
-                );
-                return validTransactions.filter((t) => t !== null);
-              })
-            );          
-          // Aggregate investments by projectId
-          const aggregatedData = formattedTransactions.flat().reduce((acc, { projectId, amount }) => {
-            const existingProject = acc.find((item:any) => item.projectName === projectId);
-            if (existingProject) {
-              existingProject.investmentAmount += amount;
-            } else {
-              acc.push({ projectName: projectId, investmentAmount: amount });
-            }
-            return acc;
-          }, []);
-          setData(aggregatedData);
-        } catch (err) {
-          console.log('Failed to fetch transactions');
-        }
-      };
-
-      fetchTransactions();
-      
-    }, [accTransactions]);
-  
-    useEffect(() => {
-      // Calculate total transaction amount
-      const total = transactions.reduce(
-        (sum, t) => (t.credited ? sum + t.amount : sum),
-        0
-      );
-      
-      // Calculate unique project count
-      const uniqueProjects = new Set(transactions.map((t) => t.projectId)).size;
-  
-      setTotalAmount(total);
-      setProjectCount(uniqueProjects);
-      
-      const aggregatedData = transactions.reduce((acc, { projectId, amount, credited }) => {
-        const fetchproject = projects.find((item: any) => item.name === projectId);
-        const existingProject = acc.find((item: any) => item.projectId === projectId);
-        if (existingProject) {
-          if (credited) {
-            existingProject.creditedTotal += amount;
-          } else {
-            existingProject.debitedTotal += amount;
-          }
-          existingProject.investmentAmount = existingProject.creditedTotal - existingProject.debitedTotal;
-        } else {
-          acc.push({
-            projectId,
-            creditedTotal: credited ? amount : 0,
-            debitedTotal: credited ? 0 : amount,
-            investmentAmount: credited ? amount : -amount,
-            overallCost:fetchproject.overallCost
-          });
-        }
-        
-        return acc;
-      }, []);
-      
-
-      setTransactionsData(aggregatedData);
-    }, [transactions]);
+        selectedCurrencyTransactions?.filter((t) => t.projectId === graphProject) || null;
     
-    const COLORS = ['#01276C', '#3476ec59', '#FF8042']; // Define colors for the pie segments
+      setSelectedProjectTransactions(projectWiseTransaction)
+    }, [selectedCurrencyTransactions]);
+
+      useEffect(() => {
+        if(selectedCurrencyProjects) {
+          setGraphProject(selectedCurrencyProjects[0]?.id)
+        }
+
+      }, [selectedCurrencyProjects])
+
+      useEffect(() => {
+        const projectWiseTransaction =
+        selectedCurrencyTransactions?.filter((t) => t.projectId === graphProject) || null;
+    
+        setSelectedProjectTransactions(projectWiseTransaction)
+      }, [graphProject]);
+
   
+    useEffect(() => {
+      const total = selectedCurrencyTransactions.reduce(
+        (sum, t) => (t.credited ? sum + t.amount : sum),
+        0
+      );
+
+      setTotalAmount(total);
+      
+      const uniqueProjects = new Set(selectedCurrencyTransactions.map((t) => t.projectId)).size;
+
+      setProjectCount(uniqueProjects);
+
+
+      let uniqueData: any[] = [];
+      
+      const aggregatedData = selectedCurrencyTransactions.flat().reduce((acc, { projectId, amount }) => {
+        const projects = userDetails?.projects || [];
+        const project = projects.find(p => p.id === projectId);
+        let existingProject = acc.find((item: any) => item.id === projectId);
+        
+        if (!existingProject) {
+                  existingProject = { ...project, investmentAmount: 0 }; // Initialize if not found
+                  acc.push(existingProject);
+                }
+              
+                existingProject.investmentAmount += Number(amount);
+                
+                // Ensure uniqueData gets a proper reference
+                if (!uniqueData.some((p) => p.id === projectId)) {
+                  uniqueData.push(existingProject);
+                }
+                
+                return acc;
+              }, []);
+              
+              setSelectedCurrencyProjects(uniqueData);
+              setData(aggregatedData);
+       
+    }, [selectedCurrencyTransactions]);  
+
+    const COLORS = ['#01276C', '#3476ec59', '#FF8042']; 
+  
+    const selectedProject = selectedCurrencyProjects?.find((p: ProjectRespDTO) => p.id === graphProject)
+    const selectedInvestment = selectedCurrencyInvestments?.find((inv: InvestmentRespDTO) => inv.ProjectId === graphProject)
 
     if (loading) {
       return (
@@ -280,24 +243,14 @@ const Dashboard = () => {
       );
     }
 
-    if (error || user.length === 0) {
+    if (error) {
       return (
         <div className="error-container">
           <p>Error: {error}</p>
         </div>
       );
     }
-  
-    // Check if the user has a "Viewer" role
-    const isViewer = user?.roles?.some((role: any) => role.name === "Viewer");
-  
-    if (isViewer) {
-      return (
-        <div className="_dashboard_no-investments-container _dashboard_no-investments-container_web">
-          <p className='_h1'>You have no invested amount.</p>
-        </div>
-      );
-    }
+
   
     const totalInvestment = data.reduce((acc, cur:any) => acc + cur.investmentAmount, 0);
 
@@ -318,32 +271,28 @@ const Dashboard = () => {
               <nav className='_dashboard_nav'>
                 <div className='_dashboard_nav_top'>
                   <div className='_dashboard_nav_top_left'>
-                    <p className='_dashboard_nav_greeting'>Hello {user.firstName} {user.lastName}</p>
+                    <p className='_dashboard_nav_greeting'>Hello {userDetails?.firstName} {userDetails?.lastName}</p>
                     <h1 className='_dashboard_welcome-message _h1'>Welcome to your portfolio</h1>
                   </div>
                   <div className='_dashboard_nav_top_right'>
                     <p className="_dashboard_nav_status-label">Account status</p>
                     <div className="_dashboard_nav_status">
                       <span className="_dashboard_nav_status-indicator">
-                        <span className={`${user?.status == 'active' ? `_dashboard_nav_status-circle` : `_dashboard_nav_status-circle _dashboard_nav_status-circle_inactive`}`}></span>
-                        <p className="_dashboard_nav_status-text">{user.status}</p>
+                        <span className={`${user?.status == 1 ? `_dashboard_nav_status-circle` : `_dashboard_nav_status-circle _dashboard_nav_status-circle_inactive`}`}></span>
+                        <p className="_dashboard_nav_status-text">{user.status == 1 ? 'Active' : 'Inactive' }</p>
                       </span>
-                      <p className="_dashboard_nav_status-date">Since {formatDate(user.updatedAt)}</p>
+                      <p className="_dashboard_nav_status-date">Since {formatDate(user.createdAt)}</p>
                     </div>
                   </div>
                 </div>
                 {
-                  investor?.accounts?.length > 0 ?
+                  userDetails?.Currencies?.length !== 0 ?
                     <div className='_dashboard_nav_bottom'>
                       <div className='_dashboard_nav_bottom_left'>
                         <p className="_dashboard_nav_currency-label">Currency</p>
                         <div className="_dashboard_nav_currency-select">
-                          <CurrencyDropdown currency={selectedCurrencyVal} setSelectCurrency={setSelectCurrency} />
+                          <CurrencyDropdown currency={userDetails?.Currencies} setSelectCurrency={setSelectCurrency} />
                         </div>
-                      </div>
-                      <div className='_dashboard_nav_bottom_right'>
-                        <label>Project selection Country wise</label>
-                        <CountryDropdown projects={investor?.projects} setSelectCountry={setSelectCountry} />
                       </div>
                     </div>
                     :
@@ -353,10 +302,10 @@ const Dashboard = () => {
                 }
               </nav>
               {
-                investorData?.accounts && investorData?.accounts.length > 0 ?
+                userDetails?.Investments && userDetails?.Investments.length !== 0 ?
                   <div className="_dashboard_content">
                     {
-                      transactions.length > 0 ? (
+                      selectedCurrencyTransactions.length > 0 ? (
                         <>
                           <div className='_dashboard_overall_investment'>
                             <div className='_dashboard_overall_investment_info'>
@@ -364,11 +313,11 @@ const Dashboard = () => {
                               <div className='_dashboard_overall_investment_info_details'>
                                 <div className='_dashboard_overall_investment_info_detail'>
                                   <h6 className='_dashboard_overall_investment_info_detail-title _title_h2'>Total assets</h6>
-                                  <span className='_dashboard_overall_investment_info_detail-value'>{selectedCurrency?.currencySymbol} {formatAmount(totalAmount)}</span>
+                                  <span className='_dashboard_overall_investment_info_detail-value'>{selectedCurrency?.symbol} {formatAmount(totalAmount)}</span>
                                 </div>
                                 <div className='_dashboard_overall_investment_info_detail'>
                                   <h6 className='_dashboard_overall_investment_info_detail-title _title_h2'>Total interest</h6>
-                                  <span className='_dashboard_overall_investment_info_detail-value'>{selectedCurrency?.currencySymbol} 0</span>
+                                  <span className='_dashboard_overall_investment_info_detail-value'>{selectedCurrency?.symbol} 0</span>
                                 </div>
                                 <div className='_dashboard_overall_investment_info_detail'>
                                   <h6 className='_dashboard_overall_investment_info_detail-title _title_h2'>Total Projects</h6>
@@ -397,7 +346,7 @@ const Dashboard = () => {
                                 <Tooltip
                                   formatter={(value, _, entry) => {
                                     // Ensure to access the currency correctly
-                                    const name = entry.payload.projectName; // Access currency from payload
+                                    const name = entry.payload.name; // Access currency from payload
                                     return [`${name}: ${formatAmount(value)}`]; // Return formatted value as an array
                                   }}
                                 />
@@ -478,139 +427,123 @@ const Dashboard = () => {
                                 // extensions={{ AutoScroll }}
                                 >
                                   {
-                                    countryWiseProjects && countryWiseProjects?.map((project: any, index: number) => (<>
-                                      {
-                                        transactionsData?.length > 0 ? (
-                                          transactionsData.some((p: any) => p.projectId === project.name) ? (
-                                            transactionsData
-                                              .filter((p: any) => p.projectId === project.name)
-                                              .map((investment: any, idx: number) => (
-                                      <SplideSlide key={index}>
-                                        <div className={`_dashboard_project_details_card ${graphProject === project.name ? '_dashboard_project_details_card_active' : ''
-                                          }`} onClick={() => { setGraphProject(project.name) }}>
-                                          <div className='_dashboard_project_details_card_header'>
-                                            <h4 className='_dashboard_project_details_card_title _title_h1'>{project.name}:</h4>
-                                            <figure className='_dashboard_project_details_card_media_wrapper'>
-                                              <img className='_dashboard_project_details_card_media' />
-                                            </figure>
-                                          </div>
-                                          <div className='_dashboard_project_details_card_info_wrapper'>
-                                            <div className='_dashboard_project_details_card_info'>
-                                              <div className='_dashboard_project_details_card_info_name'>
-                                              Amount invested
-                                              </div>
-                                              <div className='_dashboard_project_details_card_info_value'>
-                                              {selectedCurrency?.currencySymbol}{investment.creditedTotal !== undefined && investment.creditedTotal !== null ? formatAmount(investment.creditedTotal) : 0}
-                                              </div>
-                                            </div>
-                                            <div className='_dashboard_project_details_card_info'>
-                                              <div className='_dashboard_project_details_card_info_name'>
-                                              Current value
-                                              </div>
-
-                                              <div className='_dashboard_project_details_card_info_value'>
-                                              {selectedCurrency?.currencySymbol}{investment.investmentAmount !== undefined && investment.investmentAmount !== null ? formatAmount(investment.investmentAmount) : 0}
-                                              </div>
-
-                                            </div>
-                                            <div className='_dashboard_project_details_card_info'>
-                                              <div className='_dashboard_project_details_card_info_name'>
-                                              Lock-in period
-                                              </div>
-                                              <div className='_dashboard_project_details_card_info_value'>
-                                              {formatDate(project.startDate)}
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </SplideSlide>
-                                                                                            ))
-                                                  ) : (
-                                                    <div className='_dashboard_project_details_card_info_value'></div>
-                                                  )
-                                                ) : (
-                                                  <div className='_dashboard_project_details_card_info_value'>{selectedCurrency?.currencySymbol}0</div>
-                                                )
-                                              }
-                                              </>
+                                    selectedCurrencyProjects?.length > 0 &&
+                                    selectedCurrencyProjects.map((project, index) => (
+                                      <React.Fragment key={index}>
+                                        {selectedCurrencyInvestments?.length > 0 ? (
+                                          selectedCurrencyInvestments
+                                            .filter(investment => investment.ProjectId === project.id) // Ensure correct mapping
+                                            .map((investment: any, idx: number) => (
+                                              <SplideSlide key={idx}>
+                                                <div
+                                                  className={`_dashboard_project_details_card ${
+                                                    graphProject === investment.ProjectId
+                                                      ? '_dashboard_project_details_card_active'
+                                                      : ''
+                                                  }`}
+                                                  onClick={() => setGraphProject(investment.ProjectId)}
+                                                >
+                                                  <div className="_dashboard_project_details_card_header">
+                                                    <h4 className="_dashboard_project_details_card_title _title_h1">
+                                                      {project.name}:
+                                                    </h4>
+                                                    <figure className="_dashboard_project_details_card_media_wrapper">
+                                                      <img className="_dashboard_project_details_card_media" />
+                                                    </figure>
+                                                  </div>
+                                                  <div className="_dashboard_project_details_card_info_wrapper">
+                                                    <div className="_dashboard_project_details_card_info">
+                                                      <div className="_dashboard_project_details_card_info_name">
+                                                        Amount invested
+                                                      </div>
+                                                      <div className="_dashboard_project_details_card_info_value">
+                                                        {selectedCurrency?.symbol} &nbsp;
+                                                        {investment.investedAmount}
+                                                      </div>
+                                                    </div>
+                                                    <div className="_dashboard_project_details_card_info">
+                                                      <div className="_dashboard_project_details_card_info_name">
+                                                        Current value
+                                                      </div>
+                                                      <div className="_dashboard_project_details_card_info_value">
+                                                        {selectedCurrency?.currencySymbol}
+                                                        {investment.investedAmount}
+                                                      </div>
+                                                    </div>
+                                                    <div className="_dashboard_project_details_card_info">
+                                                      <div className="_dashboard_project_details_card_info_name">
+                                                        Lock-in period
+                                                      </div>
+                                                      <div className="_dashboard_project_details_card_info_value">
+                                                        {formatDate(project.startDate)}
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </SplideSlide>
+                                            ))
+                                        ) : (
+                                          <div className="_dashboard_project_details_card_info_value"></div>
+                                        )}
+                                      </React.Fragment>
                                     ))
                                   }
+
+
                                 </Splide>
                               </div>
                               {
                                 graphProject ? (
                                   <div className='_dashboard_project_details_graph_section'>
-                                    {countryWiseProjects
-                                      .filter((project: any) => project.name === graphProject)
-                                      .map((selectedProject: any) => (
-                                        <>
-                                          {transactionsData ?
-                                            transactionsData
-                                              .filter((project: any) => project.projectId === selectedProject.name)
-                                              .map((selectedProjectInvestment: any) => (
-                                                <>
-                                                  <div className='_dashboard_project_details_graph'>
-                                                    <h6 className='_dashboard_project_details_graph_title _title_h1'>
-                                                    10 Project transactions
-                                                    </h6>
-                                                    <TransactionTable data={chartData} currency={selectedCurrency} />
-                                                  </div>
-                                                  <div className='_dashboard_project_details_graph_info'>
-                                                    <h6 className='_title_h1 _dashboard_project_details_graph_info_title'>About this project</h6>
-                                                    <div className='_dashboard_project_details_graph_info_list'>
-                                                      <div className='_dashboard_project_details_graph_info_item'>
-                                                        <div className='_dashboard_project_details_graph_info_item_name'>
-                                                          Current value
-                                                        </div>
-                                                        <div className='_dashboard_project_details_graph_info_item_value'>
-                                                          {selectedCurrency?.currencySymbol}{formatAmount(selectedProjectInvestment.investmentAmount)}
-                                                        </div>
-                                                      </div>
-                                                      <div className='_dashboard_project_details_graph_info_item'>
-                                                        <div className='_dashboard_project_details_graph_info_item_name'>
-                                                          Project status
-                                                        </div>
-                                                        <div className='_dashboard_project_details_graph_info_item_value'>
-                                                          Active
-                                                        </div>
-                                                      </div>
-                                                      <div className='_dashboard_project_details_graph_info_item'>
-                                                        <div className='_dashboard_project_details_graph_info_item_name'>
-                                                          Location
-                                                        </div>
-                                                        <div className='_dashboard_project_details_graph_info_item_value'>
-                                                          {selectedProject.address}
-                                                        </div>
-                                                      </div>
-                                                    </div>
-                                                    <div className='_dashboard_project_details_graph_info_description'>
-                                                      <p className='_dashboard_project_details_graph_info_description_title'>
-                                                        Description
-                                                      </p>
-                                                      <p className='_dashboard_project_details_graph_info_description_text'>
-                                                        {selectedProject.description}
-                                                      </p>
-                                                    </div>
-                                                  </div>
-                                                </>
-                                              ))
-                                            :
-                                            <div className="smart-glass">
-                                              <div className="logo">
-                                                <div className="circle">
-                                                  <div className="circle">
-                                                    <div className="circle">
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                                <div className="loading-text">
-                                                  Loading...
-                                                </div>
-                                              </div>
-                                            </div>
-                                          }
-                                        </>
-                                      ))}
+                                          
+                                    <div className='_dashboard_project_details_graph'>
+                                      <h6 className='_dashboard_project_details_graph_title _title_h1'>
+                                      10 Project transactions
+                                      </h6>
+                                      <TransactionTable data={chartData} currency={selectedCurrency} />
+                                    </div>
+                                  {
+                                    selectedProject && selectedInvestment &&
+                                    <div className='_dashboard_project_details_graph_info'>
+                                      <h6 className='_title_h1 _dashboard_project_details_graph_info_title'>About this project</h6>
+
+                                      <div className='_dashboard_project_details_graph_info_list'>
+                                        <div className='_dashboard_project_details_graph_info_item'>
+                                          <div className='_dashboard_project_details_graph_info_item_name'>
+                                            Current value
+                                          </div>
+                                          <div className='_dashboard_project_details_graph_info_item_value'>
+
+                                             {formatAmount(Number(selectedInvestment.investedAmount))}
+                                          </div>
+                                        </div>
+                                        <div className='_dashboard_project_details_graph_info_item'>
+                                          <div className='_dashboard_project_details_graph_info_item_name'>
+                                            Project status
+                                          </div>
+                                          <div className='_dashboard_project_details_graph_info_item_value'>
+                                            Active
+                                          </div>
+                                        </div>
+                                        <div className='_dashboard_project_details_graph_info_item'>
+                                          <div className='_dashboard_project_details_graph_info_item_name'>
+                                            Location
+                                          </div>
+                                          <div className='_dashboard_project_details_graph_info_item_value'>
+                                            {selectedProject.address}
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div className='_dashboard_project_details_graph_info_description'>
+                                        <p className='_dashboard_project_details_graph_info_description_title'>
+                                          Description
+                                        </p>
+                                        <p className='_dashboard_project_details_graph_info_description_text'>
+                                          {selectedProject.description}
+                                        </p>
+                                      </div>
+                                    </div>
+                              }
                                   </div>
                                 )
 

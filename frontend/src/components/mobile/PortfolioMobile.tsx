@@ -3,13 +3,14 @@ import { useSelector } from "react-redux";
 import { getCurrencyAll, getProject } from "../../api/apiEndpoints";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import TransactionTable from "../../utils/TransactionTable";
-import CountryDropdown from "../../utils/buttons/CountryDropdown";
 import CurrencyDropdown from "../../utils/buttons/CurrencyDropdown";
 import { useLocation } from "react-router-dom";
 import { Loader } from "../../utils/Loader";
 import { InvestorDetails } from "../../redux/actions/investorActions";
 
 const PortfolioMobile = () => {
+
+  let CountryDropdown = CurrencyDropdown;
 
     const [transactions, setTransactions] = useState<any[]>([]);
     

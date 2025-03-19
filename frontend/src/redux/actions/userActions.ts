@@ -1,5 +1,5 @@
 import { FETCH_USER_REQUEST, FETCH_USER_SUCCESS, FETCH_USER_FAILURE } from '../actions/actionTypes';
-import { getUser } from '../../api/apiEndpoints';
+import { getUser, getUserDetails } from '../../api/apiEndpoints';
 import { Dispatch } from 'redux';
 
 export interface UserDetails {
@@ -30,7 +30,7 @@ export const fetchUserById = (userId: number) => {
         dispatch(fetchUserRequest());
         try {
 
-            const response = await getUser(userId); // Replace with your API endpoint
+            const response = await getUserDetails(userId); // Replace with your API endpoint
             dispatch(fetchUserSuccess(response));
         } catch (error:any) {
             dispatch(fetchUserFailure(error.message));

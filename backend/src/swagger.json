@@ -578,8 +578,8 @@
 											"amount": {
 												"type": "string"
 											},
-											"status": {
-												"type": "string"
+											"credited": {
+												"type": "boolean"
 											},
 											"date": {
 												"type": "string"
@@ -594,7 +594,7 @@
 										},
 										"required": [
 											"amount",
-											"status",
+											"credited",
 											"date",
 											"title",
 											"id"

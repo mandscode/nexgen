@@ -1,6 +1,36 @@
 // src/apiEndpoints.ts
 import api from './api';
 
+export const getUserDetails = async (id:number) => {
+  try {
+    const response = await api.get(`/users/details/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    throw error;
+  }
+};
+
+export const getProfileDetails = async (id:number) => {
+  try {
+    const response = await api.get(`/profile/details/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    throw error;
+  }
+};
+
+export const getEntityRelatedProjects = async (id:number) => {
+  try {
+    const response = await api.get(`/projects/entities/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    throw error;
+  }
+};
+
 // Example API call: Create a new user
 export const createUser = async ( token: any) => {
   try {

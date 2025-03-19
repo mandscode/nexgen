@@ -59,7 +59,7 @@ class UserDetailsService {
             // Check if user is an investor
             const isInvestor = (_a = user.roles) === null || _a === void 0 ? void 0 : _a.some(role => role.name === "Investor");
             const isViewer = (_b = user.roles) === null || _b === void 0 ? void 0 : _b.some(role => role.name === "Viewer");
-            let userJSON = Object.assign(Object.assign({}, filteredUserDTO), { message: '', InvestedCurrencies: [], Investments: [], projects: [], Currencies: [] });
+            let userJSON = Object.assign(Object.assign({}, filteredUserDTO), { status: filteredUserDTO.status && filteredUserDTO.status == "active" ? 1 : 0, message: '', InvestedCurrencies: [], Investments: [], projects: [], Currencies: [] });
             if (isViewer) {
                 userJSON.projects = undefined;
                 userJSON.Investments = undefined;
@@ -117,14 +117,14 @@ class UserDetailsService {
                             id: transaction.id,
                             title: transaction.details, // Assuming `details` contains the transaction title
                             date: transaction.transactionDate,
-                            status: transaction.credited ? "credit" : "debit",
+                            credited: transaction.credited ? true : false,
                             amount: transaction.amount.toString(),
                         });
                     });
                 });
                 // Convert the grouped investments into an array
                 const Investments = Array.from(groupedInvestments.values());
-                userJSON = Object.assign(Object.assign({}, filteredUserDTO), { "message": 'You dont have any active investments now, please contact 93232345 to start your investment journey', Currencies: ((_d = investorDetails === null || investorDetails === void 0 ? void 0 : investorDetails.accounts) === null || _d === void 0 ? void 0 : _d.map((account) => ({
+                userJSON = Object.assign(Object.assign({}, filteredUserDTO), { status: filteredUserDTO.status && filteredUserDTO.status == "active" ? 1 : 0, "message": 'You dont have any active investments now, please contact 93232345 to start your investment journey', Currencies: ((_d = investorDetails === null || investorDetails === void 0 ? void 0 : investorDetails.accounts) === null || _d === void 0 ? void 0 : _d.map((account) => ({
                         id: (account === null || account === void 0 ? void 0 : account.currencyDetails.id) || 0,
                         name: (account === null || account === void 0 ? void 0 : account.currencyDetails.code) || '',
                         symbol: (account === null || account === void 0 ? void 0 : account.currencyDetails.symbol) || ''

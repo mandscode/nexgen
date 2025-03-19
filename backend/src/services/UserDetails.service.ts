@@ -93,7 +93,7 @@ export class UserDetailsRespDTO {
             id: number;
             title: string;
             date: string;
-            status: string;
+            credited: boolean;
             amount: string;
         }[];
     }[];
@@ -144,6 +144,7 @@ class UserDetailsService {
 
         let userJSON: UserDetailsRespDTO = {
             ...filteredUserDTO,
+            status:filteredUserDTO.status && filteredUserDTO.status == "active" ? 1 : 0,
             message: '',
             InvestedCurrencies: [],
             Investments: [],
@@ -214,7 +215,7 @@ class UserDetailsService {
                         id: transaction.id,
                         title: transaction.details, // Assuming `details` contains the transaction title
                         date: transaction.transactionDate,
-                        status: transaction.credited ? "credit" : "debit",
+                        credited: transaction.credited ? true : false,
                         amount: transaction.amount.toString(),
                     });
                 });
@@ -226,6 +227,7 @@ class UserDetailsService {
 
             userJSON = {
                 ...filteredUserDTO,
+                status:filteredUserDTO.status && filteredUserDTO.status == "active" ? 1 : 0,
                 "message": 'You dont have any active investments now, please contact 93232345 to start your investment journey',
                 Currencies: investorDetails?.accounts?.map((account: any) => ({
                     id: account?.currencyDetails.id || 0,

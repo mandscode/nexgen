@@ -30,7 +30,7 @@ const ProtectedRoute = () => {
     const { isAuthenticated, isLoading } = useContext<AppStore>(AppContext);
 
     if (isLoading) {
-        return <div>Loading..zzzzzzzzzzzzzzzz.</div>; // Or any other loading indicator
+        return <div>Loading...</div>; // Or any other loading indicator
     }
 
     return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;

@@ -8,7 +8,7 @@ const Index: React.FC = () => {
     <>
         <main>
           <Dashboard/>
-          <DashboardMobile/>
+          {/* <DashboardMobile/> */}
         </main>
     </>
   );
