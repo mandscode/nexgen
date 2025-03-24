@@ -1,0 +1,37 @@
+// Global stylesheet where we will import all other stylesheets
+// sass --watch public\assets\styles\scss\styles.scss public\assets\styles\css\style.css
+// sass --watch src\scss\styles.scss dist\css\_styles.min.css --style compressed
+
+// Variables
+@import "./variables/variables" ;
+
+// Mixins
+@import "./mixins/mixins" ;
+
+// Fonts
+@import "./fonts/fonts" ;
+
+// Icon Fonts
+@import "./icon-fonts/icon-fonts" ;
+
+// Base
+@import "./base/base" ;
+
+// Themes
+@import "./themes/themes" ;
+
+// Utilities
+@import "./utilities/utilities" ;
+
+// Pages
+@import "./pages/pages" ;
+
+// Components
+@import "./components/components" ;
+
+@media (max-width: 576px) { /* Adjust for mobile */
+    .modal-content {
+      max-width: 90% !important; /* Ensure it takes 90% of the screen */
+      margin: auto;
+    }
+}

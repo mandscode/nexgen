@@ -53,19 +53,37 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProjectController = void 0;
-const tsoa_1 = require("tsoa");
 const project_service_1 = __importStar(require("../services/project.service"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const tsoa_1 = require("tsoa");
 let ProjectController = class ProjectController {
-    getAllProjects() {
+    getAllProjects(req) {
         return __awaiter(this, void 0, void 0, function* () {
-            return project_service_1.default.getAllProjects();
+            const authHeader = req.headers.authorization;
+            let userShare;
+            if (authHeader) {
+                // Decode the token to get the userShare
+                const token = authHeader.split(' ')[1]; // Extract Bearer token
+                const decodedToken = jsonwebtoken_1.default.verify(token, 'your_jwt_secret');
+                userShare = decodedToken.userShare;
+            }
+            return project_service_1.default.getAllProjects(userShare);
         });
     }
     getProjectById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return project_service_1.default.getProjectById(id);
+        });
+    }
+    getProjectsByEntityId(entityIds) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const ids = entityIds.split(',').map(Number);
+            return project_service_1.default.getProjectsByEntityIds(ids);
         });
     }
     createProject(project) {
@@ -88,8 +106,9 @@ let ProjectController = class ProjectController {
 exports.ProjectController = ProjectController;
 __decorate([
     (0, tsoa_1.Get)('/'),
+    __param(0, (0, tsoa_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ProjectController.prototype, "getAllProjects", null);
 __decorate([
@@ -99,6 +118,13 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], ProjectController.prototype, "getProjectById", null);
+__decorate([
+    (0, tsoa_1.Get)('/Entity'),
+    __param(0, (0, tsoa_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ProjectController.prototype, "getProjectsByEntityId", null);
 __decorate([
     (0, tsoa_1.Post)('/'),
     __param(0, (0, tsoa_1.Body)()),

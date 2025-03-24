@@ -8,13 +8,6 @@ import api from '../../api/api';
 
 
 import React from "react";
-import {
-  MDBContainer,
-  MDBInput,
-  MDBCheckbox,
-  MDBBtn,
-  MDBIcon
-} from "mdb-react-ui-kit";
 import { Eye, EyeOff } from 'react-feather';
 import OldPasswordChangeModal from './OldPasswordChangeModal';
 import { getUser } from '../../api/apiEndpoints';
@@ -31,6 +24,7 @@ const LoginMDB: React.FC<LoginMDBProps> = ({isResponsive}) => {
   const [showPassword, setShowPassword] = useState(false); // Toggle State
 
   const [userId, setUserId] = useState("");
+  const [isFirstLoginState, setIsFirstLogin] = useState("");
 
   
   const [showModalForOldPassword, setShowModalForOldPassword] = useState(false);
@@ -39,7 +33,7 @@ const LoginMDB: React.FC<LoginMDBProps> = ({isResponsive}) => {
     event.preventDefault();
     // dispatch(tokenRequest());
     try {
-      const response = await api.post("/users/login", { email, password });
+      const response = await api.post("/users/login", { email, password, entity:1 });
       const { token, message, userId, isMasterAdmin, isFirstLogin } = response.data;
       const user = await getUser(userId);
       if(user.roles) {
@@ -48,7 +42,7 @@ const LoginMDB: React.FC<LoginMDBProps> = ({isResponsive}) => {
           if (!isAdmin) {
 
 
-      
+      setIsFirstLogin(isFirstLogin)
       if(isFirstLogin) {
         setUserId(userId)
         setShowModalForOldPassword(true)
@@ -71,47 +65,56 @@ const LoginMDB: React.FC<LoginMDBProps> = ({isResponsive}) => {
 
   return (
     <>
-      <MDBContainer className=" d-flex flex-column">
-              <form onSubmit={handleEmailPasswordLogin}>
-              <MDBInput
-                wrapperClass="mb-4"
-                label="Email address"
-                id="form1"
-                size='lg'
-                className={`form-control-lg login-input ${isResponsive ? "bg-white" : ""}`}
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-            />
-            <div className="mb-4 position-relative">
+    <div className="login-container">
+      {
+        showModalForOldPassword ?
 
-          <MDBInput
-            wrapperClass="mb-4"
-            label="Password"
-            id="form2"
-            type={showPassword ? "text" : "password"}
-            className={`form-control-lg login-input ${isResponsive ? "bg-white" : ""}`}
-            value={password}
-            size='lg'
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <span
-              className="position-absolute end-0 translate-middle-y me-3"
-              style={{top:'50%', transform:'translateY(-50%)', cursor: "pointer"}}
-              onClick={() => setShowPassword(!showPassword)}
-            >
+        <OldPasswordChangeModal
+                  show={showModalForOldPassword}
+                  onHide={() => setShowModalForOldPassword(false)}
+                  userId={userId} 
+                  email={email}
+                  isFirstLogin={isFirstLoginState}
+                />
+                :
+      <div className="login-box">
+        <form onSubmit={handleEmailPasswordLogin} className="login-form">
+          {/* Email Field */}
+          <div className="input-group">
+            <label htmlFor="email">Email address</label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              />
+          </div>
+
+          {/* Password Field */}
+          <div className="input-group password-group">
+            <label htmlFor="password">Password</label>
+            <input
+              type={showPassword ? "text" : "password"}
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            {/* Toggle Password Visibility */}
+            <span className="password-toggle" onClick={() => setShowPassword(!showPassword)}>
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </span>
-            </div>
-                {/* <div className="d-flex justify-content-between mx-3 mb-4"> */}
-                  {/* <a href="#!">Forgot password?</a> */}
-        <MDBBtn className="mb-4 btn-lg">Sign in</MDBBtn>
-                {/* </div> */}
-              </form>
-      </MDBContainer>
-      <OldPasswordChangeModal show={showModalForOldPassword} onHide={() => setShowModalForOldPassword(false)} userId={userId}/>
+          </div>
+
+          {/* Submit Button */}
+          <button type="submit" className="login-button">Sign in</button>
+        </form>
+      </div>
+      }
+
+
+    </div>
     </>
   );
 };

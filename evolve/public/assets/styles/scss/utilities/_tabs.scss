@@ -1,0 +1,75 @@
+._basic_tab {
+    &_button {
+        background-color: transparent;
+        color: #444;
+        cursor: pointer;
+        padding: 18px;
+        width: 100%;
+        border: none;
+        text-align: left;
+        font-weight: 600;
+        outline: none;
+        font-size: 15px;
+        transition: 0.4s;
+    }
+      
+    &-active {
+        background-color: #e8e8e8; 
+        color: #000;
+    }
+    
+    &_button:hover {
+        background-color: #e8e8e8; 
+        color: #000;
+    }
+      
+    &_content {
+        display: none;
+        overflow: hidden;
+    }
+}
+
+._outlined_tab {
+    margin: 6rem 0;
+    padding-top: 2rem;
+  
+    &_wrapper {
+      display: grid;
+      position: relative;
+    }
+    
+    [role="tabButtons"] {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+    
+    [role="tabContent"] {
+      background: rgba(0,0,0,0.03);
+      padding: 2rem;
+      min-height: 50vh;
+    
+      border-right: 2px solid grey;
+      border-left: 2px solid grey;
+      border-bottom: 2px solid grey;
+    }
+
+    button {
+        font-weight: 600;
+        font-size: 2rem;
+        padding: 1rem;
+        color: #fff;
+        background: transparent;
+        border: 0;
+        border-bottom: 2px solid grey;
+        cursor: pointer;
+      }
+      
+    button[aria-selected="true"] {
+        background: rgba(0,0,0,0.03);    
+        border-top: 2px solid grey;
+        border-left: 2px solid grey;
+        border-right: 2px solid grey;
+        border-bottom: 0;
+        outline: 0;
+    }
+}

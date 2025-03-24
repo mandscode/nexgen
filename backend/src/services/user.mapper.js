@@ -5,6 +5,7 @@ exports.toUsersDTO = toUsersDTO;
 const class_transformer_1 = require("class-transformer");
 const user_service_1 = require("./user.service");
 const role_mapper_1 = require("./role.mapper");
+const entity_mapper_1 = require("./entity.mapper");
 function toUserDTO(user) {
     const roles = user.dataValues.roles;
     const entities = user.dataValues.entities;
@@ -15,7 +16,7 @@ function toUserDTO(user) {
         userDto.roles = (0, role_mapper_1.toRolesDTO)(roles);
     }
     if (entities) {
-        userDto.entities = (0, role_mapper_1.toRolesDTO)(entities);
+        userDto.entities = (0, entity_mapper_1.toEntitiesDTO)(entities);
     }
     userDto.status = user.status; // Map status
     return userDto;

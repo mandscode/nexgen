@@ -73,6 +73,12 @@ let TransactionController = class TransactionController {
             return transaction_service_1.default.createTransaction(transaction);
         });
     }
+    addEarning(id, body) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield transaction_service_1.default.addEarning(id, body.investorId, body.earning);
+            return { message: "Earning updated successfully." };
+        });
+    }
 };
 exports.TransactionController = TransactionController;
 __decorate([
@@ -95,6 +101,14 @@ __decorate([
     __metadata("design:paramtypes", [transaction_service_1.TransactionDTO]),
     __metadata("design:returntype", Promise)
 ], TransactionController.prototype, "createTransaction", null);
+__decorate([
+    (0, tsoa_1.Put)('/{id}/earning'),
+    __param(0, (0, tsoa_1.Path)('id')),
+    __param(1, (0, tsoa_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:returntype", Promise)
+], TransactionController.prototype, "addEarning", null);
 exports.TransactionController = TransactionController = __decorate([
     (0, tsoa_1.Route)('transactions')
 ], TransactionController);

@@ -1,11 +1,17 @@
+import Account from '../models/account';
 import Entity from '../models/entity';
+import Investor from '../models/investor';
+import Project from '../models/project';
 import Role from '../models/role';
 import User from '../models/user';
+import UserEntities from '../models/user-entities';
 import { EntityDTO } from './entity.service';
+import { toInvestorDTO } from './investor.mapper';
+import { InvestorRespDTO } from './investor.service';
 import { RoleDTO } from './role.service';
 import { toUserDTO, toUsersDTO } from './user.mapper';
-
 import bcrypt from 'bcrypt';
+
 
 export class UserReqDTO {
     id?: number;
@@ -27,12 +33,14 @@ export class UserRespDTO {
     lastName!: string;
     email!: string;
     roles?: RoleDTO[];
+    investor?:InvestorRespDTO;
     isMasterAdmin!:boolean;
     personalDetails?: { [key: string]: any };
     status?: string; // Add status
-    entities?:any[];
+    entities?:EntityDTO[];
     isFirstLogin!:boolean;
 }
+
 
 const SALT_ROUNDS = 10;
 
@@ -163,13 +171,41 @@ class UserService {
     }
 
     async getUserById(id: number): Promise<UserRespDTO | null> {
-        return await User.findByPk(id, {
-            include: [
-                { model: Role, attributes: ['id', 'name'] },  // Exclude circular `users` relation
-                { model: Entity, attributes: ['id', 'name'] }
-            ],
-            attributes: { exclude: ['password'] },  // Prevent sensitive data
-        }).then(user => user ? toUserDTO(user) : null);
+        const user = await User.findByPk(id, {
+                include: [
+                    { model: Role, attributes: ['id', 'name'], through: { attributes: [] } },  // Exclude circular `users` relation
+                    { model: Entity, attributes: ['id', 'name'], through: { attributes: [] } }
+                ],
+                attributes: { exclude: ['password', "googleId"] }
+            }
+        )
+        if(!user) return null;
+
+        const userDTO = toUserDTO(user)
+
+        const isInvestor = await user.roles?.some((role) => role.name == "Investor");
+
+        if(isInvestor) {
+            const investorDetails = await Investor.findOne({
+                where:{userId:id},
+                include: [
+                    {
+                        model:Account
+                    }, 
+                    {
+                        model:Project,
+                        through: { attributes: [] }
+                    }
+                ],
+                attributes: { exclude: ['userId'] }
+            })
+
+            if(investorDetails) {
+                userDTO.investor = toInvestorDTO(investorDetails);
+            }
+        }
+        
+        return userDTO
     }
     
     async validatePassword(userId: number, password: string): Promise<boolean> {
@@ -183,6 +219,29 @@ class UserService {
     async findUserByEmail(email: string): Promise<UserRespDTO | null> {
         
         return User.findOne({ where: { email } }).then(user => user ? toUserDTO(user) : null);
+    }
+
+    async assignEntities(userId: number, entityIds: number[]): Promise<UserRespDTO | null> {
+        if (!entityIds || entityIds.length === 0) {
+            throw new Error('No entity IDs provided');
+        }
+    
+        // Find the user
+        const user = await User.findByPk(userId);
+        if (!user) {
+            throw new Error('User not found');
+        }
+    
+        // Loop through the provided entityIds and assign them
+        for (const entityId of entityIds) {
+
+            // Assign the entity to the user
+            await UserEntities.create({
+                userId: userId,
+                entityId: entityId,
+            });
+        }
+        return this.getUserById(userId);
     }
 }
 

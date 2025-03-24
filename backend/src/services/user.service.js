@@ -13,9 +13,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserRespDTO = exports.UserReqDTO = void 0;
+const account_1 = __importDefault(require("../models/account"));
 const entity_1 = __importDefault(require("../models/entity"));
+const investor_1 = __importDefault(require("../models/investor"));
+const project_1 = __importDefault(require("../models/project"));
 const role_1 = __importDefault(require("../models/role"));
 const user_1 = __importDefault(require("../models/user"));
+const user_entities_1 = __importDefault(require("../models/user-entities"));
+const investor_mapper_1 = require("./investor.mapper");
 const user_mapper_1 = require("./user.mapper");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 class UserReqDTO {
@@ -136,13 +141,37 @@ class UserService {
     }
     getUserById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield user_1.default.findByPk(id, {
+            var _a;
+            const user = yield user_1.default.findByPk(id, {
                 include: [
-                    { model: role_1.default, attributes: ['id', 'name'] }, // Exclude circular `users` relation
-                    { model: entity_1.default, attributes: ['id', 'name'] }
+                    { model: role_1.default, attributes: ['id', 'name'], through: { attributes: [] } }, // Exclude circular `users` relation
+                    { model: entity_1.default, attributes: ['id', 'name'], through: { attributes: [] } }
                 ],
-                attributes: { exclude: ['password'] }, // Prevent sensitive data
-            }).then(user => user ? (0, user_mapper_1.toUserDTO)(user) : null);
+                attributes: { exclude: ['password', "googleId"] }
+            });
+            if (!user)
+                return null;
+            const userDTO = (0, user_mapper_1.toUserDTO)(user);
+            const isInvestor = yield ((_a = user.roles) === null || _a === void 0 ? void 0 : _a.some((role) => role.name == "Investor"));
+            if (isInvestor) {
+                const investorDetails = yield investor_1.default.findOne({
+                    where: { userId: id },
+                    include: [
+                        {
+                            model: account_1.default
+                        },
+                        {
+                            model: project_1.default,
+                            through: { attributes: [] }
+                        }
+                    ],
+                    attributes: { exclude: ['userId'] }
+                });
+                if (investorDetails) {
+                    userDTO.investor = (0, investor_mapper_1.toInvestorDTO)(investorDetails);
+                }
+            }
+            return userDTO;
         });
     }
     validatePassword(userId, password) {
@@ -157,6 +186,27 @@ class UserService {
     findUserByEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
             return user_1.default.findOne({ where: { email } }).then(user => user ? (0, user_mapper_1.toUserDTO)(user) : null);
+        });
+    }
+    assignEntities(userId, entityIds) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!entityIds || entityIds.length === 0) {
+                throw new Error('No entity IDs provided');
+            }
+            // Find the user
+            const user = yield user_1.default.findByPk(userId);
+            if (!user) {
+                throw new Error('User not found');
+            }
+            // Loop through the provided entityIds and assign them
+            for (const entityId of entityIds) {
+                // Assign the entity to the user
+                yield user_entities_1.default.create({
+                    userId: userId,
+                    entityId: entityId,
+                });
+            }
+            return this.getUserById(userId);
         });
     }
 }

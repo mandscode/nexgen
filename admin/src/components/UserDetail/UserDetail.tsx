@@ -9,7 +9,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { Card, Col, Form, Row, Tab, Tabs } from 'react-bootstrap';
 import NexGenTable from '../NexGenTable/NexGenTable';
 import { ProjectBasicDetailInterface, Transaction } from '../Utilities/interface/interface';
-import { getAccountOfInvestor, getCurrencyAll, getInvestor, getProject, getProjects, getUser, updateInvestorDocument } from '../../api/apiEndpoints';
+import { getAccountOfInvestor, getCurrencyAll, getEntities, getInvestor, getProject, getProjects, getUser, updateInvestorDocument } from '../../api/apiEndpoints';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
@@ -109,6 +109,8 @@ export interface InvestorOption {
 export interface AssignProjectOption {
   investorId: number;
   projectId: any;
+  entityType:number;
+  lockInPeriod?:string;
 }
 
 interface CurrencyData {
@@ -151,6 +153,8 @@ const UserDetail = ({  }:UserDetailProps) => {
 
   const [userOptions, setUserOptions] = useState<InvestorOption[]>([]);
   const [projectOptions, setProjectOptions] = useState([]);
+  const [option, setOptions] = useState();
+  const [entityOptions, setEntityOptions] = useState([]);
   const [projects, setProjects] = useState<ProjectBasicDetailInterface[]>([]);
 
   const [investorDetails, setInvestorDetails] = useState<InvestorInterface>();
@@ -169,6 +173,7 @@ const UserDetail = ({  }:UserDetailProps) => {
   const [userProjectListShow, setUserProjectListShow] = useState(false);
   const [updatedDocData, setUpdatedDocData] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState<readonly {value: number, label: string}[]>([]);
+  const [selectedOption, setSelectedOption] = useState(0);
 
   const { id } = useParams();
 
@@ -245,7 +250,8 @@ const UserDetail = ({  }:UserDetailProps) => {
   const schema = yup
   .object({
     investorId: yup.number().required('User ID is required'),
-    projectId:  yup.array().min(1, "select atleast one role").required(),
+    projectId:  yup.number().required( "select atleast one role"),
+    entityType:  yup.number().required("select atleast one entity"),
   })
   .required()
   const { register, handleSubmit, formState: { errors }, control } = useForm<AssignProjectOption>({
@@ -265,7 +271,7 @@ const UserDetail = ({  }:UserDetailProps) => {
       try {
         // Fetch investor details using `id`
         const investor = await getInvestor(Number(id));
-  
+        
         // Extract the associated `userId` from the investor and fetch user details
         if (investor?.userId) {
           await userDetailStore.fetchAccountData(Number(investor.userId)); // Fetch user details by userId
@@ -312,32 +318,49 @@ const UserDetail = ({  }:UserDetailProps) => {
         console.error("Failed to fetch users and projects:", error);
       }
     };
+    fetchUsersAndProjects();
+  }, [id, userAccountlistShow, updatedDocData, docDetailList]); // Ensure id and store are in dependency array
   
-    const fetchProjects = async () => {
+  useEffect(() => {
+    const fetchData = async () => {
       try {
         const projects = await getProjects();
-        setProjectOptions(
-          projects.map((project: any) => ({ value: project.id, label: project.name }))
+        const entities = await getEntities();
+
+        const investor = await getInvestor(Number(id));
+        
+
+        const user = await getUser(investor.userId);          // Await the asynchronous call
+        const entityIds = user.entities.map((entity: any) => entity.id);
+
+        const filteredProjects = projects.filter((project: any) =>
+          entityIds.includes(project.entityID)
         );
+        // const filteredProjects;  
+        setProjectOptions(
+          filteredProjects
+        );
+        setEntityOptions(
+          entities.map((e: any) => ({ id: e.id, name: e.name }))
+        );
+
       } catch (error) {
         console.error("Failed to fetch projects:", error);
       }
     };
-  
-    fetchUsersAndProjects();
-    fetchProjects();
-  }, [id, userAccountlistShow, updatedDocData, docDetailList]); // Ensure id and store are in dependency array
-  
 
+    fetchData();
+  }, [])
+  const [userEntities, setUserEntities] = useState(null);
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
         const accountsData = await getAccountOfInvestor(Number(id)); // Await the asynchronous call
 
         const investor = await getInvestor(Number(id));
+        
 
         const user = await getUser(investor.userId);          // Await the asynchronous call
-        
         const formattedTransactions = await Promise.all(
           accountsData.map(async (item:any) => {
             const allCurr = await getCurrencyAll();
@@ -378,16 +401,30 @@ const UserDetail = ({  }:UserDetailProps) => {
     setInvestorId(Number(id))
   }, [id])
 
-  // Define form fields array
+
   const fields = [
     { name: 'investorId', type: 'select', placeholder: 'Select User', options:userOptions },
     {
-      name: 'projectId',
-      type: 'multiselect',
-      placeholder: 'Select Projects',
-      options: projectOptions
+      name: 'entityType',
+      type: 'select',
+      placeholder: 'Select Option',
+      options: [
+        {id:0, name:"Entity"},
+        {id:1, name:"Project"}
+      ]
     },
+    {
+      name: 'projectId',
+      type: 'select',
+      placeholder: 'Select Project',
+      // options: selectedOption == 1 ? projectOptions : null
+      options: selectedOption == 1 ? projectOptions : entityOptions
+    },
+    ...(selectedOption == 1
+    ? [{ name: 'lockInPeriod', type: 'date', placeholder: 'Lock in Period' }]
+    : [])
   ];
+
 
   function getErrorMessage(name: string): string {
     const fieldError = errors[name as keyof AssignProjectOption];
@@ -827,7 +864,8 @@ const UserDetail = ({  }:UserDetailProps) => {
                             <Form.Select
                               aria-label="Default select example"
                               className={`form-control ${errors[field.name as keyof AssignProjectOption] ? 'is-invalid' : ''}`}
-                              {...register(field.name as keyof AssignProjectOption)} // Register the select field
+                              {...register(field.name as keyof AssignProjectOption)}
+                              onChange={(e:any) => {e.target.name == 'entityType' && setSelectedOption(Number(e.target.value))}}
                             >
                               <option>Open this select menu</option>
                               {
@@ -849,7 +887,7 @@ const UserDetail = ({  }:UserDetailProps) => {
                                   setSelectedOptions(selected || []);
                                   field.onChange(selected);
                                 }}
-                                options={projectOptions}
+                                options={selectedOption == 1 ? projectOptions : entityOptions}
                                 value={selectedOptions}/>
                               } />
                               :

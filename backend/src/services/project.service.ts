@@ -8,6 +8,8 @@ import { ResourceDTO } from './resource.service';
 import Resource from '../models/resource';
 import Investor from '../models/investor';
 import { InvestorRespDTO } from './investor.service';
+import User from '../models/user';
+import ProjectResource from '../models/project-resource';
 
 export class ProjectReqDTO {
     id?: number;
@@ -73,8 +75,31 @@ class ProjectService {
 
     }
 
-    async getAllProjects(): Promise<ProjectRespDTO[]> {
-        return Project.findAll().then(projects => toProjectsDTO(projects));
+    async getAllProjects(userShare?: number): Promise<ProjectRespDTO[]> {
+        let whereClause = {};
+    
+        if (userShare !== undefined) {
+            if (userShare === 1) {
+                // NexGen Projects
+                whereClause = { entityID : 1 };
+            } else {
+                // Evolve Projects
+                whereClause = { entityID : 2 };
+            }
+        }
+    
+        // Fetch projects with filtering
+        const projects = await Project.findAll({
+            where: whereClause
+        });
+    
+        // Convert projects to DTOs
+        return projects.map(toProjectDTO);
+    }
+    
+    async getProjectsByEntityIds(entityIds: number[]): Promise<ProjectRespDTO[] | null> {
+        return Project.findAll({ where: { entityID: entityIds } })
+            .then(projects => projects.length ? projects.map(toProjectDTO) : null);
     }
 
     async getProjectById(id: number): Promise<ProjectRespDTO | null> {
@@ -87,6 +112,7 @@ class ProjectService {
             address?: string,
             description?: string,
             overallCost?: number,
+            file?:string,
             maturityLockingPeriod?: number,
             ownerName?: string,
             settings?: { [key: string]: any }
@@ -102,6 +128,20 @@ class ProjectService {
             if (updateData.settings) project.settings = updateData.settings;
 
             await project.save(); // Save the updated project
+
+            if (updateData.file) {
+                const resource = await Resource.create({
+                    location: updateData.file, // File path (URL) from S3
+                    sourceId: 'project', // Project ID
+                    type: 'image', // Assuming the file is an image
+                    group: 'misc', // Group for the resource
+                });
+    
+                await ProjectResource.create({
+                    projectId: Number(id),
+                    resourceId: resource.id,
+                });
+            }
 
             return toProjectDTO(project);
         }

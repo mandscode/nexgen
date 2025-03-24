@@ -10,7 +10,7 @@ import { Card, Col, Container, Form, Image, Row, Tab, Tabs } from 'react-bootstr
 import NexGenTable from '../NexGenTable/NexGenTable';
 import { ColumnDef } from '@tanstack/react-table';
 import fetchAwsImages from '../Utilities/FetchImagesComponent';
-import { getAccountOfInvestor, getProject, getUser, updateProjectSettings } from '../../api/apiEndpoints';
+import { getAccountOfInvestor, getCurrencyDetail, getProject, getUser, updateProjectSettings } from '../../api/apiEndpoints';
 import UpdateProject from '../UpdateProject/UpdateProject';
 
 
@@ -72,32 +72,43 @@ const ProjectDetail = ({ }:ProjectDetailProps) => {
             const investorDetails = await Promise.all(
               project.investors.map(async (investor: any) => {
                 const user = await getUser(Number(investor.userId)); // Fetch user details
-  
+                
                 // Fetch investor's account transactions
                 const accounts = await getAccountOfInvestor(Number(investor.id));
   
-                let totalInvestedAmount = 0;
-  
-                accounts.forEach((account: any) => {
-                  totalInvestedAmount += account.transactions.reduce(
-                    (total: number, transaction: any) => total + transaction.amount,
-                    0
-                  );
+                const totalInvestedAmount = {} as any; 
+
+                accounts.forEach((account:any) => {
+                  account.transactions.forEach((transaction:any) => {
+                    if (!totalInvestedAmount[account.currency]) {
+                      totalInvestedAmount[account.currency] = 0;
+                    }
+                    totalInvestedAmount[account.currency] += transaction.amount;
+                  });
                 });
-  
+        
+                // Fetch currency details asynchronously
+                const currWiseTransactions = await Promise.all(
+                  Object.entries(totalInvestedAmount).map(async ([currency, amount]) => {
+                    const curr = await getCurrencyDetail(Number(currency)); // Await API response
+                    return `${curr.symbol} ${amount}`;
+                  })
+                );
+        
+                
                 return {
                   firstName: user.firstName || "",
                   lastName: user.lastName || "",
                   emailId: user.email || "",
-                  totalInvestedAmount,
+                  totalInvestedAmount: currWiseTransactions.join(' , ')
                 };
               })
             );
-  
+
             setProjectInvestors(investorDetails);
           } else {
             setProjectInvestors([
-              { firstName: "", lastName: "", emailId: "", totalInvestedAmount: 0 },
+              { firstName: "", lastName: "", emailId: "", totalInvestedAmount: [] },
             ]);
           }
         }

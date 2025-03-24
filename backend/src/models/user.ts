@@ -94,7 +94,7 @@ export default class User extends Model<InferAttributes<User>, InferCreationAttr
 
     addEntities!: BelongsToManyAddAssociationMixin<Entity[], number>;
     setEntities!: BelongsToManySetAssociationsMixin<Entity[], number>;
-    getEntities!: BelongsToManyGetAssociationsMixin<Role[]>;
+    getEntities!: BelongsToManyGetAssociationsMixin<Entity[]>;
 
     @Exclude()
     @BelongsToMany(() => Entity, () => UserEntities)

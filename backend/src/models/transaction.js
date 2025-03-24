@@ -28,10 +28,10 @@ __decorate([
 ], Transaction.prototype, "id", void 0);
 __decorate([
     (0, sequelize_typescript_1.Column)({
-        type: sequelize_typescript_1.DataType.JSON,
-        allowNull: true,
+        type: sequelize_typescript_1.DataType.STRING,
+        allowNull: false,
     }),
-    __metadata("design:type", Object)
+    __metadata("design:type", String)
 ], Transaction.prototype, "details", void 0);
 __decorate([
     (0, sequelize_typescript_1.ForeignKey)(() => project_1.default),

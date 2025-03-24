@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import MarkAllAsVerified from "../utils/MarkAllAsVerified";
+import { getProfileDetails } from "../api/apiEndpoints";
 
 interface Document {
     docName: string;  // or whatever properties the docs have
@@ -9,26 +10,34 @@ interface Document {
 }
 
 const Profile = () => {
-
-    const { user, error, investor, loading } = useSelector((state: any) => ({
+    const [profileData, setData] = useState<any>({})
+    const { user, error, loading } = useSelector((state: any) => ({
         loading: state.userDetails?.loading,
         user: state.userDetails?.user,
         error: state.userDetails?.error,
-        investor: state.investorDetails?.investor,
-        accountsData:state.investorAccsDetails?.accounts
     }));
 
-    const [docs, setDocs] = useState<Document[]>();
 
     useEffect(() => {
-        if(investor && investor?.documents) {
-            setDocs(investor?.documents)
-        }
-    }, [investor])
+        const fetchProfile = async () => {
+            if (user) {
+                try {
+                    const data = await getProfileDetails(user.id); // ✅ Await here
+                    setData(data);
 
+                } catch (err) {
+                    console.error(`Profile page error: ${err}`);
+                }
+            }
+        };
+    
+        fetchProfile();
+    }, [user]);
+    
+    
     if (loading) {
         return (
-          <div className="smart-glass">
+        <div className="smart-glass">
           <div className="logo">
             <div className="circle">
               <div className="circle">
@@ -52,13 +61,14 @@ const Profile = () => {
         );
     }
     
-    const personalDetails = investor?.personalDetails ? JSON.parse(investor.personalDetails) : null;
-    const nomineeDetails = investor?.nomineeDetails ? JSON.parse(investor.nomineeDetails) : null;
-    const emergencyContact = investor?.emergencyContact ? JSON.parse(investor.emergencyContact) : null
+
+    const personalDetails = profileData && profileData?.PersonalDetails || {};
+    const nomineeDetails = profileData && profileData?.NomineeDetails || {};
+    const emergencyContact = profileData && profileData?.EmergencyContactDetails || {};
+    const documents = profileData && profileData?.Documents || [];
     
-    // const parsedDocs = typeof docs === 'string' ? JSON.parse(docs) : docs;
-    // console.log(parsedDocs, "✅ Properly parsed docs");
     
+
     return (
         <>
             <section className="_user-profile">
@@ -70,14 +80,14 @@ const Profile = () => {
                         <div className="_user-profile_name-section">
                             <figure className="_user-profile_pic_wrapper">
                                 {
-                                    user.picture ?
+                                    profileData.picture ?
                                     <img alt="profile pic" className="_user-profile_pic" src={user.picture}/>
                                     :
                                     <div className="_user-profile_pic_text">{user.firstName.charAt(0).toUpperCase()}</div>
                                 }
                                 
                             </figure>
-                            <span className="_user-profile_name">{user.firstName} {user.lastName}</span>
+                            <span className="_user-profile_name">{profileData.FirstName} {profileData.lastName}</span>
                         </div>
                         <div className="_user-profile_info">
 
@@ -86,23 +96,23 @@ const Profile = () => {
     <div className="_user-profile_info_section_details">
         <div className="_user-profile_info_section_detail">
             <label className="_user-profile_info_section_label">Email</label>
-            <input className="_user-profile_info_section_value" value={user.email} />
+            <input className="_user-profile_info_section_value" value={personalDetails.Email} />
         </div>
         <div className="_user-profile_info_section_detail">
             <label className="_user-profile_info_section_label">Mobile</label>
-            <input className="_user-profile_info_section_value" value={personalDetails?.mobile || ''} />
+            <input className="_user-profile_info_section_value" value={personalDetails?.Mobile || ''} />
         </div>
         <div className="_user-profile_info_section_detail">
             <label className="_user-profile_info_section_label">Date of birth</label>
-            <input className="_user-profile_info_section_value" value={personalDetails?.dob || ''} />
+            <input className="_user-profile_info_section_value" value={personalDetails?.DOB || ''} />
         </div>
         <div className="_user-profile_info_section_detail">
             <label className="_user-profile_info_section_label">Residential address</label>
-            <input className="_user-profile_info_section_value" value={personalDetails?.residentialAddress || ''} />
+            <input className="_user-profile_info_section_value" value={personalDetails?.ResidentialAddress || ''} />
         </div>
         <div className="_user-profile_info_section_detail">
             <label className="_user-profile_info_section_label">Mailing address</label>
-            <input className="_user-profile_info_section_value" value={personalDetails?.mailingAddress || ''} />
+            <input className="_user-profile_info_section_value" value={personalDetails?.MailingAddress || ''} />
         </div>
     </div>
 </div>
@@ -112,19 +122,19 @@ const Profile = () => {
     <div className="_user-profile_info_section_details">
         <div className="_user-profile_info_section_detail">
             <label className="_user-profile_info_section_label">Name</label>
-            <input className="_user-profile_info_section_value" value={nomineeDetails?.name || ''} />
+            <input className="_user-profile_info_section_value" value={nomineeDetails?.Name || ''} />
         </div>
         <div className="_user-profile_info_section_detail">
             <label className="_user-profile_info_section_label">Email</label>
-            <input className="_user-profile_info_section_value" value={nomineeDetails?.email || ''} />
+            <input className="_user-profile_info_section_value" value={nomineeDetails?.Email || ''} />
         </div>
         <div className="_user-profile_info_section_detail">
             <label className="_user-profile_info_section_label">Mobile</label>
-            <input className="_user-profile_info_section_value" value={nomineeDetails?.mobile || ''} />
+            <input className="_user-profile_info_section_value" value={nomineeDetails?.Mobile || ''} />
         </div>
         <div className="_user-profile_info_section_detail">
             <label className="_user-profile_info_section_label">Relation</label>
-            <input className="_user-profile_info_section_value" value={nomineeDetails?.relation || ''} />
+            <input className="_user-profile_info_section_value" value={nomineeDetails?.Relation || ''} />
         </div>
     </div>
 </div>
@@ -132,13 +142,12 @@ const Profile = () => {
 <div className="_user-profile_info_section">
     <h6 className="_user-profile_info_section_title _title_h2">Your documents</h6>
     <div className="_user-profile_info_section_details _user-profile_info_section_details_docs">
-        {typeof docs == 'string' && docs && JSON.parse(docs) !== undefined &&
-            JSON.parse(docs).map((doc: any, index: number) => (
+        {documents.map((doc: any, index: number) => (
                 <div key={index} className="_user-profile_info_section_detail">
                     <div style={{ position: "relative", display: "inline-block" }} className="_user-profile_info_section_label">
                         {/* File Icon */}
                         <svg xmlns="http://www.w3.org/2000/svg" width={151} height={150} viewBox="0 0 151 150" fill="none">
-                            <rect x="0.5" width={150} height={150} rx="22.5" fill="#01276C" />
+                            <rect x="0.5" width={150} height={150} rx="22.5" fill="#214897" />
                             <path
                                 fillRule="evenodd"
                                 clipRule="evenodd"
@@ -148,7 +157,7 @@ const Profile = () => {
                         </svg>
 
                         {/* Green Tick if Verified */}
-                        {doc.status && (
+                        {doc.Status === 1 && (
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="40"
@@ -168,10 +177,10 @@ const Profile = () => {
                             </svg>
                         )}
                     </div>
-                    <span className="_user-profile_info_section_value">{doc.docName}</span>
+                    <span className="_user-profile_info_section_value">{doc.Name}</span>
 
                     {/* Open in New Tab */}
-                    <a href={doc.docUrl} target="_blank" rel="noopener noreferrer" className="_user-profile_info_section_detail_link">
+                    <a href={doc.URL} target="_blank" rel="noopener noreferrer" className="_user-profile_info_section_detail_link">
                         
                     </a>
 
@@ -190,7 +199,7 @@ const Profile = () => {
             ))}
     </div>
 
-    <MarkAllAsVerified id={Number(investor?.id)} docs={docs} />
+    <MarkAllAsVerified id={Number(user?.investorId)} docs={documents} />
 </div>
 
                             <div className="_user-profile_info_section">
@@ -198,15 +207,15 @@ const Profile = () => {
     <div className="_user-profile_info_section_details">
         <div className="_user-profile_info_section_detail">
             <label className="_user-profile_info_section_label">Name</label>
-            <input className="_user-profile_info_section_value" value={emergencyContact?.name || ''} />
+            <input className="_user-profile_info_section_value" value={emergencyContact?.Name || ''} />
         </div>
         <div className="_user-profile_info_section_detail">
             <label className="_user-profile_info_section_label">Mobile</label>
-            <input className="_user-profile_info_section_value" value={emergencyContact?.mobile || ''} />
+            <input className="_user-profile_info_section_value" value={emergencyContact?.Mobile || ''} />
         </div>
         <div className="_user-profile_info_section_detail">
             <label className="_user-profile_info_section_label">Relation</label>
-            <input className="_user-profile_info_section_value" value={emergencyContact?.relation || ''} />
+            <input className="_user-profile_info_section_value" value={emergencyContact?.Relation || ''} />
         </div>
     </div>
 </div>

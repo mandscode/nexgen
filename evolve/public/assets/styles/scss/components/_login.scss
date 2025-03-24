@@ -1,0 +1,364 @@
+#container {
+    min-width: 90%;
+    margin: 0 auto;
+}
+
+// .login-input {
+//     width: 100px;
+//     min-height: 20px;
+//     height: 40px;
+//     overflow-x: hidden;
+//     overflow-y: scroll;
+//     border: 1px solid black;
+// }
+
+._login {
+    display: flex;
+    overflow: hidden;
+    text-align: center;
+    margin-top: 10rem;
+    margin-bottom: 20rem;
+    max-width: 86.7rem;
+    border-radius: 3.2rem;
+    box-shadow: 0px 1px 8.3px 4px rgba(201, 201, 201, 0.25);
+
+    &-mobile {
+        display: none;
+    }
+    
+    &_left {
+        gap: 10.2rem;
+        color: #2A333A;
+        display: flex;
+        flex-direction: column;
+        // background-color: $blue;
+        padding: 4.7rem 6.2rem 9.671rem 4.15rem;
+
+        &_title {
+            font-size: 4rem;
+            line-height: 4.8rem;
+            font-family: $HelveticaNeueBold;
+        }
+
+        &_bottom {
+            gap: 3rem;
+            display: flex;
+            flex-direction: column;
+
+            &_title {
+                font-size: $_typo_h1;
+            }
+        }
+    }
+
+    &_right {
+        margin-top: 5rem;
+        color: $blue;
+        gap: 7.5rem;
+        padding: 0 5.679rem 0 6.554rem;
+        display: flex;
+        flex-direction: column;
+
+        &_title {
+            
+        }
+
+        &_bottom {
+            gap: 7.483rem;
+            display: flex;
+            flex-direction: column;
+
+            &_title {
+                font-size: $_typo_h1;
+            }
+
+            &_link {
+                width: auto;
+                height: 5.2rem;
+                cursor: pointer;
+            }
+
+            &_text {
+                font-size: 2rem;
+            }
+        }
+
+        // Main Container
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        // Login Box
+        .login-box {
+            background: #fff;
+            border-radius: 8px;
+            width: 299px;
+        }
+
+        // Form
+        .login-form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        // Input Group
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 17px;
+
+            label {
+                text-align: left;
+                font-weight: 500;
+                font-size: 12px;
+                color: #0D0D0D;
+            }
+
+            input {
+                width: 299px;
+                height: 40px;
+                border-radius: 8px;
+                border: 1px solid #8A8A8A;
+                padding: 8px;
+                font-size: 14px;
+                outline: none;
+
+                &:focus {
+                    border-color: #007bff;
+                }
+            }
+        }
+
+        // Password Group
+        .password-group {
+            position: relative;
+
+            .password-toggle {
+                position: absolute;
+                right: 10px;
+                padding-top: 18.4px;
+                top: 50%;
+                transform: translateY(-50%);
+                cursor: pointer;
+                color: #666;
+            }
+        }
+
+        // Button
+        .login-button {
+            width: 100%;
+            height: 40px;
+            background: #2A333A;
+            color: white;
+            border: none;
+            border-radius: 9px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s ease;
+
+            &:hover {
+                background: $teal;
+            }
+        }
+    }
+
+    &_services {
+        
+        &_card {
+            gap: 1rem;
+            display: flex;
+            cursor: pointer;
+            flex-direction: column;
+            
+            &s {
+                gap: 1.6rem;
+                display: flex;
+            }
+            
+            &_title {
+                font-size: 1.6rem;
+                font-weight: 500;
+            }
+            
+            &_icon {
+                width: 2.5rem;
+                height: 2.5rem;
+                
+                &_wrapper {
+                    border-radius: 11px;
+                    padding: 3.5rem 6.6rem;
+                    display: inline-block;
+                    background-color: #2A333A;
+                }
+            }
+        }
+    }
+}
+.error-text {
+    color: red;
+}
+@include for-tablet {
+    ._login {
+        display: none;
+    }
+
+    ._login-mobile {
+        display: flex;
+        
+        &_wrapper {
+            display: flex;
+            gap: 9.864rem;
+            text-align: center;
+            align-items: center;
+            padding-top: 4rem;
+            padding-bottom: 5rem;
+            flex-direction: column;
+        }
+    
+        &_title {
+            color: $white;
+            font-size: 4.8rem;
+            font-family: $HelveticaNeueBold;
+        }
+
+
+        &_discover {
+            color:#000;
+            gap: 8.347rem;
+            display: flex;
+            flex-direction: column;
+
+            &_title {
+                font-size: $_typo_h1;
+            }
+
+            &_text {
+                font-size: 2rem;
+            }
+
+            &_routes {
+                gap: 3rem;
+                display: flex;
+                flex-direction: column;
+            }
+        }
+    
+        &_services {
+            
+            &_card {
+                gap: 1rem;
+                display: flex;
+                cursor: pointer;
+                font-size: $_typo_h1;
+                flex-direction: column;
+                
+                &s {
+                    gap: 1.6rem;
+                    display: flex;
+                    margin: 0 auto;
+                    width: fit-content;
+                }
+                
+                &_icon {
+                    width: 2.5rem;
+                    height: 2.5rem;
+                    
+                    &_wrapper {
+                        padding: 3.5rem 6.6rem;
+                        display: inline-block;
+                        border-radius: 8.6px;
+                        background-color: #2A333A;
+                    }
+                }
+            }
+        }
+
+        // Main Container
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        // Login Box
+        .login-box {
+            background: #fff;
+            border-radius: 8px;
+            width: 299px;
+        }
+
+        // Form
+        .login-form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        // Input Group
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 17px;
+
+            label {
+                text-align: left;
+                font-weight: 500;
+                font-size: 12px;
+                color: #0D0D0D;
+            }
+
+            input {
+                width: 299px;
+                height: 40px;
+                border-radius: 8px;
+                border: 1px solid #8A8A8A;
+                padding: 8px;
+                font-size: 14px;
+                outline: none;
+
+                &:focus {
+                    border-color: #007bff;
+                }
+            }
+        }
+
+        // Password Group
+        .password-group {
+            position: relative;
+
+            .password-toggle {
+                position: absolute;
+                right: 10px;
+                padding-top: 18.4px;
+                top: 50%;
+                transform: translateY(-50%);
+                cursor: pointer;
+                color: #666;
+            }
+        }
+
+        // Button
+        .login-button {
+            width: 100%;
+            height: 40px;
+            background: #2A333A;
+            color: white;
+            border: none;
+            border-radius: 9px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s ease;
+
+            &:hover {
+                background: $teal;
+            }
+        }
+    }
+}

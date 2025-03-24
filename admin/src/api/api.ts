@@ -4,8 +4,8 @@ import axios from 'axios';
 // Define the base URL of your API and other configurations
 const api = axios.create({
   // baseURL: 'https://0198-2409-40e1-10f1-2d63-11ac-21be-2b33-ff11.ngrok-free.app/', // Replace with your actual API base URL
-  // baseURL: 'http://13.233.146.212:3000', // Replace with your actual API base URL
-  baseURL: 'http://localhost:3000', // Replace with your actual API base URL
+  baseURL: 'http://13.233.146.212:3000', // Replace with your actual API base URL
+  // baseURL: 'http://localhost:3000', // Replace with your actual API base URL
   headers: {
     'Content-Type': 'application/json',
     // 'ngrok-skip-browser-warning':'true'

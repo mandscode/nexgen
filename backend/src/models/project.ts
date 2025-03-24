@@ -118,4 +118,5 @@ export default class Project extends Model<InferAttributes<Project>, InferCreati
 
     addResources!: BelongsToManyAddAssociationMixin<Resource[], number>;
     getResources!: BelongsToManyGetAssociationsMixin<Resource[]>;
+    ProjectInvestor: ProjectInvestor | undefined;
 }

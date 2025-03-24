@@ -4,7 +4,6 @@ import { Loader } from "./Loader";
 const TransactionList: React.FC<any> = ({ data, currency }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const rowsPerPage = 4; // Display 5 rows per page
-
   // Calculate paginated data
   const startIndex = currentPage * rowsPerPage;
   const paginatedData = data.slice(startIndex, startIndex + rowsPerPage);
@@ -13,10 +12,10 @@ const TransactionList: React.FC<any> = ({ data, currency }) => {
   const handleChangePage = (newPage: number) => {
     setCurrentPage(newPage);
   };
-
+  
   const formatDateTime = (inputDate: string): string => {
     const date = new Date(inputDate); // Convert ISO string to Date object
-  
+    
     const options: Intl.DateTimeFormatOptions = {
       month: '2-digit',
       day: '2-digit',
@@ -32,6 +31,7 @@ const TransactionList: React.FC<any> = ({ data, currency }) => {
     // Replace the comma with "I" and return the formatted string
     return formattedDate.replace(',', ' I');
   };
+  
 
   return (
     <div style={{ padding: "20px" }}>
@@ -73,18 +73,17 @@ const TransactionList: React.FC<any> = ({ data, currency }) => {
                   }}
                 >
                   {
-                    transaction?.details && Object.keys(JSON.parse(transaction?.details))
+                    transaction?.details && transaction?.details
                   }
                 </div>
                 <div style={{ color: "#999", fontSize: "14px" }}>
-                  
                   {formatDateTime(transaction.createdDate)}
                 </div>
               </div>
             </div>
             {/* Amount */}
             <div style={{ fontWeight: "bold", fontSize: "16px" }}>
-              {currency.currencySymbol}{transaction.amount}
+              {currency?.symbol} {transaction?.amount}
             </div>
           </li>
         ))}
@@ -106,8 +105,8 @@ const TransactionList: React.FC<any> = ({ data, currency }) => {
               style={{
                 border: "none",
                 backgroundColor:
-                  pageIndex === currentPage ? "#01276C" : "transparent",
-                color: pageIndex === currentPage ? "#fff" : "#01276C",
+                  pageIndex === currentPage ? "#214897" : "transparent",
+                color: pageIndex === currentPage ? "#fff" : "#214897",
                 padding: "5px 10px",
                 borderRadius: "4px",
                 cursor: "pointer",

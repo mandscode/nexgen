@@ -1,0 +1,28 @@
+$phoneXS: 480px;
+$phone: 768px;
+$tablet: 1024px;
+$laptop: 1280px;
+$wide: 1440px;
+$desktop: 1920px;
+
+
+// Grid breakpoints
+$grid-breakpoints: (
+  xs: 480,
+  sm: 576px,
+  md: 768px,
+  lg: 1024px,
+  xl: 1200px
+);
+
+// Grid breakpoints
+// $grid-breakpoints: (
+//     $phoneXS: 480px,
+//     $phoneSM: 576px,
+//     $phone: 768px,
+//     $tablet: 992px,
+//     $tabletLG: 1024px,
+//     $laptop: 1280px,
+//     $wide: 1440px,
+//     $desktop: 1920px
+// );

@@ -1,5 +1,6 @@
 import { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
-import { Table, Column, Model, DataType, AutoIncrement, PrimaryKey } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, AutoIncrement, PrimaryKey, HasMany } from 'sequelize-typescript';
+import Account from './account';
 
 @Table({
     timestamps: true,
@@ -33,4 +34,7 @@ export default class Currency extends Model<InferAttributes<Currency>, InferCrea
         allowNull: false
     })
     symbol!: string; // Currency symbol (e.g., $, €)
+
+    @HasMany(() => Account, { foreignKey: 'currency' }) // Map `currency` field in Account
+    accounts?: Account[];
 }

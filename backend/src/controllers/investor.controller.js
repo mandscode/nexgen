@@ -93,9 +93,9 @@ let InvestorController = class InvestorController {
             return investor_service_1.default.updateInvestor(investor);
         });
     }
-    assignProject(id, projectIds) {
+    assignProject(id, projectData) {
         return __awaiter(this, void 0, void 0, function* () {
-            return investor_service_1.default.assignProjects(id, projectIds);
+            return investor_service_1.default.assignProjects(id, projectData.projects);
         });
     }
     addDocumentDetails(id, docDetails) {
@@ -176,7 +176,7 @@ __decorate([
     __param(0, (0, tsoa_1.Path)()),
     __param(1, (0, tsoa_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Array]),
+    __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)
 ], InvestorController.prototype, "assignProject", null);
 __decorate([

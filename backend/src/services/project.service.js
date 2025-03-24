@@ -19,6 +19,7 @@ const project_1 = __importDefault(require("../models/project"));
 const project_mapper_1 = require("./project.mapper");
 const resource_1 = __importDefault(require("../models/resource"));
 const investor_1 = __importDefault(require("../models/investor"));
+const project_resource_1 = __importDefault(require("../models/project-resource"));
 class ProjectReqDTO {
 }
 exports.ProjectReqDTO = ProjectReqDTO;
@@ -43,9 +44,31 @@ class ProjectService {
             return null;
         });
     }
-    getAllProjects() {
+    getAllProjects(userShare) {
         return __awaiter(this, void 0, void 0, function* () {
-            return project_1.default.findAll().then(projects => (0, project_mapper_1.toProjectsDTO)(projects));
+            let whereClause = {};
+            if (userShare !== undefined) {
+                if (userShare === 1) {
+                    // NexGen Projects
+                    whereClause = { entityID: 1 };
+                }
+                else {
+                    // Evolve Projects
+                    whereClause = { entityID: 2 };
+                }
+            }
+            // Fetch projects with filtering
+            const projects = yield project_1.default.findAll({
+                where: whereClause
+            });
+            // Convert projects to DTOs
+            return projects.map(project_mapper_1.toProjectDTO);
+        });
+    }
+    getProjectsByEntityIds(entityIds) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return project_1.default.findAll({ where: { entityID: entityIds } })
+                .then(projects => projects.length ? projects.map(project_mapper_1.toProjectDTO) : null);
         });
     }
     getProjectById(id) {
@@ -70,6 +93,18 @@ class ProjectService {
                 if (updateData.settings)
                     project.settings = updateData.settings;
                 yield project.save(); // Save the updated project
+                if (updateData.file) {
+                    const resource = yield resource_1.default.create({
+                        location: updateData.file, // File path (URL) from S3
+                        sourceId: 'project', // Project ID
+                        type: 'image', // Assuming the file is an image
+                        group: 'misc', // Group for the resource
+                    });
+                    yield project_resource_1.default.create({
+                        projectId: Number(id),
+                        resourceId: resource.id,
+                    });
+                }
                 return (0, project_mapper_1.toProjectDTO)(project);
             }
             return null;

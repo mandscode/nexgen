@@ -98,6 +98,11 @@ let UserController = class UserController {
             return { message: "Password changed successfully." };
         });
     }
+    assignEntity(id, body) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return user_service_1.default.assignEntities(id, body.entityIds);
+        });
+    }
     login(body) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield user_service_1.default.findUserByEmail(body.email);
@@ -108,10 +113,17 @@ let UserController = class UserController {
             if (!isPasswordValid) {
                 throw new Error('Invalid password');
             }
-            // Generate a JWT token
-            const token = jsonwebtoken_1.default.sign({ id: user.id, email: user.email, isMasterAdmin: user.isMasterAdmin, isFirstLogin: user.isFirstLogin }, 'your_jwt_secret', {
-                expiresIn: '1h', // Token expires in 1 hour
-            });
+            const userShare = body.entity !== undefined ? body.entity : null;
+            const payload = {
+                id: user.id,
+                email: user.email,
+                isMasterAdmin: user.isMasterAdmin,
+                isFirstLogin: user.isFirstLogin
+            };
+            if (userShare !== null) {
+                payload.userShare = userShare;
+            }
+            const token = jsonwebtoken_1.default.sign(payload, 'your_jwt_secret', { expiresIn: '1h' });
             const message = 'Login successful';
             return { token, message, userId: user.id, isMasterAdmin: user.isMasterAdmin, isFirstLogin: user.isFirstLogin };
         });
@@ -168,6 +180,14 @@ __decorate([
     __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "changePassword", null);
+__decorate([
+    (0, tsoa_1.Put)('/{id}/entity/assign'),
+    __param(0, (0, tsoa_1.Path)()),
+    __param(1, (0, tsoa_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "assignEntity", null);
 __decorate([
     (0, tsoa_1.Post)('/login'),
     __param(0, (0, tsoa_1.Body)()),

@@ -1,7 +1,9 @@
 import Account from '../models/account';
 import Investor from '../models/investor';
 import Project from '../models/project';
+import ProjectInvestor from '../models/project-investor';
 import Resource from '../models/resource';
+import User from '../models/user';
 import { AccountRespDTO } from './account.service';
 import { toInvestorDTO, toInvestorsDTO } from './investor.mapper';
 import { ProjectRespDTO } from './project.service';
@@ -21,6 +23,7 @@ export class InvestorReqDTO {
     ownerId?: string;
     caId?: string;
     projectIds!: number[];
+    lockInPeriod!:string;
     resourceIds?: number[];
     documents?: { id: string; docName: string; docUrl: string; status: boolean }[]; // Added documents field
 }
@@ -34,6 +37,7 @@ export class InvestorRespDTO {
     ownerId?: string;
     caId?: string;
     settings?: { [key: string]: any };
+    lockInPeriod!:string;
     accounts?: AccountRespDTO[];
     projects?: ProjectRespDTO[];
     resources?: ResourceDTO[];
@@ -56,15 +60,30 @@ class InvestorService {
         return this.getInvestorById(investorId);
     }
 
-    async assignProjects(investorId: number, projectIds: number[]): Promise<InvestorRespDTO | null> {
+    async assignProjects(
+        investorId: number, 
+        projects: { projectId: number; lockInPeriod: string }[]
+    ): Promise<InvestorRespDTO | null> {
 
+        const investor = await Investor.findByPk(investorId);
+        if (!investor) return null;
+        
 
-        if (projectIds) {
-            await (await Investor.findByPk(investorId))?.setProjects(projectIds);
-            return this.getInvestorById(investorId);
+        // Clear existing projects before assigning new ones
+        // await investor.setProjects([]);
+        // Assign projects with lock-in period
+        for (const { projectId, lockInPeriod } of projects) {
+
+            await ProjectInvestor.create({
+                projectId: projectId,
+                investorId: investorId,
+                lockInPeriod: new Date(lockInPeriod), // Assign lock-in period
+            });
         }
-        return null;
+    
+        return this.getInvestorById(investorId);
     }
+    
     async updateInvestor(investor: InvestorReqDTO): Promise<InvestorRespDTO | null> {
         if (investor.id) {
             await Investor.update(investor, { where: { id: investor.id } });
@@ -75,14 +94,24 @@ class InvestorService {
     async createInvestor(investor: InvestorReqDTO): Promise<InvestorRespDTO | null> {
         const projectIds = investor.projectIds;
         const resourceIds = investor.resourceIds;
+        const lockInPeriod = investor.lockInPeriod;
         const createdInvestor = await Investor.create({ ...investor });
         let projects: Project[] = [];
         let resources: Resource[] = [];
         if (createdInvestor) {
 
-            if (projectIds) {
-                projects = (await Promise.all(projectIds.map((id) => Project.findByPk(id)))).filter(project => !!project);
-            }
+            if (projectIds && lockInPeriod) {
+                for (let i = 0; i < projectIds.length; i++) {
+                    const project = await Project.findByPk(projectIds[i]);
+                    if (project) {
+                        await ProjectInvestor.create({
+                            projectId: project.id,
+                            investorId: createdInvestor.id,
+                            lockInPeriod: new Date(lockInPeriod), // Assign lock-in period
+                        });
+                    }
+                }
+            }    
             if (projects.length) {
                 await createdInvestor.addProjects(projects);
             }
@@ -118,8 +147,22 @@ class InvestorService {
             id: docDetails.id || uuidv4(),
         };
 
+        let documentsArray = [];
+
+        if (investor.documents) {
+            try {
+                documentsArray = typeof investor.documents === 'string' 
+                    ? JSON.parse(investor.documents) 
+                    : investor.documents;
+            } catch (error) {
+                console.error("Error parsing documents:", error);
+                documentsArray = []; // Fallback to empty array
+            }
+        }
+
+
         // Assuming `documents` is a relation or JSON field in the `Investor` model
-        const updatedDocuments = [...(investor.documents || []), documentWithId];
+        const updatedDocuments = [...documentsArray, documentWithId];
         investor.documents = updatedDocuments;
         await investor.save();
         return toInvestorDTO(investor);

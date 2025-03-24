@@ -16,6 +16,7 @@ const sequelize_typescript_1 = require("sequelize-typescript");
 const investor_1 = __importDefault(require("./investor"));
 const investment_1 = __importDefault(require("./investment"));
 const transaction_1 = __importDefault(require("./transaction"));
+const currency_1 = __importDefault(require("./currency"));
 let Account = class Account extends sequelize_typescript_1.Model {
 };
 __decorate([
@@ -34,6 +35,11 @@ __decorate([
     }),
     __metadata("design:type", Number)
 ], Account.prototype, "currency", void 0);
+__decorate([
+    (0, sequelize_typescript_1.BelongsTo)(() => currency_1.default, { foreignKey: 'currency' }) // Map `currency` field to Currency
+    ,
+    __metadata("design:type", currency_1.default)
+], Account.prototype, "currencyDetails", void 0);
 __decorate([
     (0, sequelize_typescript_1.ForeignKey)(() => investor_1.default),
     (0, sequelize_typescript_1.Column)({
