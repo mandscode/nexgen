@@ -3,457 +3,344 @@ import { useSelector } from 'react-redux';
 
 import { Cell, Pie, PieChart, Tooltip } from 'recharts';
 import '@splidejs/splide/css'; // Import Splide styles
-import { getCurrencyAll, getProject } from '../../api/apiEndpoints';
 import CurrencyDropdown from '../../utils/buttons/CurrencyDropdown';
-
-import { useNavigate } from 'react-router-dom';
 import { Loader } from '../../utils/Loader';
+import { InvestmentRespDTO, ProjectRespDTO, UserRespDTO } from '../desktop/Dashboard';
+import { useNavigate } from 'react-router-dom';
 
 const DashboardMobile = () => {
 
-    const [transactions, setTransactions] = useState<any[]>([]);
-    
-    const [accTransactions, setAccTransactions] = useState<any[]>([]);
-  
-    const [totalAmount, setTotalAmount] = useState(0);
-    const [projectCount, setProjectCount] = useState(0);
+  const [userDetails, setUserDetails] = useState<UserRespDTO | null>(null);
 
-    const [selectedCurrencyVal, setSelectCurrencyVal] = useState<any>();
+  const [selectedCurrencyTransactions, setSelectedCurrencyTransactions] = useState<any[]>([]);
+  const [selectedCurrencyInvestments, setSelectedCurrencyInvestments] = useState<any[]>([]);
+  const [selectedCurrencyProjects, setSelectedCurrencyProjects] = useState<any[]>([]);
+  const [selectedProjectTransactions, setSelectedProjectTransactions] = useState<any[]>([]);
 
-    const [data, setData] = useState<{ name: string; value: number }[]>([]);
-  
-    const [selectedCurrency, setSelectCurrency] = useState<any>();
-    const [LoaderState, setLoader] = useState<boolean>(false);
-    
-    const [transactionsData, setTransactionsData] = useState<{ name: string; value: number }[]>([]);
+  const [totalAmount, setTotalAmount] = useState(0);
+    const [interest, setTotalInterest] = useState(0);
+  const [projectCount, setProjectCount] = useState(0);
 
-    const navigate = useNavigate();
-  
-    const { user, error, investor, accountsData, loading, projects } = useSelector((state: any) => ({
-      loading: state.userDetails?.loading,
-      user: state.userDetails?.user,
-      error: state.userDetails?.error,
-      investor: state.investorDetails?.investor,
-      accountsData:state.investorAccsDetails?.accounts,
-      projects: state.projectsDetail?.projects
-    }));
+  const [data, setData] = useState<{ name: string; value: number }[]>([]);
 
-        useEffect(() => {
-          const fetchData = async () => {
-            const allCurr = await getCurrencyAll()
-            if(investor) {
+  const [graphProject, setGraphProject] = useState<number | null>(null);
 
-              const assignedAcc = investor.accounts.map((acc: any) => {
-                const currency = allCurr.find((curr: any) => curr.id === acc.currency); // Find matching currency
-                return {
-                  currency: currency ? currency.code : "Unknown", // Use currency name if found
-                  id: currency.id,
-                  currencySymbol:currency.symbol
-                };
-              });
-              setSelectCurrencyVal(assignedAcc)
-            }
-            }
-          fetchData()
-        }, [investor])
-    
-    useEffect(() => {
-      const fetchTransactions = async () => {
-        try {
-          setLoader(true)
+  const [selectedCurrency, setSelectCurrency] = useState<any>();
 
+  const navigate = useNavigate();
+
+  const { user, error, loading } = useSelector((state: any) => ({
+    loading: state.userDetails?.loading,
+    user: state.userDetails?.user,
+    error: state.userDetails?.error
+  }));
+
+
+  useEffect(() => {
+    if (user && user.id) {
+      setUserDetails(user);
+    }
+  }, [user])
+
+  const formatAmount = (num: any) => {
+    if (num >= 1_000_000_000_000) return `${(num / 1_000_000_000_000).toFixed(1)}t`; // Trillion
+    if (num >= 1_000_000_000) return `${(num / 1_000_000_000).toFixed(1)}b`; // Billion
+    if (num >= 1_000_000) return `${(num / 1_000_000).toFixed(1)}m`; // Million
+    if (num >= 1_000) return `${(num / 1_000).toFixed(1)}k`; // Thousand
+    return num.toString(); // Less than 1,000
+  };
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+
+        if (
+          userDetails?.Investments &&
+          userDetails.Investments.length > 0 &&
+          selectedCurrency
+        ) {
+          const UniqueInvestment: any[] = []
           const formattedTransactions = await Promise.all(
-            accountsData.map(async (accounts: any) => {
-              
-              if (accounts.currency === selectedCurrency.id) {
+            userDetails.Investments.map(async (investment: any) => {
+              if (investment.currencyId === selectedCurrency.id) {
+                UniqueInvestment.push(investment);
+                const projectId = investment?.ProjectId
+                const currencies = userDetails.Currencies || []
+                const currency = currencies.find(p => p.id === investment.currencyId);
+
                 const validTransactions = await Promise.all(
-                  accounts.transactions.map(async (transaction: any) => {
-                    const project = await getProject(Number(transaction.projectId));
+                  investment.transactions.map(async (transaction: any) => {
                     return {
                       id: transaction.id,
-                      accountId: accounts.currency,
+                      currency: currency,
                       credited: transaction.credited,
                       amount: transaction.amount,
-                      createdDate: transaction.transactionDate,
-                      userId: user.firstName, // Example if you want to include user data
-                      projectId: project?.name
+                      createdDate: transaction.date,
+                      projectId: projectId,
+                      details: transaction.title
                     };
                   })
                 );
-                return validTransactions.filter((t) => t !== null);
+
+                return validTransactions;
               }
-              return []; // Return an empty array if currency does not match
+              return [];
             })
           );
-        
-          // setInvestorId(Number(id))
-          setTransactions(formattedTransactions.flat()); // Set the fetched and formatted data to state
-          setLoader(false);
-        } catch (err) {
-          console.log('Failed to fetch transactions');
+          setSelectedCurrencyInvestments(UniqueInvestment);
+          setSelectedCurrencyTransactions(formattedTransactions.flat());
         }
-      };
-  
-      fetchTransactions(); // Call the fetch function
-    }, [accountsData, selectedCurrency]);
-
-    useEffect(() => {
-      const accTransaction =
-        transactions?.filter((t) => t.accountId === selectedCurrency?.id) || [];
-    
-      setAccTransactions(accTransaction);
-  
-    }, [selectedCurrency, transactions]);
-
-    const formatAmount = (num:any) => {
-      if (num >= 1_000_000_000_000) return `${(num / 1_000_000_000_000).toFixed(1)}t`; // Trillion
-      if (num >= 1_000_000_000) return `${(num / 1_000_000_000).toFixed(1)}b`; // Billion
-      if (num >= 1_000_000) return `${(num / 1_000_000).toFixed(1)}m`; // Million
-      if (num >= 1_000) return `${(num / 1_000).toFixed(1)}k`; // Thousand
-      return num.toString(); // Less than 1,000
-    };
-  
-    useEffect(() => {
-      // Calculate total transaction amount
-      const total = transactions.reduce(
-        (sum, t) => (t.credited ? sum + t.amount : sum),
-        0
-      );
-
-      setTotalAmount(total);
-      // Calculate unique project count
-      const uniqueProjects = new Set(accTransactions.map((t) => t.projectId)).size;
-  
-      setProjectCount(uniqueProjects);
-
-      const fetchTransactions = async () => {
-        try {
-          
-          const formattedTransactions = await Promise.all(
-            accountsData.map(async (accounts: any) => {              
-              const validTransactions = await Promise.all(
-                accounts.transactions.map(async (transaction: any) => {
-                  if(transaction.credited){
-                    const project = await getProject(Number(transaction.projectId));
-                      return {
-                        id: transaction.id,
-                        accountId: accounts.currency,
-                        credited: transaction.credited,
-                        amount: transaction.amount,
-                        createdDate: transaction.transactionDate,
-                        userId: user.firstName, // Example if you want to include user data
-                        projectId: project?.name
-                      };
-                    } else return null
-                  })
-                );
-                return validTransactions.filter((t) => t !== null);
-              })
-            );          
-          // Aggregate investments by projectId
-          const aggregatedData = formattedTransactions.flat().reduce((acc, { projectId, amount }) => {
-            const existingProject = acc.find((item:any) => item.projectName === projectId);
-            if (existingProject) {
-              existingProject.investmentAmount += amount;
-            } else {
-              acc.push({ projectName: projectId, investmentAmount: amount });
-            }
-            return acc;
-          }, []);
-          setData(aggregatedData);
-        } catch (err) {
-          console.log('Failed to fetch transactions');
-        }
-      };
-
-      fetchTransactions();
-      
-    }, [accTransactions]);
-  
-    useEffect(() => {
-      // Calculate total transaction amount
-      const total = transactions.reduce(
-        (sum, t) => (t.credited ? sum + t.amount : sum),
-        0
-      );
-      
-      // Calculate unique project count
-      const uniqueProjects = new Set(transactions.map((t) => t.projectId)).size;
-  
-      setTotalAmount(total);
-      setProjectCount(uniqueProjects);
-      
-      const aggregatedData = transactions.reduce((acc, { projectId, amount, credited }) => {
-        const fetchproject = projects.find((item: any) => item.name === projectId);
-        const existingProject = acc.find((item: any) => item.projectId === projectId);
-        if (existingProject) {
-          if (credited) {
-            existingProject.creditedTotal += amount;
-          } else {
-            existingProject.debitedTotal += amount;
-          }
-          existingProject.investmentAmount = existingProject.creditedTotal - existingProject.debitedTotal;
-        } else {
-          acc.push({
-            projectId,
-            creditedTotal: credited ? amount : 0,
-            debitedTotal: credited ? 0 : amount,
-            investmentAmount: credited ? amount : -amount,
-            overallCost:fetchproject.overallCost
-          });
-        }
-        
-        return acc;
-      }, []);
-      
-
-      setTransactionsData(aggregatedData);
-    }, [transactions]);
-    
-    const COLORS = ['#01276C', '#3476ec59', '#FF8042']; // Define colors for the pie segments
-  
-    if (loading) {
-      return (
-        <Loader/>
-      );
-    }
-  
-    if (error || user.length === 0) {
-      return (
-        <div className="error-container">
-          <p>Error: {error}</p>
-        </div>
-      );
-    }
-  
-    // Check if the user has a "Viewer" role
-    const isViewer = user?.roles?.some((role: any) => role.name === "Viewer");
-  
-    if (isViewer) {
-      return (
-        <div className="_dashboard-mobile_no-investments-container _dashboard-mobile_no-investments-container_mobile">
-          <p className='_h1'>You have no invested amount.</p>
-        </div>
-      );
-    }
-  
-    const totalInvestment = data.reduce((acc, cur:any) => acc + cur.investmentAmount, 0);
-
-    const formatDate = (dateString:string) => {
-      const date = new Date(dateString);
-      return new Intl.DateTimeFormat("en-GB", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "2-digit",
-      }).format(date);
+      } catch (err) {
+        console.log('Failed to fetch transactions');
+      }
     };
 
-    // Handle click on project pie slice
-    const handleProjectClick = (data:any) => {
-      navigate('portfolio',{
-        state:{
-          projectName:data.projectName
-        }
-      })
-    };
+    fetchTransactions(); // Call the fetch function
+  }, [selectedCurrency, userDetails]);
 
+  useEffect(() => {
+
+    const projectWiseTransaction =
+      selectedCurrencyTransactions?.filter((t) => t.projectId === graphProject) || null;
+
+    setSelectedProjectTransactions(projectWiseTransaction)
+  }, [selectedCurrencyTransactions]);
+
+  useEffect(() => {
+    if (selectedCurrencyProjects) {
+      setGraphProject(selectedCurrencyProjects[0]?.id)
+    }
+
+  }, [selectedCurrencyProjects])
+
+  useEffect(() => {
+    const projectWiseTransaction =
+      selectedCurrencyTransactions?.filter((t) => t.projectId === graphProject) || null;
+
+    setSelectedProjectTransactions(projectWiseTransaction)
+  }, [graphProject]);
+
+
+  useEffect(() => {
+    const totalAsset = selectedCurrencyInvestments.reduce(
+      (sum, t) => (sum + Number(t.totalValue)),
+      0
+    );
+    const totalInvested = selectedCurrencyInvestments.reduce(
+      (sum, t) => (sum + Number(t.earning)),
+      0
+    );
+
+    setTotalAmount(totalAsset);
+    setTotalInterest(totalInvested);
+
+    const uniqueProjects = new Set(selectedCurrencyTransactions.map((t) => t.projectId)).size;
+
+    setProjectCount(uniqueProjects);
+
+
+    let uniqueData: any[] = [];
+
+    const aggregatedData = selectedCurrencyTransactions.flat().reduce((acc, { projectId, amount, credited }) => {
+      const projects = userDetails?.projects || [];
+      const project = projects.find(p => p.id === projectId);
+      let existingProject = acc.find((item: any) => item.id === projectId);
+
+      if (!existingProject) {
+        existingProject = { ...project, investmentAmount: 0 }; // Initialize if not found
+        acc.push(existingProject);
+      }
+      if (credited) {
+        existingProject.investmentAmount += Number(amount);
+      }
+
+      // Ensure uniqueData gets a proper reference
+      if (!uniqueData.some((p) => p.id === projectId)) {
+        uniqueData.push(existingProject);
+      }
+
+      return acc;
+    }, []);
+
+    setSelectedCurrencyProjects(uniqueData);
+    setData(aggregatedData);
+
+  }, [selectedCurrencyTransactions]);
+
+  const COLORS = ['#214897', '#3476ec59', '#FF8042'];
+
+  const selectedProject = selectedCurrencyProjects?.find((p: ProjectRespDTO) => p.id === graphProject)
+  const selectedInvestment = selectedCurrencyInvestments?.find((inv: InvestmentRespDTO) => inv.ProjectId === graphProject)
+
+  if (loading) {
     return (
-        <>
-          <section className='_dashboard-mobile'>
-            <div className='_container _dashboard-mobile_wrapper'>
-              <nav className='_dashboard-mobile_nav'>
-                <div className='_dashboard-mobile_nav_top'>
-                  <p className='_dashboard-mobile_nav_greeting'>Hello {user.firstName} {user.lastName}</p>
-                  <h1 className='_dashboard-mobile_welcome-message _h1'>Welcome to your portfolio</h1>
-                </div>
-                <div className='_dashboard-mobile_nav_bottom'>
-                  <div className='_dashboard-mobile_nav_status-section'>
-                    <p className="_dashboard-mobile_nav_status-label">Account status</p>
-                    <div className="_dashboard-mobile_nav_status">
-                      <span className="_dashboard-mobile_nav_status-indicator">
-                        <span className={`${user?.status == 'active' ? `_dashboard-mobile_nav_status-circle` : `_dashboard-mobile_nav_status-circle _dashboard-mobile_nav_status-circle_inactive`}`}></span>
-                        <p className="_dashboard-mobile_nav_status-text">{user.status}</p>
-                      </span>
-                      <p className="_dashboard-mobile_nav_status-date">Since {formatDate(user.updatedAt)}</p>
-                    </div>
+      <div className="smart-glass">
+        <div className="logo">
+          <div className="circle">
+            <div className="circle">
+              <div className="circle">
+              </div>
+            </div>
+          </div>
+          <div className="loading-text">
+            Loading...
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="error-container">
+        <p>Error: {error}</p>
+      </div>
+    );
+  }
+
+
+  const totalInvestment = data.reduce((acc, cur: any) => acc + cur.investmentAmount, 0);
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "2-digit",
+    }).format(date);
+  };
+
+  const handleProjectClick = (data:any) => {
+    navigate('portfolio',{
+      state:{
+        projectName:data.projectName
+      }
+    })
+  };
+  return (
+      <>
+        <section className='_dashboard-mobile'>
+          <div className='_container _dashboard-mobile_wrapper'>
+            <nav className='_dashboard-mobile_nav'>
+              <div className='_dashboard-mobile_nav_top'>
+                <p className='_dashboard-mobile_nav_greeting'>Hello {userDetails?.firstName} {userDetails?.lastName}</p>
+                <h1 className='_dashboard-mobile_welcome-message _h1'>Welcome to your portfolio</h1>
+              </div>
+              <div className='_dashboard-mobile_nav_bottom'>
+                <div className='_dashboard-mobile_nav_status-section'>
+                  <p className="_dashboard-mobile_nav_status-label">Account status</p>
+                  <div className="_dashboard-mobile_nav_status">
+                    <span className="_dashboard-mobile_nav_status-indicator">
+                      <span className={`${userDetails?.status == 1 ? `_dashboard-mobile_nav_status-circle` : `_dashboard-mobile_nav_status-circle _dashboard-mobile_nav_status-circle_inactive`}`}></span>
+                      <p className="_dashboard-mobile_nav_status-text">{userDetails?.status == 1 ? 'Active' : 'Inactive'}</p>
+                    </span>
+                    <p className="_dashboard-mobile_nav_status-date">Since {userDetails?.createdAt && formatDate(userDetails?.createdAt)}</p>
                   </div>
-                  {
-                    investor?.accounts && investor?.accounts?.length > 0 ? 
-                    <div className='_dashboard-mobile_nav_currency'>
-                      <div className="_dashboard-mobile_nav_currency-select">
-                        <CurrencyDropdown currency={selectedCurrencyVal} setSelectCurrency={setSelectCurrency}/>
-                      </div>
-                    </div>
-                    :
-                    null
-                  }
                 </div>
-              </nav>
-              {
-                  investor?.accounts && investor?.accounts.length > 0 && transactions.length > 0 ? 
-                  <div className="_dashboard-mobile_content">
-                    <div className='_dashboard-mobile_overall_investment'>
-                      <div className='_dashboard-mobile_overall_investment_info'>
-                        <h2 className='_dashboard-mobile_overall_investment_info-label _sub_h2'>Overall Investment</h2>
-                        <div className='_dashboard-mobile_overall_investment_info_details'>
-                          <div className='_dashboard-mobile_overall_investment_info_detail'>
-                            <h6 className='_dashboard-mobile_overall_investment_info_detail-title _title_h2'>Total assets</h6>
-                            <span className='_dashboard-mobile_overall_investment_info_detail-value'>{selectedCurrency?.currencySymbol} {formatAmount(totalAmount)}</span>
-                          </div>
-                          <hr className='_dashboard-mobile_overall_investment_info_detail-divider'/>
-                          <div className='_dashboard-mobile_overall_investment_info_detail'>
-                            <h6 className='_dashboard-mobile_overall_investment_info_detail-title _title_h2'>Total interest</h6>
-                            <span className='_dashboard-mobile_overall_investment_info_detail-value'>0</span>
-                          </div>
-                          <hr className='_dashboard-mobile_overall_investment_info_detail-divider'/>
-                          <div className='_dashboard-mobile_overall_investment_info_detail'>
-                            <h6 className='_dashboard-mobile_overall_investment_info_detail-title _title_h2'>Total Projects</h6>
-                            <span className='_dashboard-mobile_overall_investment_info_detail-value'>{projectCount}</span>
-                          </div>
-                        </div>
-                      </div>
+                {
+                  userDetails?.Currencies?.length !== 0 ?
+                  <div className='_dashboard-mobile_nav_currency'>
+                    <div className="_dashboard-mobile_nav_currency-select">
+                      <CurrencyDropdown currency={userDetails?.Currencies} setSelectCurrency={setSelectCurrency}/>
                     </div>
-                    <div className='_dashboard-mobile_project_details'>
-                      <h2 className='_dashboard-mobile_project_details_label _sub_h2'>Projects Overview</h2>
-                      {/* <div className='_dashboard-mobile_project_details_info'>
-                          <div className='_dashboard-mobile_project_details_cards'>
-                          {countryWiseProjects
-                                      .map((selectedProject: any) => (
-                                        <>
-                                          {transactionsData ?
-                                            transactionsData
-                                              .filter((project: any) => project.projectId === selectedProject.name)
-                                              .map((selectedProjectInvestment: any, index:any) => (
-                                    <div className={`_dashboard-mobile_project_details_card `} key={index}>
-                                      <div className='_dashboard-mobile_project_details_card_header'>
-                                        <div className='_dashboard-mobile_project_details_card_header_top'>
-                                          <h4 className='_dashboard-mobile_project_details_card_title _title_h1'>{selectedProject.name}:</h4>
-                                          <p className='_dashboard-mobile_project_details_card_status-label'>Project Status</p>
-                                        </div>
-                                        <div className='_dashboard-mobile_project_details_card_header_bottom'>
-                                          <p className='_dashboard-mobile_project_details_card_location'>Location: Gurugram</p>
-                                          <p className='_dashboard-mobile_project_details_card_status'>In Progress</p>
-                                        </div>
-                                      </div>
-                                      <hr className='_dashboard-mobile_project_details_card_divider'/>
-                                      <div className='_dashboard-mobile_project_details_card_info_wrapper'>
-                                        <div className='_dashboard-mobile_project_details_card_info'>
-                                          <div className='_dashboard-mobile_project_details_card_info_name'>
-                                          Amount invested
-                                          </div>
-                                          <div className='_dashboard-mobile_project_details_card_info_value'>
-                                          {selectedCurrency?.currencySymbol}{formatAmount(selectedProjectInvestment.creditedTotal)}
-                                          </div>
-                                        </div>
-                                        <div className='_dashboard-mobile_project_details_card_info'>
-                                          <div className='_dashboard-mobile_project_details_card_info_name'>
-                                          Current value
-                                          </div>
-                                          <div className='_dashboard-mobile_project_details_card_info_value'>
-                                          {selectedCurrency?.currencySymbol}{formatAmount(selectedProjectInvestment.investmentAmount)}
-                                          </div>
-                                        </div>
-                                        <div className='_dashboard-mobile_project_details_card_info'>
-                                          <div className='_dashboard-mobile_project_details_card_info_name'>
-                                          Lock-in period
-                                          </div>
-                                          <div className='_dashboard-mobile_project_details_card_info_value'>
-                                          {formatDate(selectedProject.startDate)}
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                              ))
-                                              :
-                                              <div className="smart-glass">
-                                                <div className="logo">
-                                                  <div className="circle">
-                                                    <div className="circle">
-                                                      <div className="circle">
-                                                      </div>
-                                                    </div>
-                                                  </div>
-                                                  <div className="loading-text">
-                                                    Loading...
-                                                  </div>
-                                                </div>
-                                              </div>
-                                            }
-                                          </>
-                                        ))}
-                          </div>
-                      </div> */}
-                    </div>
-                    <div className='_dashboard-mobile_overall_investment_graph'>
-                        <PieChart width={200} height={200}>
-                          <Pie
-                            data={data}
-                            cx={100}
-                            cy={100}
-                            fill="#8884d8"
-                            dataKey="investmentAmount"
-                            onClick={handleProjectClick}
-                          >
-                            {data.map((_, index) => (
-                              <Cell
-                                key={`cell-${index}`}
-                                fill={COLORS[index % COLORS.length]}
-                              />
-                            ))}
-                          </Pie>
-                          {/* <Tooltip /> */}
-                          <Tooltip
-                            formatter={(value, _, entry) => {
-                              // Ensure to access the currency correctly
-                              const name = entry.payload.projectName; // Access currency from payload
-                              return [`${name}: ${formatAmount(value)}`]; // Return formatted value as an array
-                            }}
-                          />
-                        </PieChart>
-                        <div className='recharts-labels-wrapper' style={{ position: 'absolute', right:'3rem' }}>
-                          {data.map((entry:any, index) => {
-                            const percentage = ((entry.investmentAmount / totalInvestment) * 100).toFixed(2);
-                            return (
-                              <div
-                                key={index}
-                                style={{
-                                  display: 'flex',
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
-                                  gap: '10px',
-                                  marginBottom: '5px',
-                                }}
-                              >
-                                <div
-                                  style={{
-                                    width: '12px',
-                                    height: '12px',
-                                    backgroundColor: COLORS[index % COLORS.length],
-                                    borderRadius: '50%',
-                                  }}
-                                ></div>
-                                <span>{percentage}%</span>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
                   </div>
                   :
-                  (
-                    LoaderState ?
-                    <Loader/>
-                    :
-                  <div className="_dashboard-mobile_no-account-container">
-                    <p className='_h1'>You have no any transaction.</p>
-                  </div>      
-
-                  )
+                  null
                 }
-            </div>
-          </section> 
-        </>
-    );
+              </div>
+            </nav>
+            {
+                userDetails?.Investments && userDetails?.Investments.length !== 0 ?
+                <div className="_dashboard-mobile_content">
+                  <div className='_dashboard-mobile_overall_investment'>
+                    <div className='_dashboard-mobile_overall_investment_info'>
+                      <h2 className='_dashboard-mobile_overall_investment_info-label _sub_h2'>Overall Investment</h2>
+                      <div className='_dashboard-mobile_overall_investment_info_details'>
+                        <div className='_dashboard-mobile_overall_investment_info_detail'>
+                          <h6 className='_dashboard-mobile_overall_investment_info_detail-title _title_h2'>Total assets</h6>
+                          <span className='_dashboard-mobile_overall_investment_info_detail-value'>{selectedCurrency?.currencySymbol} {totalAmount}</span>
+                        </div>
+                        <hr className='_dashboard-mobile_overall_investment_info_detail-divider'/>
+                        <div className='_dashboard-mobile_overall_investment_info_detail'>
+                          <h6 className='_dashboard-mobile_overall_investment_info_detail-title _title_h2'>Total earning</h6>
+                          <span className='_dashboard-mobile_overall_investment_info_detail-value'>{interest}</span>
+                        </div>
+                        <hr className='_dashboard-mobile_overall_investment_info_detail-divider'/>
+                        <div className='_dashboard-mobile_overall_investment_info_detail'>
+                          <h6 className='_dashboard-mobile_overall_investment_info_detail-title _title_h2'>Total Projects</h6>
+                          <span className='_dashboard-mobile_overall_investment_info_detail-value'>{projectCount}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='_dashboard-mobile_project_details'>
+                    <h2 className='_dashboard-mobile_project_details_label _sub_h2'>Projects Overview</h2>
+                  </div>
+                  <div className='_dashboard-mobile_overall_investment_graph'>
+                      <PieChart width={200} height={200}>
+                        <Pie
+                          data={data}
+                          cx={100}
+                          cy={100}
+                          fill="#8884d8"
+                          dataKey="investmentAmount"
+                          onClick={handleProjectClick}
+                        >
+                          {data.map((_, index) => (
+                            <Cell
+                              key={`cell-${index}`}
+                              fill={COLORS[index % COLORS.length]}
+                            />
+                          ))}
+                        </Pie>
+                        {/* <Tooltip /> */}
+                        <Tooltip
+                          formatter={(value, _, entry) => {
+                            // Ensure to access the currency correctly
+                            const name = entry.payload.name; // Access currency from payload
+                            return [`${name}: ${formatAmount(value)}`]; // Return formatted value as an array
+                          }}
+                        />
+                      </PieChart>
+
+                      <div className='recharts-labels-wrapper' style={{ position: 'absolute', right:'3rem' }}>
+                        {data.map((entry:any, index) => {
+                          const percentage = ((entry.investmentAmount / totalInvestment) * 100).toFixed(2);
+                          return (
+                            <div
+                              key={index}
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                gap: '10px',
+                                marginBottom: '5px',
+                              }}
+                            >
+                              <div
+                                style={{
+                                  width: '12px',
+                                  height: '12px',
+                                  backgroundColor: COLORS[index % COLORS.length],
+                                  borderRadius: '50%',
+                                }}
+                              ></div>
+                              <span>{percentage}%</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                </div>
+                :
+                <div className="_dashboard-mobile_no-account-container">
+                  <p className='_h1'>You have no any Investment.</p>
+                </div>      
+              }
+          </div>
+        </section> 
+      </>
+  );
 }
  
 export default DashboardMobile;

@@ -147,7 +147,7 @@ const Profile = () => {
                     <div style={{ position: "relative", display: "inline-block" }} className="_user-profile_info_section_label">
                         {/* File Icon */}
                         <svg xmlns="http://www.w3.org/2000/svg" width={151} height={150} viewBox="0 0 151 150" fill="none">
-                            <rect x="0.5" width={150} height={150} rx="22.5" fill="#01276C" />
+                            <rect x="0.5" width={150} height={150} rx="22.5" fill="#214897" />
                             <path
                                 fillRule="evenodd"
                                 clipRule="evenodd"
@@ -199,7 +199,7 @@ const Profile = () => {
             ))}
     </div>
 
-    <MarkAllAsVerified id={Number(user?.id)} docs={documents} />
+    <MarkAllAsVerified id={Number(user?.investorId)} docs={documents} />
 </div>
 
                             <div className="_user-profile_info_section">

@@ -1,0 +1,178 @@
+// Theme Color shades
+    // Theme Default
+        $white:   #ffffff;
+        $blue:    #2A333A;
+        $gold:    #E5AF57;
+        $black   :#000000;
+        $cyan:    rgba(241, 244, 250, 1);
+        $orange:  #E5AF57;
+        
+        $indigo:  #6610f2;
+        $purple:  #6f42c1;
+        $pink:    #e83e8c;
+        $red:     #A91E2C;
+        $yellow:  #F0B400;
+        $green:   #18634B;
+        $teal:    #37424A;
+
+        // Theme Dark 
+        // Shades of grey
+            $light:    #ECF0F3; //white color define here for dark theme
+            $dark    : #262833; //black color define here for dark theme
+            $dark-900: #31344b; //black color define here for dark theme
+            $gray-100: #f3f7fa;
+            $gray-200: #fafbfe;
+            $gray-300: rgba(246, 246, 246, 1); // used
+            $gray-350: rgba(138, 138, 138, 1); // used
+            $gray-400: rgba(148, 148, 148, 1); // used
+            $gray-500: rgba(90, 90, 90, 1);
+            $gray-600: #93a5be;   
+            $gray-700: #66799e;   
+            $gray-800: #525480;   
+            $gray-900: #44476A;
+
+    // (These colors shades will be as whole website color list)
+    
+// ==============================================================================================================================================================
+
+        // $colors: ();
+        // $colors: map-merge((
+        //     "white":       #ECF0F3,
+        //     "blue":        #0056B3,
+        //     "indigo":      #6610f2,
+        //     "purple":      #6f42c1,
+        //     "pink":        #e83e8c,
+        //     "red":         #A91E2C,
+        //     "orange":      #fd7e14,
+        //     "yellow":      #F0B400,
+        //     "green":       #18634B,
+        //     "cyan":        #17a2b8,
+        //     "black   ":    #262833,
+        // ), $colors);
+
+// Theme Color shades for body
+    // Theme Default
+        $body-default:       $white;
+        $body-default-color: $black;
+
+        // Theme Dark
+        $body-dark    :       $dark;
+        $body-dark-color:    $light;
+    // Theme Light
+        $body-light    :      $white;
+        $body-light-color:    $black;
+
+
+
+// Theme Color sections
+    $primary-section:    #FFF;
+    $secondary-section:  #000;
+    $blue-section:    #0056B3;
+    $indigo-section:  #6610f2;
+    $purple-section:  #6f42c1;
+    $pink-section:    #e83e8c;
+    $red-section:     #A91E2C;
+    $orange-section:  #fd7e14;
+    $yellow-section:  #F0B400;
+    $green-section:   #18634B;
+    $teal-section:    #0056B3;
+    $cyan-section:    #17a2b8;
+    // Shades of grey
+        $white-section:#ffffff;
+        $dark-section: #31344b; 
+        $black-section:#262833;
+        // $grey-section:#f4f4f4;
+        $grey-section:#f3f4f6;
+
+    // (These colors shades will be as whole website color list)
+
+
+
+// Indicate color variables
+    $success:         #FEF4D7;
+    $info:            #DAE8FB;
+    $warning:         #F0B400;
+    $muted:      $gray-800;
+    $danger: rgb(244, 96, 54);
+    $_danger_color:   #F46036;
+    $_success_color:  #45B664;
+    $_success_border:rgba(8, 201, 173, 1);
+    $_danger_border:rgba(244, 96, 54, 0.4);
+    $_info_border:#1B73E8;
+    $_danger_box_shadow: 2px 2px 4px 0px rgba(244, 96, 54, 0.4);
+    $_success_box_shadow:2px 2px 4px 0px rgba(8, 201, 173, 0.4);
+
+
+
+// Brands colors
+    $facebook:      #3b5999;
+    $twitter:       #000000;
+    $google-plus:   #dd4b39;
+    $instagram:     #e4405f;
+    $pinterest:     #bd081c;
+    $youtube:       #cd201f;
+    $slack:         #3aaf85;
+    $dribbble:      #ea4c89;
+    $github:        #222222;
+    $dropbox:       #1E90FF;
+    $twitch:        #4B367C;
+    $paypal:        #ecb32c;
+    $behance:       #0057ff;
+    $reddit:        #E84422;
+    $twitter-old:       #1da1f2;
+
+
+
+// Theme colors
+    $theme-colors: ();
+    $theme-colors: map-merge((
+        "primary":      $blue,
+        "dark":        $white,
+    ), $theme-colors);
+
+
+
+// Sections
+    $section-background: ();
+    $section-background: map-merge((
+        "primary":    $primary-section,
+        "secondary":$secondary-section,
+        "white":        $white-section,
+        "dark":          $dark-section,
+        "black":        $black-section,
+        "blue":          $blue-section,
+        "indigo":      $indigo-section,
+        "purple":      $purple-section,
+        "pink":          $pink-section,
+        "red":            $red-section, 
+        "orange":      $orange-section,
+        "yellow":      $yellow-section,
+        "green":        $green-section,
+        "teal":         $teal-section,
+        "grey":         $grey-section,
+        "cyan":         $cyan-section 
+    ), $section-background);
+    
+    $section-colors: ();
+    $section-colors: map-merge((
+        "primary":  $secondary-section,
+        "secondary":  $primary-section,
+        "white":                $black,
+        "dark":                 $light,
+        "black":                $white,
+        "blue":                 $white,
+        "indigo":               $white,
+        "purple":               $white,
+        "pink":                 $white,
+        "red":                  $white, 
+        "orange":               $white,
+        "yellow":               $white,
+        "green":                $white,
+        "teal":                 $black,
+        "grey":                 $black,
+        "cyan":                 $white 
+    ), $section-colors);
+
+
+
+@import "./main/index";

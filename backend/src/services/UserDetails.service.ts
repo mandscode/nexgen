@@ -11,6 +11,7 @@ import { InvestorRespDTO } from "./investor.service";
 import { RoleDTO } from "./role.service";
 import { toUserDetailsDTO } from "./UserDetails.mapper";
 import Currency from '../models/currency';
+import Resource from '../models/resource';
 
 export class UserDetailsDTO {
     id!: number;
@@ -67,6 +68,7 @@ export class UserDetailsDTO {
 
 export class UserDetailsRespDTO {
     id!: number;
+    investorId?:number;
     firstName!: string;
     lastName!: string;
     status!: number | string;
@@ -87,7 +89,7 @@ export class UserDetailsRespDTO {
         status: number;
         maturityLockingPeriod: number;
         investedAmount: string;
-        intrestGenerated: string;
+        earning: string;
         totalValue: string;
         transactions: {
             id: number;
@@ -111,6 +113,8 @@ export class UserDetailsRespDTO {
         description: string;
         ownerName: string;
         legalId: string;
+        lockInPeriod:any;
+        resource:any | null;
     }[];
 
     Currencies?: {
@@ -122,7 +126,9 @@ export class UserDetailsRespDTO {
 
 
 class UserDetailsService {
-    async getUserDetails(id: number): Promise<UserDetailsRespDTO | null> {
+    async getUserDetails(id: number, userShare:number): Promise<UserDetailsRespDTO | null> {
+
+        let entityName = userShare == 1 ? 'nexgen' : 'evolve';
         // Fetch user with roles and entities (excluding sensitive fields)
         const user = await User.findByPk(id, {
             include: [
@@ -134,13 +140,28 @@ class UserDetailsService {
 
         if (!user) return null;
 
+        
         // Convert to DTO
         const userDTO = toUserDetailsDTO(user);
-
+        
         const { roles, entities, ...filteredUserDTO } = userDTO;
         // Check if user is an investor
         const isInvestor = user.roles?.some(role => role.name === "Investor");
         const isViewer = user.roles?.some(role => role.name === "Viewer");
+        
+        const entity = entities?.find((e: any) => e.name.toLowerCase() === entityName);
+        if (!entity) {
+            throw new Error(`Entity with name '${entityName}' not found for the user.`);
+        }
+        const entityId = entity.id;
+
+        const projects = await Project.findAll({
+            where: { entityID: entityId },
+            attributes: ['id'] // Only fetch project IDs for filtering
+        });
+        
+        const projectIds = projects.map((p: any) => p.id);
+
 
         let userJSON: UserDetailsRespDTO = {
             ...filteredUserDTO,
@@ -170,6 +191,7 @@ class UserDetailsService {
                         include: [
                             {
                                 model: Transaction,
+                                where: { projectId: projectIds },
                                 attributes: { exclude: ["accountId", "modifiedBy"] } // Exclude unwanted fields
                             },
                             {
@@ -177,11 +199,20 @@ class UserDetailsService {
                             }
                         ]
                     },
-                    { model: Project, through: { attributes: [] } }
+                    { 
+                        model: Project, 
+                        where: { entityId },
+                        through: { attributes: ['lockInPeriod', 'earning'] },
+                        include: [
+                            {
+                              model: Resource, // Include ProjectResource under Project
+                            //   attributes: ['id', 'location'], // Add required attributes
+                            }
+                        ]
+                    }
                 ],
-                attributes: { exclude: ["userId"] }
+                attributes: { include:['id'], exclude: ["userId"] }
             });
-
             const groupedInvestments = new Map();
 
             investorDetails?.accounts?.forEach((account: any) => {
@@ -192,21 +223,24 @@ class UserDetailsService {
                     const key = `${projectId}-${currencyId}`; // Unique key for investments per project & currency
 
                     if (!groupedInvestments.has(key)) {
+                        const project = investorDetails.projects?.find((p: any) => p.id === projectId);
+                        const earning = project?.ProjectInvestor?.earning || 0;
+                        const lockInPeriod = project?.ProjectInvestor?.lockInPeriod || '';
                         groupedInvestments.set(key, {
                             id: transaction.id, // First transaction ID, can be adjusted
                             ProjectId: projectId,
                             currencyId: currencyId,
+                            lockInPeriod: lockInPeriod ?? null,
                             maturityLockingPeriod: investorDetails.projects?.find(p => p.id === projectId)?.maturityLockingPeriod || 0,
-                            investedAmount: transaction.amount.toString(),
-                            intrestGenerated: ((transaction.amount * transaction.intrestRate) / 100).toFixed(2),
-                            totalValue: (transaction.amount + (transaction.amount * transaction.intrestRate) / 100).toFixed(2),
+                            investedAmount: transaction.credited && transaction.amount,
+                            earning: earning || 0,
+                            totalValue: transaction.credited ? (transaction.amount + earning) : (-transaction.amount + earning),
                             transactions: [] // Will collect transactions below
                         });
                     } else {
                         const existingInvestment = groupedInvestments.get(key);
-                        existingInvestment.investedAmount = (parseFloat(existingInvestment.investedAmount) + transaction.amount).toString();
-                        existingInvestment.intrestGenerated = (parseFloat(existingInvestment.intrestGenerated) + (transaction.amount * transaction.intrestRate) / 100).toFixed(2);
-                        existingInvestment.totalValue = (parseFloat(existingInvestment.totalValue) + transaction.amount + (transaction.amount * transaction.intrestRate) / 100).toFixed(2);
+                        existingInvestment.investedAmount = transaction.credited ? (parseFloat(existingInvestment.investedAmount) + transaction.amount) : existingInvestment.investedAmount;
+                        existingInvestment.totalValue = (parseFloat(existingInvestment.totalValue) + (transaction.credited ? transaction.amount : -transaction.amount));
                     }
                     
 
@@ -216,7 +250,7 @@ class UserDetailsService {
                         title: transaction.details, // Assuming `details` contains the transaction title
                         date: transaction.transactionDate,
                         credited: transaction.credited ? true : false,
-                        amount: transaction.amount.toString(),
+                        amount: transaction.amount.toFixed(2),
                     });
                 });
             });
@@ -224,9 +258,9 @@ class UserDetailsService {
             // Convert the grouped investments into an array
             const Investments = Array.from(groupedInvestments.values());
 
-
             userJSON = {
                 ...filteredUserDTO,
+                investorId:investorDetails?.id,
                 status:filteredUserDTO.status && filteredUserDTO.status == "active" ? 1 : 0,
                 "message": 'You dont have any active investments now, please contact 93232345 to start your investment journey',
                 Currencies: investorDetails?.accounts?.map((account: any) => ({
@@ -247,10 +281,12 @@ class UserDetailsService {
                     overallCost: project.overallCost,
                     description: project.description,
                     ownerName: project.ownerName,
-                    legalId: project.legalId
+                    legalId: project.legalId,
+                    lockInPeriod: project.ProjectInvestor?.lockInPeriod ?? null,
+                    earning: project.ProjectInvestor?.earning ?? null,
+                    resource: project.resources ?? null
                 })) || []
             }
-
 
             if (investorDetails?.accounts?.length == 0) {
                 userJSON.InvestedCurrencies = undefined

@@ -1,6 +1,7 @@
 import { getProjects } from '../../api/apiEndpoints';
 import { Dispatch } from 'redux';
 import { FETCH_PROJECTS_FAILURE, FETCH_PROJECTS_REQUEST, FETCH_PROJECTS_SUCCESS } from './actionTypes';
+import { RootState } from '../store';
 
 export interface Project {
   id: number;
@@ -39,11 +40,20 @@ export const fetchProjectsFailure = (error: string) => ({
 
 // Async action to fetch projects and images
 export const fetchProjects = () => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch, getState: () => RootState) => {
     dispatch(fetchProjectsRequest());
 
     try {
-      const response = await getProjects();
+      // Get token from Redux state
+      const token = getState().token.token;
+      console.log(token, "aaaaaaaaaaaaaaaaaaa")
+      // Fetch projects with token in headers
+      const response = await getProjects({
+        headers: {
+          Authorization: token ? `Bearer ${token}` : '',
+        },
+      });
+
       dispatch(fetchProjectsSuccess(response));
     } catch (error: any) {
       dispatch(fetchProjectsFailure(error.message));

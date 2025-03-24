@@ -1,6 +1,6 @@
 import { NavigateFunction } from "react-router-dom";
 import { AssignProjectOption, User } from "./UserDetail";
-import { assignProject, getInvestor, getProjects, getUser } from "../../api/apiEndpoints";
+import { assignEntity, assignProject, getInvestor, getProjects, getUser } from "../../api/apiEndpoints";
 
 import { makeAutoObservable, runInAction } from "mobx"
 
@@ -26,40 +26,36 @@ export class UserDetailStore {
     async assignAccount (values: AssignProjectOption, setUserProjectListShow: any, projects:any, setProjects:any, invId:number) {
 
         if (values.entityType == 1) {
-            // Extract project IDs from values.projectId
-            const selectedProjectIds = values.projectId.map((project: any) => project.value);
+            if(values.lockInPeriod) {
+
+                // Prepare the formatted values
+                const formattedValues = {
+                    investorId: invId,
+                    projectId: values.projectId,
+                    lockInPeriod:values.lockInPeriod
+                };
+        
+                // Call the createUser function
+                await assignProject(formattedValues);
+                setUserProjectListShow(true)
+            } else {
+                alert('Lock in Period required field')
+            }
     
-            // Extract project IDs from the projects array
-            const allProjectIds = projects.map((project: any) => project.id);
-            
-            // Merge both arrays and remove duplicates
-            const mergedProjectIds = Array.from(new Set([...selectedProjectIds, ...allProjectIds]));
+            // await setProjects([...projects, ])
     
-            const filteredProjects = await getProjects();
-            const allInputProjects = await filteredProjects.filter((e:any) => selectedProjectIds.includes(e.id))
-    
-            // Merge both arrays and deduplicate based on `id`
-            const allProjects = [
-                ...projects,
-                ...allInputProjects,
-            ].reduce((unique: any[], item: any) => {
-                // Check if the `id` is already in the unique array
-                if (!unique.some((proj) => proj.id === item.id)) {
-                    unique.push(item);
-                }
-                return unique;
-            }, []);
-            
-    
+        }
+        else if(values.entityType == 0) {
             // Prepare the formatted values
+
+            const investor = await getInvestor(Number(invId));
             const formattedValues = {
-                investorId: values.investorId,
-                projectId: mergedProjectIds // Send only the array of project IDs
+                entityIds: [values.projectId],
+                userId: investor.userId,
             };
     
             // Call the createUser function
-            await assignProject(invId, formattedValues.projectId);
-            await setProjects(allProjects)
+            await assignEntity(formattedValues);
     
             setUserProjectListShow(true)
         }

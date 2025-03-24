@@ -41,8 +41,11 @@ export class InvestorController {
     }
 
     @Put('/{id}/projects/assign')
-    public async assignProject(@Path() id: number, @Body() projectIds: number[]): Promise<InvestorRespDTO | null> {
-        return investorService.assignProjects(id, projectIds);
+    public async assignProject(
+        @Path() id: number, 
+        @Body() projectData: { projects: { projectId: number, lockInPeriod: string }[] }
+    ): Promise<InvestorRespDTO | null> {
+        return investorService.assignProjects(id, projectData.projects);
     }
 
     @Put('/{id}/documents')

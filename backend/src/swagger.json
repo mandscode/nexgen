@@ -54,9 +54,7 @@
 						"format": "double"
 					},
 					"details": {
-						"properties": {},
-						"additionalProperties": {},
-						"type": "object"
+						"type": "string"
 					},
 					"projectId": {
 						"type": "number",
@@ -264,6 +262,9 @@
 						"additionalProperties": {},
 						"type": "object"
 					},
+					"lockInPeriod": {
+						"type": "string"
+					},
 					"accounts": {
 						"items": {
 							"$ref": "#/components/schemas/AccountRespDTO"
@@ -311,7 +312,8 @@
 				},
 				"required": [
 					"emergencyContact",
-					"userId"
+					"userId",
+					"lockInPeriod"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -514,6 +516,10 @@
 						"type": "number",
 						"format": "double"
 					},
+					"investorId": {
+						"type": "number",
+						"format": "double"
+					},
 					"firstName": {
 						"type": "string"
 					},
@@ -606,7 +612,7 @@
 								"totalValue": {
 									"type": "string"
 								},
-								"intrestGenerated": {
+								"earning": {
 									"type": "string"
 								},
 								"investedAmount": {
@@ -634,7 +640,7 @@
 							"required": [
 								"transactions",
 								"totalValue",
-								"intrestGenerated",
+								"earning",
 								"investedAmount",
 								"maturityLockingPeriod",
 								"status",
@@ -649,6 +655,7 @@
 					"projects": {
 						"items": {
 							"properties": {
+								"lockInPeriod": {},
 								"legalId": {
 									"type": "string"
 								},
@@ -693,6 +700,7 @@
 								}
 							},
 							"required": [
+								"lockInPeriod",
 								"legalId",
 								"ownerName",
 								"description",
@@ -820,6 +828,10 @@
 			"ProfileDetailsRespDTO": {
 				"properties": {
 					"userId": {
+						"type": "number",
+						"format": "double"
+					},
+					"investorId": {
 						"type": "number",
 						"format": "double"
 					},
@@ -982,6 +994,9 @@
 						},
 						"type": "array"
 					},
+					"lockInPeriod": {
+						"type": "string"
+					},
 					"resourceIds": {
 						"items": {
 							"type": "number",
@@ -1019,7 +1034,8 @@
 				"required": [
 					"emergencyContact",
 					"userId",
-					"projectIds"
+					"projectIds",
+					"lockInPeriod"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -1487,6 +1503,62 @@
 				}
 			}
 		},
+		"/users/{id}/entity/assign": {
+			"put": {
+				"operationId": "AssignEntity",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/UserRespDTO"
+										}
+									],
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"entityIds": {
+										"items": {
+											"type": "number",
+											"format": "double"
+										},
+										"type": "array"
+									}
+								},
+								"required": [
+									"entityIds"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			}
+		},
 		"/users/login": {
 			"post": {
 				"operationId": "Login",
@@ -1530,6 +1602,10 @@
 						"application/json": {
 							"schema": {
 								"properties": {
+									"entity": {
+										"type": "number",
+										"format": "double"
+									},
 									"password": {
 										"type": "string"
 									},
@@ -1671,6 +1747,67 @@
 						}
 					}
 				]
+			}
+		},
+		"/transactions/{id}/earning": {
+			"put": {
+				"operationId": "AddEarning",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"earning": {
+										"type": "number",
+										"format": "double"
+									},
+									"investorId": {
+										"type": "number",
+										"format": "double"
+									}
+								},
+								"required": [
+									"earning",
+									"investorId"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/roles": {
@@ -2053,6 +2190,9 @@
 						"application/json": {
 							"schema": {
 								"properties": {
+									"file": {
+										"type": "string"
+									},
 									"settings": {
 										"properties": {},
 										"additionalProperties": {},
@@ -2083,7 +2223,7 @@
 				}
 			}
 		},
-		"/projects/Entity/{id}": {
+		"/projects/Entity": {
 			"get": {
 				"operationId": "GetProjectsByEntityId",
 				"responses": {
@@ -2105,12 +2245,11 @@
 				"security": [],
 				"parameters": [
 					{
-						"in": "path",
-						"name": "id",
+						"in": "query",
+						"name": "entityIds",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					}
 				]
@@ -2448,11 +2587,31 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"items": {
-									"type": "number",
-									"format": "double"
+								"properties": {
+									"projects": {
+										"items": {
+											"properties": {
+												"lockInPeriod": {
+													"type": "string"
+												},
+												"projectId": {
+													"type": "number",
+													"format": "double"
+												}
+											},
+											"required": [
+												"lockInPeriod",
+												"projectId"
+											],
+											"type": "object"
+										},
+										"type": "array"
+									}
 								},
-								"type": "array"
+								"required": [
+									"projects"
+								],
+								"type": "object"
 							}
 						}
 					}

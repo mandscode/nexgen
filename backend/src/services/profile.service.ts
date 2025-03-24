@@ -6,6 +6,7 @@ import User from "../models/user";
 
 export class ProfileDetailsRespDTO {
     userId!: number;
+    investorId?:number;
     FirstName!: string;
     LastName!: string;
 
@@ -74,6 +75,8 @@ class ProfileDetailsService {
         });
 
         if (investor) {
+
+            userDTO.investorId = investor.id;
             // Ensure personalDetails is an object
             let personalDetails = typeof investor.personalDetails === "string"
                 ? JSON.parse(investor.personalDetails)

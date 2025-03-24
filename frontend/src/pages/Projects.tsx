@@ -15,10 +15,9 @@ const Projects = () => {
 
     const [projectOptions, setProjectOptions] = useState<any>();
     
-    const { projects, token, images, loading, userEntities} = useSelector((state: any) => ({
+    const { projects, token, images, loading} = useSelector((state: any) => ({
       loading: state.projectsDetail?.loading,
       projects: state.projectsDetail?.projects,
-      userEntities: state.userDetails?.user?.entities,
       error: state.projectsDetail?.error,
       token: state.token.token,
       images:state.projectImages.images
@@ -31,21 +30,13 @@ const Projects = () => {
     }, []);
 
     useEffect(() => {
-        if (!userEntities || userEntities.length === 0) {
-          // If no userEntities, show all projects
-          setProjectOptions(projects);
-        } else {
-          // Get entity IDs from userEntities
-          const userEntityIds = userEntities.map((entity: any) => entity.id);
+
       
           // Filter projects that match user entity IDs
-          const filteredProjects = projects.filter((proj: any) =>
-            userEntityIds.includes(proj.entityID)
-          );
+          const filteredProjects = projects;
       
           setProjectOptions(filteredProjects);
-        }
-      }, [userEntities, projects]);
+      }, [ projects]);
       
 
     const getProjectImages = (projectName: string) => {
@@ -81,7 +72,7 @@ if (loading) {
                         <Link className="_avail-projects_head_link" to={`/`}>
                             <svg xmlns="http://www.w3.org/2000/svg" width={41} height={41} viewBox="0 0 41 41" fill="none">
                                 <g clipPath="url(#clip0_581_4345)">
-                                    <path d="M0.792649 20.0839C0.402125 20.4744 0.402125 21.1076 0.792649 21.4981L7.15661 27.8621C7.54713 28.2526 8.1803 28.2526 8.57082 27.8621C8.96135 27.4716 8.96135 26.8384 8.57082 26.4479L2.91397 20.791L8.57082 15.1342C8.96135 14.7436 8.96135 14.1105 8.57082 13.7199C8.1803 13.3294 7.54713 13.3294 7.15661 13.7199L0.792649 20.0839ZM2.3125 19.791H1.49976V21.791H2.3125V19.791Z" fill="#01276C" />
+                                    <path d="M0.792649 20.0839C0.402125 20.4744 0.402125 21.1076 0.792649 21.4981L7.15661 27.8621C7.54713 28.2526 8.1803 28.2526 8.57082 27.8621C8.96135 27.4716 8.96135 26.8384 8.57082 26.4479L2.91397 20.791L8.57082 15.1342C8.96135 14.7436 8.96135 14.1105 8.57082 13.7199C8.1803 13.3294 7.54713 13.3294 7.15661 13.7199L0.792649 20.0839ZM2.3125 19.791H1.49976V21.791H2.3125V19.791Z" fill="#214897" />
                                 </g>
                                 <defs>
                                     <clipPath id="clip0_581_4345">

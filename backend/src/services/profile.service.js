@@ -50,6 +50,7 @@ class ProfileDetailsService {
                 attributes: { exclude: ["userId"] }
             });
             if (investor) {
+                userDTO.investorId = investor.id;
                 // Ensure personalDetails is an object
                 let personalDetails = typeof investor.personalDetails === "string"
                     ? JSON.parse(investor.personalDetails)

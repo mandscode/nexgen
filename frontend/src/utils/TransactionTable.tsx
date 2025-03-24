@@ -7,7 +7,7 @@ const TransactionList: React.FC<any> = ({ data, currency }) => {
   // Calculate paginated data
   const startIndex = currentPage * rowsPerPage;
   const paginatedData = data.slice(startIndex, startIndex + rowsPerPage);
-  
+
   // Change page
   const handleChangePage = (newPage: number) => {
     setCurrentPage(newPage);
@@ -73,18 +73,17 @@ const TransactionList: React.FC<any> = ({ data, currency }) => {
                   }}
                 >
                   {
-                    transaction?.details && Object.keys(JSON.parse(transaction?.details))
+                    transaction?.details && transaction?.details
                   }
                 </div>
                 <div style={{ color: "#999", fontSize: "14px" }}>
-                  
                   {formatDateTime(transaction.createdDate)}
                 </div>
               </div>
             </div>
             {/* Amount */}
             <div style={{ fontWeight: "bold", fontSize: "16px" }}>
-              {currency.symbol} {transaction.amount}
+              {currency?.symbol} {transaction?.amount}
             </div>
           </li>
         ))}
@@ -106,8 +105,8 @@ const TransactionList: React.FC<any> = ({ data, currency }) => {
               style={{
                 border: "none",
                 backgroundColor:
-                  pageIndex === currentPage ? "#01276C" : "transparent",
-                color: pageIndex === currentPage ? "#fff" : "#01276C",
+                  pageIndex === currentPage ? "#214897" : "transparent",
+                color: pageIndex === currentPage ? "#fff" : "#214897",
                 padding: "5px 10px",
                 borderRadius: "4px",
                 cursor: "pointer",

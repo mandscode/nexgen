@@ -73,6 +73,7 @@ const AssignProject = ({ }:AssignProjectProps) => {
   const fields = [
     { name: 'userId', type: 'select', placeholder: 'Select User', options:userOptions },
     { name: 'projectIds', type: 'select', placeholder: 'Select Project', options:projectOptions },
+    { name: 'lockInPeriod', type: 'date', placeholder: 'Lock in Period' },
     { name: 'emergencyContact.name', type: 'text', placeholder: 'Emergency Contact Name' },
     { name: 'emergencyContact.relation', type: 'text', placeholder: 'Emergency Contact Relation' },
     { name: 'emergencyContact.mobile', type: 'number', placeholder: 'Emergency Contact Number' }

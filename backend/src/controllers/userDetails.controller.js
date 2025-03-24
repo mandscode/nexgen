@@ -27,10 +27,38 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserDetailsController = void 0;
 const tsoa_1 = require("tsoa");
 const UserDetails_service_1 = __importDefault(require("../services/UserDetails.service"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 let UserDetailsController = class UserDetailsController {
-    getUserDetails(id) {
+    getUserDetails(id, req) {
         return __awaiter(this, void 0, void 0, function* () {
-            return UserDetails_service_1.default.getUserDetails(id);
+            const authHeader = req.headers.authorization;
+            if (!(authHeader === null || authHeader === void 0 ? void 0 : authHeader.startsWith('Bearer '))) {
+                throw new Error('Unauthorized: No valid token provided');
+            }
+            const token = authHeader.split(' ')[1];
+            try {
+                const decodedToken = jsonwebtoken_1.default.verify(token, 'your_jwt_secret');
+                if (decodedToken.userShare) {
+                    return UserDetails_service_1.default.getUserDetails(id, decodedToken.userShare);
+                }
+                else {
+                    throw new Error('Unauthorized: Invalid token');
+                }
+            }
+            catch (error) {
+                if (error instanceof jsonwebtoken_1.default.TokenExpiredError) {
+                    // Token is expired
+                    throw new Error('TokenExpired: Please log in again');
+                }
+                else if (error instanceof jsonwebtoken_1.default.JsonWebTokenError) {
+                    // Token is invalid (e.g., malformed, not signed correctly)
+                    throw new Error('Unauthorized: Invalid token');
+                }
+                else {
+                    // Other errors (e.g., network issues, server errors)
+                    throw new Error('Unauthorized: Invalid token');
+                }
+            }
         });
     }
 };
@@ -38,8 +66,9 @@ exports.UserDetailsController = UserDetailsController;
 __decorate([
     (0, tsoa_1.Get)("{id}"),
     __param(0, (0, tsoa_1.Path)()),
+    __param(1, (0, tsoa_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
+    __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)
 ], UserDetailsController.prototype, "getUserDetails", null);
 exports.UserDetailsController = UserDetailsController = __decorate([

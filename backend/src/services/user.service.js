@@ -19,6 +19,7 @@ const investor_1 = __importDefault(require("../models/investor"));
 const project_1 = __importDefault(require("../models/project"));
 const role_1 = __importDefault(require("../models/role"));
 const user_1 = __importDefault(require("../models/user"));
+const user_entities_1 = __importDefault(require("../models/user-entities"));
 const investor_mapper_1 = require("./investor.mapper");
 const user_mapper_1 = require("./user.mapper");
 const bcrypt_1 = __importDefault(require("bcrypt"));
@@ -185,6 +186,27 @@ class UserService {
     findUserByEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
             return user_1.default.findOne({ where: { email } }).then(user => user ? (0, user_mapper_1.toUserDTO)(user) : null);
+        });
+    }
+    assignEntities(userId, entityIds) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!entityIds || entityIds.length === 0) {
+                throw new Error('No entity IDs provided');
+            }
+            // Find the user
+            const user = yield user_1.default.findByPk(userId);
+            if (!user) {
+                throw new Error('User not found');
+            }
+            // Loop through the provided entityIds and assign them
+            for (const entityId of entityIds) {
+                // Assign the entity to the user
+                yield user_entities_1.default.create({
+                    userId: userId,
+                    entityId: entityId,
+                });
+            }
+            return this.getUserById(userId);
         });
     }
 }

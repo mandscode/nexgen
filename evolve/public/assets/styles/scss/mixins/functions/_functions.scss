@@ -1,0 +1,91 @@
+// for Sections =====================================
+
+
+// for Section background colors
+@function section-bg($key: "primary") {
+    @return map-get($section-background, $key);
+}
+
+// for Section text colors
+@function section-color($key: "primary") {
+    @return map-get($section-colors, $key);
+}
+
+a {
+    color: inherit;
+}
+
+// @function color($color-name) {
+//     @return var(--color-#{$color-name});
+// }
+
+
+// Variables CSS
+// :root {
+//     @each $color, $value in $colors {
+//         --color-#{$color}: #{$value};
+//     }
+// }
+
+// classes for Section background colors
+@each $color, $value in $section-background {
+    ._section-#{$color} {
+        background: $value;
+    }
+}
+
+// classes for Section text colors
+@each $color, $value in $section-colors {
+    ._section-#{$color} {
+        color: $value;
+    }
+}
+
+
+// Transitions
+@mixin transitions-base($time, $type){
+    -webkit-transition: all $time $type;
+    -moz-transition: all $time $type;
+    -o-transition: all $time $type;
+    -ms-transition: all $time $type;
+    transition: all $time $type;
+}
+
+@mixin transitions($property, $time, $type){
+    -webkit-transition: $property $time $type;
+    -moz-transition: $property $time $type;
+    -o-transition: $property $time $type;
+    -ms-transition: $property $time $type;
+    transition: $property $time $type;
+}
+
+// @include transitions(0.8s, $transition-bezier-card);
+
+
+// Transform
+@mixin transform($transforms) {
+	-moz-transform: $transforms;
+	-o-transform: $transforms;
+	-ms-transform: $transforms;
+	-webkit-transform: $transforms;
+	transform: $transforms;
+}
+
+// translate
+@mixin translate ($x, $y) {
+	@include transform(translate($x, $y));
+}
+
+
+// rotate
+@mixin rotate ($deg) {
+    @include transform(rotate(#{$deg}deg));
+}
+
+@mixin rotateY-180() {
+    -webkit-transform: rotateY( 180deg );
+    -moz-transform: rotateY( 180deg );
+    -o-transform: rotateY( 180deg );
+    -ms-transform: rotateY(180deg);
+    transform: rotateY( 180deg );
+}

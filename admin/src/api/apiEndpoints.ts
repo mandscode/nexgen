@@ -81,6 +81,21 @@ export const createRole = async (roleData:AddRoleForm ) => {
   }
 };
 
+export const createResource = async (resourceData:{location:string, sourceId:number, type:string, group:string} ) => {
+  try {
+
+    const formattedData = {
+      ...resourceData
+    };
+
+    const response = await api.post('/resources', formattedData);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating roles:', error);
+    throw error;
+  }
+};
+
 export const deleteRole = async (id:number) => {
   try {
     const response = await api.delete(`/roles/${id}`);
@@ -284,7 +299,16 @@ export const getEntities = async () => {
   }
 };
 
-// Example API call: Get a list of users
+export const getCurrencyDetail = async (id:number) => {
+  try {
+    const response = await api.get(`/currencies/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    throw error;
+  }
+};
+
 export const getCountriesWithCurrencies = async () => {
   try {
     const response = await staticCountries;
@@ -294,6 +318,7 @@ export const getCountriesWithCurrencies = async () => {
     throw error;
   }
 };
+
 
 // Example API call: Get a list of users
 export const getProjects = async () => {
@@ -317,6 +342,16 @@ export const getProject = async (id:number) => {
 };
 
 export const updateProjectSettings = async (id:number, data:ProjectSettingsInterface) => {
+  try {
+    const response = await api.put(`/projects/${id}`, data);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    throw error;
+  }
+};
+
+export const updateProjectImages = async (id:number, data:any) => {
   try {
     const response = await api.put(`/projects/${id}`, data);
     return response.data;
@@ -352,17 +387,48 @@ export const createProject = async (projectData:AddProjectForm ) => {
   }
 };
 
-// Example API call: assign Project to investors
-export const assignProject = async (investorId: number,  projectId: number[] ) => {
+export const assignProject = async (formattedData: { 
+  investorId: number;  
+  projectId: number; 
+  lockInPeriod: string 
+}) => {
   try {
-    const response = await api.put(`/investors/${investorId}/projects/assign`, projectId);
-    console.log("assignProject", projectId)
-    return response.data;
+      const response = await api.put(`/investors/${formattedData.investorId}/projects/assign`, {
+          projects: [  // 🔹 Backend expects "projects", not "projectsData"
+              {
+                  projectId: formattedData.projectId,
+                  lockInPeriod: formattedData.lockInPeriod
+              }
+          ]
+      });
+
+      console.log("Project assigned successfully:", response.data);
+      return response.data;
   } catch (error) {
-    console.error(`Error updating roles for user with ID ${investorId}:`, error);
-    throw error;
+    alert('Project already assigned')
+      console.error(`Error assigning project to investor with ID ${formattedData.investorId}:`, error);
+      throw error;
   }
 };
+
+export const assignEntity = async (formattedData: { 
+  userId: number;  
+  entityIds: number[]; 
+}) => {
+  try {
+      const response = await api.put(`/users/${formattedData.userId}/entity/assign`, {
+        entityIds: formattedData.entityIds,
+      });
+
+      return response.data;
+  } catch (error) {
+      alert('Entity already assigned')
+      console.error(`Error assigning project to investor with ID ${formattedData.userId}:`, error);
+      throw error;
+  }
+};
+
+
 
 // Example API call: Create a new Entity
 export const createInvestors = async (investorsData:Investor) => {
@@ -476,7 +542,8 @@ export const getMethods = [
 ]
 
 export interface TransactionDTO {
-  details?: TransactionDetails; // Details containing credit card information
+  // details?: TransactionDetails; // Details containing credit card information
+  details?: string; // Details containing credit card information
   projectId: number;          // Project ID
   accountId: number;          // Account/><<<<<<<<, ID
   amount: number;             // Amount of the transaction
@@ -491,9 +558,27 @@ export const createTransactions = async (accountsData:TransactionDTO) => {
 
     const formattedData = {
       ...accountsData,
-      credited:accountsData.credited == "Debit" ? false : true
+      credited: accountsData.credited === "true" ? true : accountsData.credited === "false" ? false : accountsData.credited
     };
+
+    console.log(formattedData)
     const response = await api.post('/transactions', formattedData);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating user:', error);
+    throw error;
+  }
+};
+
+export const createEarning = async (accountsData:{amount:number, investorId:number, projectId:number}) => {
+  
+  try {
+
+    const formattedData = {
+      earning:accountsData.amount,
+      investorId:accountsData.investorId
+    };
+    const response = await api.put(`/transactions/${accountsData.projectId}/earning`, formattedData);
     return response.data;
   } catch (error) {
     console.error('Error creating user:', error);

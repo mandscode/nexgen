@@ -497,7 +497,7 @@ a {
 .circle {
   padding: 20px;
   border: 6px solid transparent;
-  border-top-color: #01276C;
+  border-top-color: #214897;
   border-radius: 50%;
   width: 100%;
   height: 100%;
@@ -857,11 +857,11 @@ a {
 ._is_primary {
   border: 0;
   color: #ffffff;
-  background-color: #01276C;
+  background-color: #214897;
 }
 ._is_primary:hover {
   color: #ffffff;
-  background: #01276C;
+  background: #214897;
   border-color: var(--btn-border-hover-primary);
 }
 
@@ -959,13 +959,13 @@ a {
   width: 100%;
   justify-content: space-between;
   background: #fff;
-  color: rgb(1, 39, 108);
+  color: #214897;
   font-size: 2rem;
-  border: 1px solid rgb(1, 39, 108);
+  border: 1px solid #214897;
   border-radius: 5px;
 }
 ._dropdown_button_modified svg {
-  fill: rgb(1, 39, 108) !important;
+  fill: #214897 !important;
 }
 ._dropdown_button svg {
   height: 2rem;
@@ -1019,7 +1019,7 @@ a {
 }
 ._dropdown_button_menu_option:hover {
   color: #fff;
-  background-color: rgb(1, 39, 108);
+  background-color: #214897;
 }
 ._dropdown_button_menu_modified {
   width: 100%;
@@ -1697,7 +1697,7 @@ a {
   position: absolute;
 }
 ._project_summary_title {
-  color: #01276C;
+  color: #214897;
   padding-bottom: 1.2rem;
   white-space: nowrap;
   overflow: hidden;
@@ -1756,7 +1756,7 @@ a {
     grid-template-columns: 70% auto;
   }
   ._project_summary-mobile_title {
-    color: #01276C;
+    color: #214897;
     overflow: hidden;
     font-size: 1.8rem;
     white-space: nowrap;
@@ -1883,12 +1883,6 @@ a {
   align-items: center;
   justify-content: center;
 }
-@media only screen and (max-width: 1024px) {
-  ._login_page {
-    background-color: #01276C;
-  }
-}
-
 ._nav {
   box-shadow: 0px 4px 4px 0px rgba(201, 201, 201, 0.25);
 }
@@ -1932,13 +1926,13 @@ a {
   display: flex;
 }
 ._nav_item-active {
-  color: #01276C;
+  color: #214897;
   border-radius: 8px;
   background: transparent;
-  border: 0.15rem solid #01276C;
+  border: 0.15rem solid #214897;
 }
 ._nav_item-active .active-svg {
-  fill: #01276C;
+  fill: #214897;
 }
 ._nav_button_logout {
   padding: 0;
@@ -1951,7 +1945,7 @@ a {
   }
   ._nav-mobile {
     display: flex;
-    background-color: #01276C;
+    background-color: #214897;
     box-shadow: 0px 4px 4px 0px rgba(201, 201, 201, 0.25);
   }
   ._nav-mobile_wrapper {
@@ -2003,10 +1997,10 @@ a {
     justify-content: center;
   }
   ._nav-bottom_link.active {
-    color: #01276C;
+    color: #214897;
   }
   ._nav-bottom_link.active .active-svg {
-    fill: #01276C;
+    fill: #214897;
   }
   ._nav-bottom_link svg {
     width: auto;
@@ -2033,11 +2027,10 @@ a {
 }
 ._login_left {
   gap: 10.2rem;
-  color: #ffffff;
+  color: #214897;
   display: flex;
   flex-direction: column;
-  background-color: #01276C;
-  padding: 8.9rem 6.2rem 9.671rem 4.15rem;
+  padding: 4.7rem 6.2rem 9.671rem 4.15rem;
 }
 ._login_left_title {
   font-size: 4rem;
@@ -2053,15 +2046,15 @@ a {
   font-size: 1.6rem;
 }
 ._login_right {
-  color: #01276C;
-  gap: 9.683rem;
+  margin-top: 5rem;
+  color: #214897;
+  gap: 7.5rem;
   padding: 0 5.679rem 0 6.554rem;
   display: flex;
-  align-self: center;
   flex-direction: column;
 }
 ._login_right_bottom {
-  gap: 9.683rem;
+  gap: 7.483rem;
   display: flex;
   flex-direction: column;
 }
@@ -2076,6 +2069,72 @@ a {
 ._login_right_bottom_text {
   font-size: 2rem;
 }
+._login_right .login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+._login_right .login-box {
+  background: #fff;
+  border-radius: 8px;
+  width: 299px;
+}
+._login_right .login-form {
+  display: flex;
+  flex-direction: column;
+}
+._login_right .input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 17px;
+}
+._login_right .input-group label {
+  text-align: left;
+  font-weight: 500;
+  font-size: 12px;
+  color: #0D0D0D;
+}
+._login_right .input-group input {
+  width: 299px;
+  height: 40px;
+  border-radius: 8px;
+  border: 1px solid #8A8A8A;
+  padding: 8px;
+  font-size: 14px;
+  outline: none;
+}
+._login_right .input-group input:focus {
+  border-color: #007bff;
+}
+._login_right .password-group {
+  position: relative;
+}
+._login_right .password-group .password-toggle {
+  position: absolute;
+  right: 10px;
+  padding-top: 18.4px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #666;
+}
+._login_right .login-button {
+  width: 100%;
+  height: 40px;
+  background: #214897;
+  color: white;
+  border: none;
+  border-radius: 9px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+._login_right .login-button:hover {
+  background: #0056b3;
+}
 ._login_services_card {
   gap: 1rem;
   display: flex;
@@ -2086,14 +2145,23 @@ a {
   gap: 1.6rem;
   display: flex;
 }
+._login_services_card_title {
+  font-size: 1.6rem;
+  font-weight: 500;
+}
 ._login_services_card_icon {
   width: 2.5rem;
   height: 2.5rem;
 }
 ._login_services_card_icon_wrapper {
+  border-radius: 11px;
   padding: 3.5rem 6.6rem;
   display: inline-block;
-  background-color: rgb(2, 30, 82);
+  background-color: #214897;
+}
+
+.error-text {
+  color: red;
 }
 
 @media only screen and (max-width: 1024px) {
@@ -2108,6 +2176,7 @@ a {
     gap: 9.864rem;
     text-align: center;
     align-items: center;
+    padding-top: 4rem;
     padding-bottom: 5rem;
     flex-direction: column;
   }
@@ -2116,11 +2185,8 @@ a {
     font-size: 4.8rem;
     font-family: HelveticaNeueBold;
   }
-  ._login-mobile_auth {
-    width: 24.57rem;
-  }
   ._login-mobile_discover {
-    color: #ffffff;
+    color: #000;
     gap: 8.347rem;
     display: flex;
     flex-direction: column;
@@ -2156,7 +2222,74 @@ a {
   ._login-mobile_services_card_icon_wrapper {
     padding: 3.5rem 6.6rem;
     display: inline-block;
-    background-color: rgb(2, 30, 82);
+    border-radius: 8.6px;
+    background-color: #214897;
+  }
+  ._login-mobile .login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  ._login-mobile .login-box {
+    background: #fff;
+    border-radius: 8px;
+    width: 299px;
+  }
+  ._login-mobile .login-form {
+    display: flex;
+    flex-direction: column;
+  }
+  ._login-mobile .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 17px;
+  }
+  ._login-mobile .input-group label {
+    text-align: left;
+    font-weight: 500;
+    font-size: 12px;
+    color: #0D0D0D;
+  }
+  ._login-mobile .input-group input {
+    width: 299px;
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid #8A8A8A;
+    padding: 8px;
+    font-size: 14px;
+    outline: none;
+  }
+  ._login-mobile .input-group input:focus {
+    border-color: #007bff;
+  }
+  ._login-mobile .password-group {
+    position: relative;
+  }
+  ._login-mobile .password-group .password-toggle {
+    position: absolute;
+    right: 10px;
+    padding-top: 18.4px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #666;
+  }
+  ._login-mobile .login-button {
+    width: 100%;
+    height: 40px;
+    background: #214897;
+    color: white;
+    border: none;
+    border-radius: 9px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  ._login-mobile .login-button:hover {
+    background: #0056b3;
   }
 }
 ._dashboard-mobile {
@@ -2269,12 +2402,12 @@ a {
 }
 ._dashboard_overall_investment_info_detail {
   gap: 1.9rem;
-  color: #01276C;
+  color: #214897;
   display: flex;
   flex-direction: column;
 }
 ._dashboard_overall_investment_info_detail-title {
-  color: rgb(173, 131, 68);
+  color: #E5AF57;
 }
 ._dashboard_overall_investment_info_detail-value {
   font-size: 3.2rem;
@@ -2286,7 +2419,7 @@ a {
   grid-template-columns: repeat(3, 1fr);
 }
 ._dashboard_overall_investment_graph {
-  gap: 2.7rem;
+  gap: 1rem;
   display: flex;
   position: relative;
   align-items: center;
@@ -2341,7 +2474,7 @@ a {
   font-family: HelveticaNeueMedium;
 }
 ._dashboard_project_details_card_info_value {
-  color: rgb(173, 131, 68);
+  color: #E5AF57;
 }
 ._dashboard_project_details_card_info_wrapper {
   padding: 0 1.917rem;
@@ -2350,10 +2483,10 @@ a {
 }
 ._dashboard_project_details_card_active {
   color: #fff;
-  background-color: #01276C;
+  background-color: #214897;
 }
 ._dashboard_project_details_card_active ._dashboard_project_details_card_info_name {
-  color: rgb(173, 131, 68);
+  color: #E5AF57;
 }
 ._dashboard_project_details_card_active ._dashboard_project_details_card_info_value {
   color: #fff;
@@ -2388,7 +2521,7 @@ a {
 }
 ._dashboard_project_details_graph_button_active {
   color: #fff;
-  background-color: #01276C;
+  background-color: #214897;
 }
 ._dashboard_project_details_graph_buttons {
   z-index: 1;
@@ -2416,10 +2549,11 @@ a {
 }
 ._dashboard_project_details_graph_info_item_name {
   color: rgb(148, 148, 148);
+  font-weight: 600;
   font-size: 1.6rem;
 }
 ._dashboard_project_details_graph_info_item_value {
-  color: #01276C;
+  color: #214897;
   font-size: 2rem;
   font-family: HelveticaNeueMedium;
 }
@@ -2548,10 +2682,11 @@ a {
     flex-direction: column;
   }
   ._dashboard-mobile_overall_investment_info-label {
+    font-weight: 500;
     font-size: 1.6rem;
   }
   ._dashboard-mobile_overall_investment_info_detail {
-    color: #01276C;
+    color: #214897;
     display: flex;
     justify-content: space-between;
   }
@@ -2619,6 +2754,7 @@ a {
     flex-direction: column;
   }
   ._dashboard-mobile_project_details_label {
+    font-weight: 500;
     font-size: 16px;
   }
   ._dashboard-mobile_project_details_card {
@@ -2647,21 +2783,21 @@ a {
     justify-content: space-between;
   }
   ._dashboard-mobile_project_details_card_location {
-    color: #01276C;
+    color: #214897;
     font-size: 1rem;
     margin-top: 2px;
     font-weight: 500;
   }
   ._dashboard-mobile_project_details_card_status {
-    color: #01276C;
+    color: #214897;
     font-size: 1.2rem;
   }
   ._dashboard-mobile_project_details_card_status-label {
-    color: rgb(173, 131, 68);
+    color: #E5AF57;
     font-size: 1rem;
   }
   ._dashboard-mobile_project_details_card_title {
-    color: rgb(173, 131, 68);
+    color: #E5AF57;
     font-size: 1.6rem;
     font-family: HelveticaNeueLight;
   }
@@ -2680,7 +2816,7 @@ a {
     font-family: HelveticaNeueMedium;
   }
   ._dashboard-mobile_project_details_card_info_value {
-    color: rgb(173, 131, 68);
+    color: #E5AF57;
   }
   ._dashboard-mobile_project_details_card_info_wrapper {
     gap: 1.441rem;
@@ -2690,13 +2826,13 @@ a {
   }
   ._dashboard-mobile_project_details_card_active {
     color: #fff;
-    background-color: #01276C;
+    background-color: #214897;
   }
   ._dashboard-mobile_project_details_card_active ._dashboard-mobile_project_details_card_title {
     color: #ffffff;
   }
   ._dashboard-mobile_project_details_card_active ._dashboard-mobile_project_details_card_info_name {
-    color: rgb(173, 131, 68);
+    color: #E5AF57;
   }
   ._dashboard-mobile_project_details_card_active ._dashboard-mobile_project_details_card_info_value {
     color: #fff;
@@ -2733,7 +2869,7 @@ a {
   }
   ._dashboard-mobile_project_details_graph_button_active {
     color: #fff;
-    background-color: #01276C;
+    background-color: #214897;
   }
   ._dashboard-mobile_project_details_graph_buttons {
     z-index: 1;
@@ -2766,7 +2902,7 @@ a {
     font-size: 1.2rem;
   }
   ._dashboard-mobile_project_details_graph_info_item_value {
-    color: #01276C;
+    color: #214897;
     font-size: 1.6rem;
     font-family: HelveticaNeueMedium;
   }
@@ -2858,7 +2994,8 @@ a {
   background-color: rgb(246, 246, 246);
 }
 ._user-profile_info_section_title {
-  color: rgb(173, 131, 68);
+  font-family: HelveticaNeueLight;
+  color: #E5AF57;
 }
 ._user-profile_info_section_detail {
   gap: 0.9rem;
@@ -2883,7 +3020,7 @@ a {
   text-align: center;
 }
 ._user-profile_info_section_details_docs_input {
-  border: 1px solid rgb(1, 39, 108);
+  border: 1px solid #214897;
   width: 16px;
   height: 16px;
   border-radius: 3.2px;
@@ -2892,8 +3029,8 @@ a {
   outline: none;
 }
 ._user-profile_info_section_details_docs_input:checked {
-  background-color: rgb(1, 39, 108);
-  border: 0.8px solid rgb(1, 39, 108);
+  background-color: #214897;
+  border: 0.8px solid #214897;
 }
 ._user-profile_info_section_details_docs_input:checked::before {
   content: "✔";
@@ -2926,7 +3063,7 @@ a {
   outline: 0;
 }
 ._user-profile_name {
-  color: #01276C;
+  color: #214897;
   font-size: 2.4rem;
   font-family: HelveticaNeueMedium;
 }
@@ -2940,13 +3077,13 @@ a {
   height: 8.5rem;
   border-radius: 50%;
   object-fit: none;
-  border: 3px solid #01276C;
+  border: 3px solid #214897;
 }
 ._user-profile_pic_text {
   width: 8.5rem;
   height: 8.5rem;
   border-radius: 50%;
-  border: 3px solid #01276C;
+  border: 3px solid #214897;
   justify-content: center;
   display: flex;
   align-items: center;
@@ -2993,7 +3130,7 @@ a {
     font-size: 1.2rem !important;
   }
   ._user-profile_info_section_details_docs_input {
-    border: 1px solid rgb(1, 39, 108);
+    border: 1px solid #214897;
     width: 12px;
     height: 12px;
     border-radius: 3.2px;
@@ -3002,8 +3139,8 @@ a {
     outline: none;
   }
   ._user-profile_info_section_details_docs_input:checked {
-    background-color: rgb(1, 39, 108);
-    border: 0.8px solid rgb(1, 39, 108);
+    background-color: #214897;
+    border: 0.8px solid #214897;
   }
   ._user-profile_info_section_details_docs_input:checked::before {
     content: "✔";
@@ -3045,7 +3182,7 @@ a {
     width: 4rem;
     height: 4rem;
     border-radius: 50%;
-    border: 3px solid #01276C;
+    border: 3px solid #214897;
     justify-content: center;
     display: flex;
     align-items: center;
@@ -3142,7 +3279,7 @@ a {
   bottom: -1.5rem;
 }
 ._portfolio-mobile_wrapper .splide__pagination .is-active {
-  background: #01276C;
+  background: #214897;
   opacity: 1;
 }
 ._portfolio-mobile_wrapper ._dropdown_button_wrapper_modified {
@@ -3161,7 +3298,7 @@ a {
   padding-bottom: 5.337rem;
 }
 ._project-details_head_link {
-  color: #01276C;
+  color: #214897;
   display: flex;
   align-items: center;
 }
@@ -3196,7 +3333,7 @@ a {
   height: 100%;
 }
 ._project-details_info_title {
-  color: #01276C;
+  color: #214897;
   font-size: 2rem;
   padding-bottom: 3.267rem;
   font-family: HelveticaNeueMedium;

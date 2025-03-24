@@ -16,6 +16,7 @@ exports.InvestorRespDTO = exports.InvestorReqDTO = void 0;
 const account_1 = __importDefault(require("../models/account"));
 const investor_1 = __importDefault(require("../models/investor"));
 const project_1 = __importDefault(require("../models/project"));
+const project_investor_1 = __importDefault(require("../models/project-investor"));
 const resource_1 = __importDefault(require("../models/resource"));
 const investor_mapper_1 = require("./investor.mapper");
 const uuid_1 = require("uuid");
@@ -44,14 +45,22 @@ class InvestorService {
             return this.getInvestorById(investorId);
         });
     }
-    assignProjects(investorId, projectIds) {
+    assignProjects(investorId, projects) {
         return __awaiter(this, void 0, void 0, function* () {
-            var _a;
-            if (projectIds) {
-                yield ((_a = (yield investor_1.default.findByPk(investorId))) === null || _a === void 0 ? void 0 : _a.setProjects(projectIds));
-                return this.getInvestorById(investorId);
+            const investor = yield investor_1.default.findByPk(investorId);
+            if (!investor)
+                return null;
+            // Clear existing projects before assigning new ones
+            // await investor.setProjects([]);
+            // Assign projects with lock-in period
+            for (const { projectId, lockInPeriod } of projects) {
+                yield project_investor_1.default.create({
+                    projectId: projectId,
+                    investorId: investorId,
+                    lockInPeriod: new Date(lockInPeriod), // Assign lock-in period
+                });
             }
-            return null;
+            return this.getInvestorById(investorId);
         });
     }
     updateInvestor(investor) {
@@ -67,12 +76,22 @@ class InvestorService {
         return __awaiter(this, void 0, void 0, function* () {
             const projectIds = investor.projectIds;
             const resourceIds = investor.resourceIds;
+            const lockInPeriod = investor.lockInPeriod;
             const createdInvestor = yield investor_1.default.create(Object.assign({}, investor));
             let projects = [];
             let resources = [];
             if (createdInvestor) {
-                if (projectIds) {
-                    projects = (yield Promise.all(projectIds.map((id) => project_1.default.findByPk(id)))).filter(project => !!project);
+                if (projectIds && lockInPeriod) {
+                    for (let i = 0; i < projectIds.length; i++) {
+                        const project = yield project_1.default.findByPk(projectIds[i]);
+                        if (project) {
+                            yield project_investor_1.default.create({
+                                projectId: project.id,
+                                investorId: createdInvestor.id,
+                                lockInPeriod: new Date(lockInPeriod), // Assign lock-in period
+                            });
+                        }
+                    }
                 }
                 if (projects.length) {
                     yield createdInvestor.addProjects(projects);
@@ -106,8 +125,20 @@ class InvestorService {
             }
             // Add a unique ID to the document
             const documentWithId = Object.assign(Object.assign({}, docDetails), { id: docDetails.id || (0, uuid_1.v4)() });
+            let documentsArray = [];
+            if (investor.documents) {
+                try {
+                    documentsArray = typeof investor.documents === 'string'
+                        ? JSON.parse(investor.documents)
+                        : investor.documents;
+                }
+                catch (error) {
+                    console.error("Error parsing documents:", error);
+                    documentsArray = []; // Fallback to empty array
+                }
+            }
             // Assuming `documents` is a relation or JSON field in the `Investor` model
-            const updatedDocuments = [...(investor.documents || []), documentWithId];
+            const updatedDocuments = [...documentsArray, documentWithId];
             investor.documents = updatedDocuments;
             yield investor.save();
             return (0, investor_mapper_1.toInvestorDTO)(investor);

@@ -42,6 +42,20 @@ __decorate([
     }),
     __metadata("design:type", Number)
 ], ProjectInvestor.prototype, "investorId", void 0);
+__decorate([
+    (0, sequelize_typescript_1.Column)({
+        type: sequelize_typescript_1.DataType.DATE,
+        allowNull: false,
+    }),
+    __metadata("design:type", Date)
+], ProjectInvestor.prototype, "lockInPeriod", void 0);
+__decorate([
+    (0, sequelize_typescript_1.Column)({
+        type: sequelize_typescript_1.DataType.INTEGER,
+        allowNull: true
+    }),
+    __metadata("design:type", Number)
+], ProjectInvestor.prototype, "earning", void 0);
 ProjectInvestor = __decorate([
     (0, sequelize_typescript_1.Table)({
         timestamps: true,

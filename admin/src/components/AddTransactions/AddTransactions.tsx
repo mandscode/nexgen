@@ -22,13 +22,14 @@ export interface TransactionDetails {
 }
 
 export interface TransactionDTO {
-  details?: TransactionDetails; // Details containing credit card information
+  // details?: TransactionDetails; // Details containing credit card information
+  details?: string; // Details containing credit card information
   projectId: number;          // Project ID
   entityId: number;          // Project ID
   accountId: number;          // Account/><<<<<<<<, ID
   amount: number;             // Amount of the transaction
   credited: string;          // Indicates if the transaction is credited
-  intrestRate: number;        // Interest rate for the transaction
+  // intrestRate: number;        // Interest rate for the transaction
   transactionDate?: Date; // New field
 }
 
@@ -41,6 +42,7 @@ const AddTransactions = ({ investrId, transactionList }:AddTransactionsProps) =>
   const [projects, setProjects] = useState([]);
   const [accounts, setAccounts] = useState([]);
   const [selectedOption, setSelectedOption] = useState<number | null>(0);
+  const [selectedTransactionType, setSelectedTransactionType] = useState<any | null>(null);
 
 
   const [entitesOptions, setEntitesOptions] = useState([]);
@@ -54,7 +56,7 @@ const AddTransactions = ({ investrId, transactionList }:AddTransactionsProps) =>
     accountId: yup.number().required("Account ID is required").positive("Account ID must be a positive number"),
     amount: yup.number().required("Transaction amount is required").positive("Transaction amount must be positive"),
     credited: yup.string().required("Credited status is required"),
-    intrestRate: yup.number().required("Interest rate is required").min(0, "Interest rate must be 0 or higher"),
+    // intrestRate: yup.number().required("Interest rate is required").min(0, "Interest rate must be 0 or higher"),
   })
   .required()
   const { register, handleSubmit, formState: { errors } } = useForm<TransactionDTO>({
@@ -62,8 +64,8 @@ const AddTransactions = ({ investrId, transactionList }:AddTransactionsProps) =>
   });
 
   const navigate = useNavigate();  // Get the navigate function from react-router
-  
-  const onSubmit = (data: TransactionDTO) => addTransactionsStore.addTransaction(data, transactionHistoryStore,  navigate, transactionList);
+
+  const onSubmit = (data: TransactionDTO) => addTransactionsStore.addTransaction(data, transactionHistoryStore,  navigate, transactionList, Number(investrId));
 
   useEffect(() => {
     const fetchEntities = async () => {
@@ -124,7 +126,8 @@ const AddTransactions = ({ investrId, transactionList }:AddTransactionsProps) =>
     if (selectedOption !== 0) {
       fetchData(); // Fetch data only if an entity is selected
     }
-  }, [selectedOption, investrId]); // Empty dependency array means it runs once on component mount
+  }, [selectedOption, investrId]);
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -142,30 +145,34 @@ const AddTransactions = ({ investrId, transactionList }:AddTransactionsProps) =>
       }
     };
     fetchData(); // Fetch data only if an entity is selected
-  }, [ investrId]); // Empty dependency array means it runs once on component mount
+  }, [ investrId]);
 
-  // Define form fields array and filter out the 'Investor' role
     const fields = [
       { name: 'entityId', type: 'select', placeholder: 'Select Entity', options:entitesOptions},
       { name: 'projectId', type: 'select', placeholder: 'Projects', options:projects},
       { name: 'accountId', type: 'select', placeholder: 'Accounts', options:accounts},
       { name: 'amount', type: 'number', placeholder: 'Amount' },
       { name: 'transactionDate', type: 'date', placeholder: 'Transaction Date' },
-      { name: 'details', type: 'text', placeholder: 'Details' },
 
-      { name: 'intrestRate', type: 'number', placeholder: 'Intrest Rate' },
+      // { name: 'intrestRate', type: 'number', placeholder: 'Intrest Rate' },
       { name: 'credited', type: 'select', placeholder: 'Credit/Debit', options:[
             {
-              id: 1,
-              value: true,
+              id: true,
               name: "Credit",
             },
             {
-              id: 2,
-              value: false,
+              id: false,
               name: "Debit",
             },
+            {
+              id: 'bonus',
+              name: "Bonus",
+            },
       ]},
+      ...(selectedTransactionType?.toLowerCase() !== "bonus"
+      ? [{ name: 'details', type: 'text', placeholder: 'Details' }]
+      : []
+    )
     ];
 
   function getErrorMessage(name: string): string {
@@ -193,6 +200,7 @@ const AddTransactions = ({ investrId, transactionList }:AddTransactionsProps) =>
                       aria-label="Default select example"
                       className={`form-control ${errors[field.name as keyof TransactionDTO] ? 'is-invalid' : ''}`}
                       {...register(field.name as keyof TransactionDTO)} // Register the select field
+                      onChange={(e:any) => {e.target.name == 'entityType' && setSelectedOption(Number(e.target.value))}}
                     >
                       <option>Open this select menu</option>
                       {
@@ -207,11 +215,12 @@ const AddTransactions = ({ investrId, transactionList }:AddTransactionsProps) =>
                         aria-label="Default select example"
                         className={`form-control ${errors[field.name as keyof TransactionDTO] ? 'is-invalid' : ''}`}
                         {...register(field.name as keyof TransactionDTO)} // Register the select field
+                        onChange={(e:any) => {setSelectedTransactionType(e.target.value)}}
                       >
                         <option>Open this select menu</option>
                         {
                           field.options && field.options.map((option: { name: string, id: any }, index: number) => (
-                            <option key={index} value={option.name}>{option.name}</option>
+                            <option key={index} value={option.id}>{option.name}</option>
                           ))
                         }
                       </Form.Select>

@@ -4,6 +4,7 @@ import Investor from '../models/investor';
 import Project from '../models/project';
 import Role from '../models/role';
 import User from '../models/user';
+import UserEntities from '../models/user-entities';
 import { EntityDTO } from './entity.service';
 import { toInvestorDTO } from './investor.mapper';
 import { InvestorRespDTO } from './investor.service';
@@ -203,7 +204,7 @@ class UserService {
                 userDTO.investor = toInvestorDTO(investorDetails);
             }
         }
-
+        
         return userDTO
     }
     
@@ -218,6 +219,29 @@ class UserService {
     async findUserByEmail(email: string): Promise<UserRespDTO | null> {
         
         return User.findOne({ where: { email } }).then(user => user ? toUserDTO(user) : null);
+    }
+
+    async assignEntities(userId: number, entityIds: number[]): Promise<UserRespDTO | null> {
+        if (!entityIds || entityIds.length === 0) {
+            throw new Error('No entity IDs provided');
+        }
+    
+        // Find the user
+        const user = await User.findByPk(userId);
+        if (!user) {
+            throw new Error('User not found');
+        }
+    
+        // Loop through the provided entityIds and assign them
+        for (const entityId of entityIds) {
+
+            // Assign the entity to the user
+            await UserEntities.create({
+                userId: userId,
+                entityId: entityId,
+            });
+        }
+        return this.getUserById(userId);
     }
 }
 

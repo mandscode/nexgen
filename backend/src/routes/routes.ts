@@ -62,7 +62,7 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "id": {"dataType":"double"},
-            "details": {"dataType":"nestedObjectLiteral","nestedProperties":{},"additionalProperties":{"dataType":"any"},"required":true},
+            "details": {"dataType":"string","required":true},
             "projectId": {"dataType":"double","required":true},
             "accountId": {"dataType":"double","required":true},
             "amount": {"dataType":"double","required":true},
@@ -137,6 +137,7 @@ const models: TsoaRoute.Models = {
             "ownerId": {"dataType":"string"},
             "caId": {"dataType":"string"},
             "settings": {"dataType":"nestedObjectLiteral","nestedProperties":{},"additionalProperties":{"dataType":"any"}},
+            "lockInPeriod": {"dataType":"string","required":true},
             "accounts": {"dataType":"array","array":{"dataType":"refObject","ref":"AccountRespDTO"}},
             "projects": {"dataType":"array","array":{"dataType":"refObject","ref":"ProjectRespDTO"}},
             "resources": {"dataType":"array","array":{"dataType":"refObject","ref":"ResourceDTO"}},
@@ -209,6 +210,7 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "id": {"dataType":"double","required":true},
+            "investorId": {"dataType":"double"},
             "firstName": {"dataType":"string","required":true},
             "lastName": {"dataType":"string","required":true},
             "status": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"string"}],"required":true},
@@ -216,8 +218,8 @@ const models: TsoaRoute.Models = {
             "roles": {"dataType":"array","array":{"dataType":"refObject","ref":"RoleDTO"}},
             "entities": {"dataType":"array","array":{"dataType":"refObject","ref":"EntityDTO"}},
             "InvestedCurrencies": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"symbol":{"dataType":"string","required":true},"name":{"dataType":"string","required":true},"id":{"dataType":"double","required":true}}}},
-            "Investments": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"transactions":{"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"amount":{"dataType":"string","required":true},"credited":{"dataType":"boolean","required":true},"date":{"dataType":"string","required":true},"title":{"dataType":"string","required":true},"id":{"dataType":"double","required":true}}},"required":true},"totalValue":{"dataType":"string","required":true},"intrestGenerated":{"dataType":"string","required":true},"investedAmount":{"dataType":"string","required":true},"maturityLockingPeriod":{"dataType":"double","required":true},"status":{"dataType":"double","required":true},"currencyId":{"dataType":"string","required":true},"ProjectId":{"dataType":"string","required":true},"id":{"dataType":"double","required":true}}}},
-            "projects": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"legalId":{"dataType":"string","required":true},"ownerName":{"dataType":"string","required":true},"description":{"dataType":"string","required":true},"overallCost":{"dataType":"double","required":true},"actualMaturityDate":{"dataType":"string","required":true},"startDate":{"dataType":"string","required":true},"longitude":{"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},"latitude":{"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},"country":{"dataType":"string","required":true},"address":{"dataType":"string","required":true},"name":{"dataType":"string","required":true},"id":{"dataType":"double","required":true}}}},
+            "Investments": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"transactions":{"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"amount":{"dataType":"string","required":true},"credited":{"dataType":"boolean","required":true},"date":{"dataType":"string","required":true},"title":{"dataType":"string","required":true},"id":{"dataType":"double","required":true}}},"required":true},"totalValue":{"dataType":"string","required":true},"earning":{"dataType":"string","required":true},"investedAmount":{"dataType":"string","required":true},"maturityLockingPeriod":{"dataType":"double","required":true},"status":{"dataType":"double","required":true},"currencyId":{"dataType":"string","required":true},"ProjectId":{"dataType":"string","required":true},"id":{"dataType":"double","required":true}}}},
+            "projects": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"lockInPeriod":{"dataType":"any","required":true},"legalId":{"dataType":"string","required":true},"ownerName":{"dataType":"string","required":true},"description":{"dataType":"string","required":true},"overallCost":{"dataType":"double","required":true},"actualMaturityDate":{"dataType":"string","required":true},"startDate":{"dataType":"string","required":true},"longitude":{"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},"latitude":{"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},"country":{"dataType":"string","required":true},"address":{"dataType":"string","required":true},"name":{"dataType":"string","required":true},"id":{"dataType":"double","required":true}}}},
             "Currencies": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"symbol":{"dataType":"string","required":true},"name":{"dataType":"string","required":true},"id":{"dataType":"double","required":true}}}},
         },
         "additionalProperties": false,
@@ -250,6 +252,7 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "userId": {"dataType":"double","required":true},
+            "investorId": {"dataType":"double"},
             "FirstName": {"dataType":"string","required":true},
             "LastName": {"dataType":"string","required":true},
             "PersonalDetails": {"dataType":"nestedObjectLiteral","nestedProperties":{"MailingAdress":{"dataType":"string","required":true},"ResidentailAddress":{"dataType":"string","required":true},"DOB":{"dataType":"string","required":true},"Mobile":{"dataType":"string","required":true},"Email":{"dataType":"string","required":true}}},
@@ -272,6 +275,7 @@ const models: TsoaRoute.Models = {
             "ownerId": {"dataType":"string"},
             "caId": {"dataType":"string"},
             "projectIds": {"dataType":"array","array":{"dataType":"double"},"required":true},
+            "lockInPeriod": {"dataType":"string","required":true},
             "resourceIds": {"dataType":"array","array":{"dataType":"double"}},
             "documents": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"status":{"dataType":"boolean","required":true},"docUrl":{"dataType":"string","required":true},"docName":{"dataType":"string","required":true},"id":{"dataType":"string","required":true}}}},
         },
@@ -579,8 +583,39 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsUserController_assignEntity: Record<string, TsoaRoute.ParameterSchema> = {
+                id: {"in":"path","name":"id","required":true,"dataType":"double"},
+                body: {"in":"body","name":"body","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"entityIds":{"dataType":"array","array":{"dataType":"double"},"required":true}}},
+        };
+        app.put('/users/:id/entity/assign',
+            ...(fetchMiddlewares<RequestHandler>(UserController)),
+            ...(fetchMiddlewares<RequestHandler>(UserController.prototype.assignEntity)),
+
+            async function UserController_assignEntity(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsUserController_assignEntity, request, response });
+
+                const controller = new UserController();
+
+              await templateService.apiHandler({
+                methodName: 'assignEntity',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsUserController_login: Record<string, TsoaRoute.ParameterSchema> = {
-                body: {"in":"body","name":"body","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"password":{"dataType":"string","required":true},"email":{"dataType":"string","required":true}}},
+                body: {"in":"body","name":"body","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"entity":{"dataType":"double"},"password":{"dataType":"string","required":true},"email":{"dataType":"string","required":true}}},
         };
         app.post('/users/login',
             ...(fetchMiddlewares<RequestHandler>(UserController)),
@@ -611,6 +646,7 @@ export function RegisterRoutes(app: Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsUserDetailsController_getUserDetails: Record<string, TsoaRoute.ParameterSchema> = {
                 id: {"in":"path","name":"id","required":true,"dataType":"double"},
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
         };
         app.get('/users/details/:id',
             ...(fetchMiddlewares<RequestHandler>(UserDetailsController)),
@@ -717,6 +753,37 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'createTransaction',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsTransactionController_addEarning: Record<string, TsoaRoute.ParameterSchema> = {
+                id: {"in":"path","name":"id","required":true,"dataType":"double"},
+                body: {"in":"body","name":"body","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"earning":{"dataType":"double","required":true},"investorId":{"dataType":"double","required":true}}},
+        };
+        app.put('/transactions/:id/earning',
+            ...(fetchMiddlewares<RequestHandler>(TransactionController)),
+            ...(fetchMiddlewares<RequestHandler>(TransactionController.prototype.addEarning)),
+
+            async function TransactionController_addEarning(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsTransactionController_addEarning, request, response });
+
+                const controller = new TransactionController();
+
+              await templateService.apiHandler({
+                methodName: 'addEarning',
                 controller,
                 response,
                 next,
@@ -968,6 +1035,7 @@ export function RegisterRoutes(app: Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsProjectController_getAllProjects: Record<string, TsoaRoute.ParameterSchema> = {
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
         };
         app.get('/projects',
             ...(fetchMiddlewares<RequestHandler>(ProjectController)),
@@ -1027,9 +1095,9 @@ export function RegisterRoutes(app: Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsProjectController_getProjectsByEntityId: Record<string, TsoaRoute.ParameterSchema> = {
-                id: {"in":"path","name":"id","required":true,"dataType":"double"},
+                entityIds: {"in":"query","name":"entityIds","required":true,"dataType":"string"},
         };
-        app.get('/projects/Entity/:id',
+        app.get('/projects/Entity',
             ...(fetchMiddlewares<RequestHandler>(ProjectController)),
             ...(fetchMiddlewares<RequestHandler>(ProjectController.prototype.getProjectsByEntityId)),
 
@@ -1088,7 +1156,7 @@ export function RegisterRoutes(app: Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsProjectController_updateProject: Record<string, TsoaRoute.ParameterSchema> = {
                 id: {"in":"path","name":"id","required":true,"dataType":"double"},
-                updateData: {"in":"body","name":"updateData","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"settings":{"dataType":"nestedObjectLiteral","nestedProperties":{},"additionalProperties":{"dataType":"any"}},"ownerName":{"dataType":"string"},"maturityLockingPeriod":{"dataType":"double"},"overallCost":{"dataType":"double"},"description":{"dataType":"string"},"address":{"dataType":"string"}}},
+                updateData: {"in":"body","name":"updateData","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"file":{"dataType":"string"},"settings":{"dataType":"nestedObjectLiteral","nestedProperties":{},"additionalProperties":{"dataType":"any"}},"ownerName":{"dataType":"string"},"maturityLockingPeriod":{"dataType":"double"},"overallCost":{"dataType":"double"},"description":{"dataType":"string"},"address":{"dataType":"string"}}},
         };
         app.put('/projects/:id',
             ...(fetchMiddlewares<RequestHandler>(ProjectController)),
@@ -1361,7 +1429,7 @@ export function RegisterRoutes(app: Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsInvestorController_assignProject: Record<string, TsoaRoute.ParameterSchema> = {
                 id: {"in":"path","name":"id","required":true,"dataType":"double"},
-                projectIds: {"in":"body","name":"projectIds","required":true,"dataType":"array","array":{"dataType":"double"}},
+                projectData: {"in":"body","name":"projectData","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"projects":{"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"lockInPeriod":{"dataType":"string","required":true},"projectId":{"dataType":"double","required":true}}},"required":true}}},
         };
         app.put('/investors/:id/projects/assign',
             ...(fetchMiddlewares<RequestHandler>(InvestorController)),

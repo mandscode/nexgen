@@ -1,4 +1,4 @@
-import { Get, Route, Post, Body, Path } from 'tsoa';
+import { Get, Route, Post, Body, Path, Put } from 'tsoa';
 import transactionService, { TransactionDTO } from '../services/transaction.service';
 
 
@@ -18,5 +18,14 @@ export class TransactionController {
     @Post('/')
     public async createTransaction(@Body() transaction: TransactionDTO): Promise<TransactionDTO | null> {
         return transactionService.createTransaction(transaction);
+    }
+
+    @Put('/{id}/earning')
+    public async addEarning(
+        @Path('id') id: number,
+        @Body() body: { investorId:number, earning: number; }
+    ): Promise<{ message: string }> {
+        await transactionService.addEarning(id, body.investorId, body.earning);
+        return { message: "Earning updated successfully." };
     }
 }

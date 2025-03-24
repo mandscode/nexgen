@@ -61,173 +61,181 @@ export class CurrenciesRespDTO {
 }
 
 const Dashboard = () => {
-    const [userDetails, setUserDetails] = useState<UserRespDTO | null>(null);
+  const [userDetails, setUserDetails] = useState<UserRespDTO | null>(null);
 
-    
-    const [selectedCurrencyTransactions, setSelectedCurrencyTransactions] = useState<any[]>([]);
-    const [selectedCurrencyInvestments, setSelectedCurrencyInvestments] = useState<any[]>([]);
-    const [selectedCurrencyProjects, setSelectedCurrencyProjects] = useState<any[]>([]);
-    const [selectedProjectTransactions, setSelectedProjectTransactions] = useState<any[]>([]);
-  
-  
-    const [totalAmount, setTotalAmount] = useState(0);
-    const [projectCount, setProjectCount] = useState(0);
-  
-    const [data, setData] = useState<{ name: string; value: number }[]>([]);
-
-    const [graphProject, setGraphProject] = useState<number | null>(null);
-
-    const [selectedCurrency, setSelectCurrency] = useState<any>();
-
-    const { user, error, loading } = useSelector((state: any) => ({
-      loading: state.userDetails?.loading,
-      user: state.userDetails?.user,
-      error: state.userDetails?.error
-    }));
+  const [selectedCurrencyTransactions, setSelectedCurrencyTransactions] = useState<any[]>([]);
+  const [selectedCurrencyInvestments, setSelectedCurrencyInvestments] = useState<any[]>([]);
+  const [selectedCurrencyProjects, setSelectedCurrencyProjects] = useState<any[]>([]);
+  const [selectedProjectTransactions, setSelectedProjectTransactions] = useState<any[]>([]);
 
 
-    useEffect(() => {
-      if(user && user.id) {
-        setUserDetails(user);
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [interest, setTotalInterest] = useState(0);
+  const [projectCount, setProjectCount] = useState(0);
+
+  const [data, setData] = useState<{ name: string; value: number }[]>([]);
+
+  const [graphProject, setGraphProject] = useState<number | null>(null);
+
+  const [selectedCurrency, setSelectCurrency] = useState<any>();
+
+  const { user, error, loading } = useSelector((state: any) => ({
+    loading: state.userDetails?.loading,
+    user: state.userDetails?.user,
+    error: state.userDetails?.error
+  }));
+
+
+  useEffect(() => {
+    if (user && user.id) {
+      setUserDetails(user);
+    }
+  }, [user])
+
+
+
+  const chartData = useMemo(() => {
+    return selectedProjectTransactions.length > 0 ? selectedProjectTransactions : [];
+  }, [selectedProjectTransactions]);
+
+  // ================================================================================================Line Chart
+
+  const formatAmount = (num: any) => {
+    if (num >= 1_000_000_000_000) return `${(num / 1_000_000_000_000).toFixed(1)}t`; // Trillion
+    if (num >= 1_000_000_000) return `${(num / 1_000_000_000).toFixed(1)}b`; // Billion
+    if (num >= 1_000_000) return `${(num / 1_000_000).toFixed(1)}m`; // Million
+    if (num >= 1_000) return `${(num / 1_000).toFixed(1)}k`; // Thousand
+    return num.toString(); // Less than 1,000
+  };
+
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+
+        if (
+          userDetails?.Investments &&
+          userDetails.Investments.length > 0 &&
+          selectedCurrency
+        ) {
+          const UniqueInvestment: any[] = []
+          const formattedTransactions = await Promise.all(
+            userDetails.Investments.map(async (investment: any) => {
+              if (investment.currencyId === selectedCurrency.id) {
+                UniqueInvestment.push(investment);
+                const projectId = investment?.ProjectId
+                const currencies = userDetails.Currencies || []
+                const currency = currencies.find(p => p.id === investment.currencyId);
+
+                const validTransactions = await Promise.all(
+                  investment.transactions.map(async (transaction: any) => {
+                    return {
+                      id: transaction.id,
+                      currency: currency,
+                      credited: transaction.credited,
+                      amount: transaction.amount,
+                      createdDate: transaction.date,
+                      projectId: projectId,
+                      details: transaction.title
+                    };
+                  })
+                );
+
+                return validTransactions;
+              }
+              return [];
+            })
+          );
+          setSelectedCurrencyInvestments(UniqueInvestment);
+          setSelectedCurrencyTransactions(formattedTransactions.flat());
+        }
+      } catch (err) {
+        console.log('Failed to fetch transactions');
       }
-    }, [user])
-
-
-
-    const chartData = useMemo(() => {
-      return selectedProjectTransactions.length > 0 ? selectedProjectTransactions : [];
-    }, [selectedProjectTransactions]);
-    
-    // ================================================================================================Line Chart
-
-    const formatAmount = (num:any) => {
-      if (num >= 1_000_000_000_000) return `${(num / 1_000_000_000_000).toFixed(1)}t`; // Trillion
-      if (num >= 1_000_000_000) return `${(num / 1_000_000_000).toFixed(1)}b`; // Billion
-      if (num >= 1_000_000) return `${(num / 1_000_000).toFixed(1)}m`; // Million
-      if (num >= 1_000) return `${(num / 1_000).toFixed(1)}k`; // Thousand
-      return num.toString(); // Less than 1,000
     };
-    
-      
-    useEffect(() => {
-      const fetchTransactions = async () => {
-        try {
-          
-          if(
-            userDetails?.Investments && 
-            userDetails.Investments.length > 0 &&
-            selectedCurrency 
-          ) {
-            const UniqueInvestment:any[] = []
-            const formattedTransactions = await Promise.all(
-              userDetails.Investments.map(async (investment: any) => {
-                if (investment.currencyId === selectedCurrency.id) {
-                  UniqueInvestment.push(investment);
-                  const projectId = investment?.ProjectId
-                  const currencies = userDetails.Currencies || []
-                  const currency = currencies.find(p => p.id === investment.currencyId);
 
-                  const validTransactions = await Promise.all(
-                    investment.transactions.map(async (transaction: any) => {
-                      return {
-                        id: transaction.id,
-                        currency: currency,
-                        credited: transaction.credited,
-                        amount: transaction.amount,
-                        createdDate: transaction.date,
-                        projectId: projectId,
-                        details:transaction.title
-                      };
-                    })
-                  );
+    fetchTransactions(); // Call the fetch function
+  }, [selectedCurrency, userDetails]);
 
-                  return validTransactions;
-                }
-                return [];
-              })
-            );
-            setSelectedCurrencyInvestments(UniqueInvestment);
-            setSelectedCurrencyTransactions(formattedTransactions.flat());
-          }
-        } catch (err) {
-          console.log('Failed to fetch transactions');
-        }
-      };
-  
-      fetchTransactions(); // Call the fetch function
-    }, [selectedCurrency, userDetails]);
-  
-    useEffect(() => {
-  
-        const projectWiseTransaction =
-        selectedCurrencyTransactions?.filter((t) => t.projectId === graphProject) || null;
-    
-      setSelectedProjectTransactions(projectWiseTransaction)
-    }, [selectedCurrencyTransactions]);
+  useEffect(() => {
 
-      useEffect(() => {
-        if(selectedCurrencyProjects) {
-          setGraphProject(selectedCurrencyProjects[0]?.id)
-        }
+    const projectWiseTransaction =
+      selectedCurrencyTransactions?.filter((t) => t.projectId === graphProject) || null;
 
-      }, [selectedCurrencyProjects])
+    setSelectedProjectTransactions(projectWiseTransaction)
+  }, [selectedCurrencyTransactions]);
 
-      useEffect(() => {
-        const projectWiseTransaction =
-        selectedCurrencyTransactions?.filter((t) => t.projectId === graphProject) || null;
-    
-        setSelectedProjectTransactions(projectWiseTransaction)
-      }, [graphProject]);
+  useEffect(() => {
+    if (selectedCurrencyProjects) {
+      setGraphProject(selectedCurrencyProjects[0]?.id)
+    }
 
-  
-    useEffect(() => {
-      const total = selectedCurrencyTransactions.reduce(
-        (sum, t) => (t.credited ? sum + t.amount : sum),
-        0
-      );
+  }, [selectedCurrencyProjects])
 
-      setTotalAmount(total);
-      
-      const uniqueProjects = new Set(selectedCurrencyTransactions.map((t) => t.projectId)).size;
+  useEffect(() => {
+    const projectWiseTransaction =
+      selectedCurrencyTransactions?.filter((t) => t.projectId === graphProject) || null;
 
-      setProjectCount(uniqueProjects);
+    setSelectedProjectTransactions(projectWiseTransaction)
+  }, [graphProject]);
 
 
-      let uniqueData: any[] = [];
-      
-      const aggregatedData = selectedCurrencyTransactions.flat().reduce((acc, { projectId, amount }) => {
-        const projects = userDetails?.projects || [];
-        const project = projects.find(p => p.id === projectId);
-        let existingProject = acc.find((item: any) => item.id === projectId);
-        
-        if (!existingProject) {
-                  existingProject = { ...project, investmentAmount: 0 }; // Initialize if not found
-                  acc.push(existingProject);
-                }
-              
-                existingProject.investmentAmount += Number(amount);
-                
-                // Ensure uniqueData gets a proper reference
-                if (!uniqueData.some((p) => p.id === projectId)) {
-                  uniqueData.push(existingProject);
-                }
-                
-                return acc;
-              }, []);
-              
-              setSelectedCurrencyProjects(uniqueData);
-              setData(aggregatedData);
-       
-    }, [selectedCurrencyTransactions]);  
+  useEffect(() => {
 
-    const COLORS = ['#01276C', '#3476ec59', '#FF8042']; 
-  
-    const selectedProject = selectedCurrencyProjects?.find((p: ProjectRespDTO) => p.id === graphProject)
-    const selectedInvestment = selectedCurrencyInvestments?.find((inv: InvestmentRespDTO) => inv.ProjectId === graphProject)
+    const totalAsset = selectedCurrencyInvestments.reduce(
+      (sum, t) => (sum + Number(t.totalValue)),
+      0
+    );
+    const totalInvested = selectedCurrencyInvestments.reduce(
+      (sum, t) => (sum + Number(t.earning)),
+      0
+    );
 
-    if (loading) {
-      return (
-        <div className="smart-glass">
+    setTotalAmount(totalAsset);
+    setTotalInterest(totalInvested);
+
+    const uniqueProjects = new Set(selectedCurrencyTransactions.map((t) => t.projectId)).size;
+
+    setProjectCount(uniqueProjects);
+
+
+    let uniqueData: any[] = [];
+
+    const aggregatedData = selectedCurrencyTransactions.flat().reduce((acc, { projectId, amount, credited }) => {
+      const projects = userDetails?.projects || [];
+      const project = projects.find(p => p.id === projectId);
+      let existingProject = acc.find((item: any) => item.id === projectId);
+
+      if (!existingProject) {
+        existingProject = { ...project, investmentAmount: 0 }; // Initialize if not found
+        acc.push(existingProject);
+      }
+
+      if (credited) {
+        existingProject.investmentAmount += Number(amount);
+      }
+
+      // Ensure uniqueData gets a proper reference
+      if (!uniqueData.some((p) => p.id === projectId)) {
+        uniqueData.push(existingProject);
+      }
+
+      return acc;
+    }, []);
+
+    setSelectedCurrencyProjects(uniqueData);
+    setData(aggregatedData);
+
+  }, [selectedCurrencyTransactions]);
+
+  const COLORS = ['#214897', '#3476ec59', '#FF8042'];
+
+  const selectedProject = selectedCurrencyProjects?.find((p: ProjectRespDTO) => p.id === graphProject)
+  const selectedInvestment = selectedCurrencyInvestments?.find((inv: InvestmentRespDTO) => inv.ProjectId === graphProject)
+
+  if (loading) {
+    return (
+      <div className="smart-glass">
         <div className="logo">
           <div className="circle">
             <div className="circle">
@@ -240,28 +248,28 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-      );
-    }
+    );
+  }
 
-    if (error) {
-      return (
-        <div className="error-container">
-          <p>Error: {error}</p>
-        </div>
-      );
-    }
+  if (error) {
+    return (
+      <div className="error-container">
+        <p>Error: {error}</p>
+      </div>
+    );
+  }
 
-  
-    const totalInvestment = data.reduce((acc, cur:any) => acc + cur.investmentAmount, 0);
 
-    const formatDate = (dateString:string) => {
-      const date = new Date(dateString);
-      return new Intl.DateTimeFormat("en-GB", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "2-digit",
-      }).format(date);
-    };
+  const totalInvestment = data.reduce((acc, cur: any) => acc + cur.investmentAmount, 0);
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "2-digit",
+    }).format(date);
+  };
 
     
     return (
@@ -313,11 +321,11 @@ const Dashboard = () => {
                               <div className='_dashboard_overall_investment_info_details'>
                                 <div className='_dashboard_overall_investment_info_detail'>
                                   <h6 className='_dashboard_overall_investment_info_detail-title _title_h2'>Total assets</h6>
-                                  <span className='_dashboard_overall_investment_info_detail-value'>{selectedCurrency?.symbol} {formatAmount(totalAmount)}</span>
+                                  <span className='_dashboard_overall_investment_info_detail-value'>{selectedCurrency?.symbol} {totalAmount}</span>
                                 </div>
                                 <div className='_dashboard_overall_investment_info_detail'>
-                                  <h6 className='_dashboard_overall_investment_info_detail-title _title_h2'>Total interest</h6>
-                                  <span className='_dashboard_overall_investment_info_detail-value'>{selectedCurrency?.symbol} 0</span>
+                                  <h6 className='_dashboard_overall_investment_info_detail-title _title_h2'>Total Earning</h6>
+                                  <span className='_dashboard_overall_investment_info_detail-value'>{selectedCurrency?.symbol} {interest}</span>
                                 </div>
                                 <div className='_dashboard_overall_investment_info_detail'>
                                   <h6 className='_dashboard_overall_investment_info_detail-title _title_h2'>Total Projects</h6>
@@ -334,6 +342,7 @@ const Dashboard = () => {
                                   cy={75}
                                   fill="#8884d8"
                                   dataKey="investmentAmount"
+                                  outerRadius={70}
                                 >
                                   {data.map((_, index) => (
                                     <Cell
@@ -457,8 +466,7 @@ const Dashboard = () => {
                                                         Amount invested
                                                       </div>
                                                       <div className="_dashboard_project_details_card_info_value">
-                                                        {selectedCurrency?.symbol} &nbsp;
-                                                        {investment.investedAmount}
+                                                        {selectedCurrency?.symbol}&nbsp;{investment.investedAmount}
                                                       </div>
                                                     </div>
                                                     <div className="_dashboard_project_details_card_info">
@@ -466,8 +474,7 @@ const Dashboard = () => {
                                                         Current value
                                                       </div>
                                                       <div className="_dashboard_project_details_card_info_value">
-                                                        {selectedCurrency?.currencySymbol}
-                                                        {investment.investedAmount}
+                                                        {selectedCurrency?.symbol}&nbsp;{investment.totalValue}
                                                       </div>
                                                     </div>
                                                     <div className="_dashboard_project_details_card_info">
@@ -475,7 +482,7 @@ const Dashboard = () => {
                                                         Lock-in period
                                                       </div>
                                                       <div className="_dashboard_project_details_card_info_value">
-                                                        {formatDate(project.startDate)}
+                                                        {formatDate(project.lockInPeriod)}
                                                       </div>
                                                     </div>
                                                   </div>
@@ -513,8 +520,7 @@ const Dashboard = () => {
                                             Current value
                                           </div>
                                           <div className='_dashboard_project_details_graph_info_item_value'>
-
-                                             {formatAmount(Number(selectedInvestment.investedAmount))}
+                                          {selectedCurrency?.symbol}&nbsp;{selectedInvestment.investedAmount}
                                           </div>
                                         </div>
                                         <div className='_dashboard_project_details_graph_info_item'>

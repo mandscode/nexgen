@@ -65,7 +65,7 @@ const models = {
         "dataType": "refObject",
         "properties": {
             "id": { "dataType": "double" },
-            "details": { "dataType": "nestedObjectLiteral", "nestedProperties": {}, "additionalProperties": { "dataType": "any" }, "required": true },
+            "details": { "dataType": "string", "required": true },
             "projectId": { "dataType": "double", "required": true },
             "accountId": { "dataType": "double", "required": true },
             "amount": { "dataType": "double", "required": true },
@@ -140,6 +140,7 @@ const models = {
             "ownerId": { "dataType": "string" },
             "caId": { "dataType": "string" },
             "settings": { "dataType": "nestedObjectLiteral", "nestedProperties": {}, "additionalProperties": { "dataType": "any" } },
+            "lockInPeriod": { "dataType": "string", "required": true },
             "accounts": { "dataType": "array", "array": { "dataType": "refObject", "ref": "AccountRespDTO" } },
             "projects": { "dataType": "array", "array": { "dataType": "refObject", "ref": "ProjectRespDTO" } },
             "resources": { "dataType": "array", "array": { "dataType": "refObject", "ref": "ResourceDTO" } },
@@ -212,6 +213,7 @@ const models = {
         "dataType": "refObject",
         "properties": {
             "id": { "dataType": "double", "required": true },
+            "investorId": { "dataType": "double" },
             "firstName": { "dataType": "string", "required": true },
             "lastName": { "dataType": "string", "required": true },
             "status": { "dataType": "union", "subSchemas": [{ "dataType": "double" }, { "dataType": "string" }], "required": true },
@@ -219,8 +221,8 @@ const models = {
             "roles": { "dataType": "array", "array": { "dataType": "refObject", "ref": "RoleDTO" } },
             "entities": { "dataType": "array", "array": { "dataType": "refObject", "ref": "EntityDTO" } },
             "InvestedCurrencies": { "dataType": "array", "array": { "dataType": "nestedObjectLiteral", "nestedProperties": { "symbol": { "dataType": "string", "required": true }, "name": { "dataType": "string", "required": true }, "id": { "dataType": "double", "required": true } } } },
-            "Investments": { "dataType": "array", "array": { "dataType": "nestedObjectLiteral", "nestedProperties": { "transactions": { "dataType": "array", "array": { "dataType": "nestedObjectLiteral", "nestedProperties": { "amount": { "dataType": "string", "required": true }, "credited": { "dataType": "boolean", "required": true }, "date": { "dataType": "string", "required": true }, "title": { "dataType": "string", "required": true }, "id": { "dataType": "double", "required": true } } }, "required": true }, "totalValue": { "dataType": "string", "required": true }, "intrestGenerated": { "dataType": "string", "required": true }, "investedAmount": { "dataType": "string", "required": true }, "maturityLockingPeriod": { "dataType": "double", "required": true }, "status": { "dataType": "double", "required": true }, "currencyId": { "dataType": "string", "required": true }, "ProjectId": { "dataType": "string", "required": true }, "id": { "dataType": "double", "required": true } } } },
-            "projects": { "dataType": "array", "array": { "dataType": "nestedObjectLiteral", "nestedProperties": { "legalId": { "dataType": "string", "required": true }, "ownerName": { "dataType": "string", "required": true }, "description": { "dataType": "string", "required": true }, "overallCost": { "dataType": "double", "required": true }, "actualMaturityDate": { "dataType": "string", "required": true }, "startDate": { "dataType": "string", "required": true }, "longitude": { "dataType": "union", "subSchemas": [{ "dataType": "double" }, { "dataType": "enum", "enums": [null] }], "required": true }, "latitude": { "dataType": "union", "subSchemas": [{ "dataType": "double" }, { "dataType": "enum", "enums": [null] }], "required": true }, "country": { "dataType": "string", "required": true }, "address": { "dataType": "string", "required": true }, "name": { "dataType": "string", "required": true }, "id": { "dataType": "double", "required": true } } } },
+            "Investments": { "dataType": "array", "array": { "dataType": "nestedObjectLiteral", "nestedProperties": { "transactions": { "dataType": "array", "array": { "dataType": "nestedObjectLiteral", "nestedProperties": { "amount": { "dataType": "string", "required": true }, "credited": { "dataType": "boolean", "required": true }, "date": { "dataType": "string", "required": true }, "title": { "dataType": "string", "required": true }, "id": { "dataType": "double", "required": true } } }, "required": true }, "totalValue": { "dataType": "string", "required": true }, "earning": { "dataType": "string", "required": true }, "investedAmount": { "dataType": "string", "required": true }, "maturityLockingPeriod": { "dataType": "double", "required": true }, "status": { "dataType": "double", "required": true }, "currencyId": { "dataType": "string", "required": true }, "ProjectId": { "dataType": "string", "required": true }, "id": { "dataType": "double", "required": true } } } },
+            "projects": { "dataType": "array", "array": { "dataType": "nestedObjectLiteral", "nestedProperties": { "lockInPeriod": { "dataType": "any", "required": true }, "legalId": { "dataType": "string", "required": true }, "ownerName": { "dataType": "string", "required": true }, "description": { "dataType": "string", "required": true }, "overallCost": { "dataType": "double", "required": true }, "actualMaturityDate": { "dataType": "string", "required": true }, "startDate": { "dataType": "string", "required": true }, "longitude": { "dataType": "union", "subSchemas": [{ "dataType": "double" }, { "dataType": "enum", "enums": [null] }], "required": true }, "latitude": { "dataType": "union", "subSchemas": [{ "dataType": "double" }, { "dataType": "enum", "enums": [null] }], "required": true }, "country": { "dataType": "string", "required": true }, "address": { "dataType": "string", "required": true }, "name": { "dataType": "string", "required": true }, "id": { "dataType": "double", "required": true } } } },
             "Currencies": { "dataType": "array", "array": { "dataType": "nestedObjectLiteral", "nestedProperties": { "symbol": { "dataType": "string", "required": true }, "name": { "dataType": "string", "required": true }, "id": { "dataType": "double", "required": true } } } },
         },
         "additionalProperties": false,
@@ -253,6 +255,7 @@ const models = {
         "dataType": "refObject",
         "properties": {
             "userId": { "dataType": "double", "required": true },
+            "investorId": { "dataType": "double" },
             "FirstName": { "dataType": "string", "required": true },
             "LastName": { "dataType": "string", "required": true },
             "PersonalDetails": { "dataType": "nestedObjectLiteral", "nestedProperties": { "MailingAdress": { "dataType": "string", "required": true }, "ResidentailAddress": { "dataType": "string", "required": true }, "DOB": { "dataType": "string", "required": true }, "Mobile": { "dataType": "string", "required": true }, "Email": { "dataType": "string", "required": true } } },
@@ -275,6 +278,7 @@ const models = {
             "ownerId": { "dataType": "string" },
             "caId": { "dataType": "string" },
             "projectIds": { "dataType": "array", "array": { "dataType": "double" }, "required": true },
+            "lockInPeriod": { "dataType": "string", "required": true },
             "resourceIds": { "dataType": "array", "array": { "dataType": "double" } },
             "documents": { "dataType": "array", "array": { "dataType": "nestedObjectLiteral", "nestedProperties": { "status": { "dataType": "boolean", "required": true }, "docUrl": { "dataType": "string", "required": true }, "docName": { "dataType": "string", "required": true }, "id": { "dataType": "string", "required": true } } } },
         },
@@ -537,8 +541,34 @@ function RegisterRoutes(app) {
         });
     });
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    const argsUserController_assignEntity = {
+        id: { "in": "path", "name": "id", "required": true, "dataType": "double" },
+        body: { "in": "body", "name": "body", "required": true, "dataType": "nestedObjectLiteral", "nestedProperties": { "entityIds": { "dataType": "array", "array": { "dataType": "double" }, "required": true } } },
+    };
+    app.put('/users/:id/entity/assign', ...((0, runtime_1.fetchMiddlewares)(users_controller_1.UserController)), ...((0, runtime_1.fetchMiddlewares)(users_controller_1.UserController.prototype.assignEntity)), function UserController_assignEntity(request, response, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+            let validatedArgs = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsUserController_assignEntity, request, response });
+                const controller = new users_controller_1.UserController();
+                yield templateService.apiHandler({
+                    methodName: 'assignEntity',
+                    controller,
+                    response,
+                    next,
+                    validatedArgs,
+                    successStatus: undefined,
+                });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     const argsUserController_login = {
-        body: { "in": "body", "name": "body", "required": true, "dataType": "nestedObjectLiteral", "nestedProperties": { "password": { "dataType": "string", "required": true }, "email": { "dataType": "string", "required": true } } },
+        body: { "in": "body", "name": "body", "required": true, "dataType": "nestedObjectLiteral", "nestedProperties": { "entity": { "dataType": "double" }, "password": { "dataType": "string", "required": true }, "email": { "dataType": "string", "required": true } } },
     };
     app.post('/users/login', ...((0, runtime_1.fetchMiddlewares)(users_controller_1.UserController)), ...((0, runtime_1.fetchMiddlewares)(users_controller_1.UserController.prototype.login)), function UserController_login(request, response, next) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -564,6 +594,7 @@ function RegisterRoutes(app) {
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     const argsUserDetailsController_getUserDetails = {
         id: { "in": "path", "name": "id", "required": true, "dataType": "double" },
+        req: { "in": "request", "name": "req", "required": true, "dataType": "object" },
     };
     app.get('/users/details/:id', ...((0, runtime_1.fetchMiddlewares)(userDetails_controller_1.UserDetailsController)), ...((0, runtime_1.fetchMiddlewares)(userDetails_controller_1.UserDetailsController.prototype.getUserDetails)), function UserDetailsController_getUserDetails(request, response, next) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -647,6 +678,32 @@ function RegisterRoutes(app) {
                 const controller = new transacction_controller_1.TransactionController();
                 yield templateService.apiHandler({
                     methodName: 'createTransaction',
+                    controller,
+                    response,
+                    next,
+                    validatedArgs,
+                    successStatus: undefined,
+                });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    const argsTransactionController_addEarning = {
+        id: { "in": "path", "name": "id", "required": true, "dataType": "double" },
+        body: { "in": "body", "name": "body", "required": true, "dataType": "nestedObjectLiteral", "nestedProperties": { "earning": { "dataType": "double", "required": true }, "investorId": { "dataType": "double", "required": true } } },
+    };
+    app.put('/transactions/:id/earning', ...((0, runtime_1.fetchMiddlewares)(transacction_controller_1.TransactionController)), ...((0, runtime_1.fetchMiddlewares)(transacction_controller_1.TransactionController.prototype.addEarning)), function TransactionController_addEarning(request, response, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+            let validatedArgs = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsTransactionController_addEarning, request, response });
+                const controller = new transacction_controller_1.TransactionController();
+                yield templateService.apiHandler({
+                    methodName: 'addEarning',
                     controller,
                     response,
                     next,
@@ -857,7 +914,9 @@ function RegisterRoutes(app) {
         });
     });
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    const argsProjectController_getAllProjects = {};
+    const argsProjectController_getAllProjects = {
+        req: { "in": "request", "name": "req", "required": true, "dataType": "object" },
+    };
     app.get('/projects', ...((0, runtime_1.fetchMiddlewares)(project_controller_1.ProjectController)), ...((0, runtime_1.fetchMiddlewares)(project_controller_1.ProjectController.prototype.getAllProjects)), function ProjectController_getAllProjects(request, response, next) {
         return __awaiter(this, void 0, void 0, function* () {
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -906,9 +965,9 @@ function RegisterRoutes(app) {
     });
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     const argsProjectController_getProjectsByEntityId = {
-        id: { "in": "path", "name": "id", "required": true, "dataType": "double" },
+        entityIds: { "in": "query", "name": "entityIds", "required": true, "dataType": "string" },
     };
-    app.get('/projects/Entity/:id', ...((0, runtime_1.fetchMiddlewares)(project_controller_1.ProjectController)), ...((0, runtime_1.fetchMiddlewares)(project_controller_1.ProjectController.prototype.getProjectsByEntityId)), function ProjectController_getProjectsByEntityId(request, response, next) {
+    app.get('/projects/Entity', ...((0, runtime_1.fetchMiddlewares)(project_controller_1.ProjectController)), ...((0, runtime_1.fetchMiddlewares)(project_controller_1.ProjectController.prototype.getProjectsByEntityId)), function ProjectController_getProjectsByEntityId(request, response, next) {
         return __awaiter(this, void 0, void 0, function* () {
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
             let validatedArgs = [];
@@ -957,7 +1016,7 @@ function RegisterRoutes(app) {
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     const argsProjectController_updateProject = {
         id: { "in": "path", "name": "id", "required": true, "dataType": "double" },
-        updateData: { "in": "body", "name": "updateData", "required": true, "dataType": "nestedObjectLiteral", "nestedProperties": { "settings": { "dataType": "nestedObjectLiteral", "nestedProperties": {}, "additionalProperties": { "dataType": "any" } }, "ownerName": { "dataType": "string" }, "maturityLockingPeriod": { "dataType": "double" }, "overallCost": { "dataType": "double" }, "description": { "dataType": "string" }, "address": { "dataType": "string" } } },
+        updateData: { "in": "body", "name": "updateData", "required": true, "dataType": "nestedObjectLiteral", "nestedProperties": { "file": { "dataType": "string" }, "settings": { "dataType": "nestedObjectLiteral", "nestedProperties": {}, "additionalProperties": { "dataType": "any" } }, "ownerName": { "dataType": "string" }, "maturityLockingPeriod": { "dataType": "double" }, "overallCost": { "dataType": "double" }, "description": { "dataType": "string" }, "address": { "dataType": "string" } } },
     };
     app.put('/projects/:id', ...((0, runtime_1.fetchMiddlewares)(project_controller_1.ProjectController)), ...((0, runtime_1.fetchMiddlewares)(project_controller_1.ProjectController.prototype.updateProject)), function ProjectController_updateProject(request, response, next) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -1184,7 +1243,7 @@ function RegisterRoutes(app) {
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     const argsInvestorController_assignProject = {
         id: { "in": "path", "name": "id", "required": true, "dataType": "double" },
-        projectIds: { "in": "body", "name": "projectIds", "required": true, "dataType": "array", "array": { "dataType": "double" } },
+        projectData: { "in": "body", "name": "projectData", "required": true, "dataType": "nestedObjectLiteral", "nestedProperties": { "projects": { "dataType": "array", "array": { "dataType": "nestedObjectLiteral", "nestedProperties": { "lockInPeriod": { "dataType": "string", "required": true }, "projectId": { "dataType": "double", "required": true } } }, "required": true } } },
     };
     app.put('/investors/:id/projects/assign', ...((0, runtime_1.fetchMiddlewares)(investor_controller_1.InvestorController)), ...((0, runtime_1.fetchMiddlewares)(investor_controller_1.InvestorController.prototype.assignProject)), function InvestorController_assignProject(request, response, next) {
         return __awaiter(this, void 0, void 0, function* () {

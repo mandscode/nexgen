@@ -3,7 +3,7 @@ import { NavigateFunction } from "react-router-dom";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { v4 as uuidv4 } from "uuid";
-import { getProject } from "../../api/apiEndpoints"; // Assuming this is defined elsewhere
+import { createResource, getProject, updateProjectImages } from "../../api/apiEndpoints"; // Assuming this is defined elsewhere
 import { UpdateProjectForm } from "./UpdateProject";
 
 
@@ -63,8 +63,19 @@ export class UpdateProjectStore {
         
         try {
           const url = await this.uploadFileToS3(file, folderName, folderNameForImage);
-          this.uploadingImg = false;
-          alert("File uploaded successfully!");          
+          if(url) {
+            const data = {
+              file:url
+            }
+            const response = updateProjectImages(id, data)
+
+            console.log(response)
+            
+            this.uploadingImg = false;
+            alert("File uploaded successfully!");          
+          } else {
+            alert('something went wrong')
+          }
         } catch (error) {
           this.uploadingImg = false;
           console.error("Error uploading file:", error);

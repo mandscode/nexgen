@@ -1,0 +1,342 @@
+// _Headings--------------------------------------------------- //
+._h1 {
+    font-size: $_h1;
+    font-weight: bold;
+    font-family: $HelveticaNeueMedium;
+    line-height: $_h1_line;
+}
+
+._h2 {
+    font-size: $_h2;
+    font-weight: bold;
+    font-family: $HelveticaNeueMedium;
+    line-height: $_h2_line;
+}
+
+._h3 {
+    font-size: $_h3;
+    font-weight: bold;
+    line-height: 3.2rem;
+    font-family: $HelveticaNeueBlack;
+    line-height: $_h3_line;
+}
+
+
+
+// Sub-Headings--------------------------------------------------- //
+._sub_h1 {
+    font-weight: bold;
+    font-size: $_sub_h1;
+    line-height: $_sub_h1_line;
+    font-family: $HelveticaNeueMedium;
+}
+
+._sub_h2 {
+    font-weight: 900;
+    font-size: $_sub_h2;
+    line-height: $_sub_h2_line;
+    font-family: $HelveticaNeueMedium;
+}
+
+._sub_h3 {
+    font-weight: bold;
+    font-size: $_sub_h3;
+    font-family: $HelveticaNeueBlack;
+    line-height: $_sub_h3_line;
+}
+
+
+
+// Titles--------------------------------------------------- //
+._title_h1 {
+    font-weight: bold;
+    font-size: $_title_h1;
+    font-family: $HelveticaNeueMedium;
+    line-height: $_title_h1_line;
+}
+
+._title_h2 {
+    font-weight: bold;
+    font-size: $_title_h2;
+    line-height: $_title_h2_line;
+    font-family: $HelveticaNeueMedium;
+}
+
+._title_h3 {
+    font-weight: bold;
+    font-size: $_title_h3;
+    font-family: $HelveticaNeueBlack;
+    line-height: $_title_h3_line;
+}
+
+
+
+
+// Typography--------------------------------------------------- //
+
+
+._typo_h1 {
+    font-family: $HelveticaNeueMedium;
+    font-size: $_typo_h1;
+    line-height: $_typo_h1_line;
+}
+
+._typo_h2 {
+    font-family: $HelveticaNeueMedium;
+    font-size: $_typo_h2;
+    line-height: $_typo_h2_line;
+}
+
+._typo_h3 {
+    font-family: $HelveticaNeueBlack;
+    font-size: $_typo_h3;
+    line-height: $_typo_h3_line;
+}
+
+
+
+
+// Brands colors
+._facebook {
+    &_fill {
+        fill: $facebook;
+    }
+
+    &_color {
+        color: $facebook;
+    }
+
+    &_bg {
+        background: $facebook;
+    }
+
+    &_border {
+        border-color: $facebook;
+    }
+}
+
+._twitter {
+    &_fill {
+        fill: $twitter;
+    }
+
+    &_color {
+        color: $twitter;
+    }
+
+    &_bg {
+        background: $twitter;
+    }
+    
+    &_border {
+        border-color: $twitter;
+    }
+}
+
+._google-plus {
+    &_fill {
+        fill: $google-plus;
+    }
+
+    &_color {
+        color: $google-plus;
+    }
+
+    &_border {
+        border-color: $google-plus;
+    }
+}
+
+._instagram {
+    &_fill {
+        fill: $instagram;
+    }
+
+    &_color {
+        color: $instagram;
+    }
+
+    &_border {
+        border-color: $instagram;
+    }
+}
+
+._pinterest {
+    &_fill {
+        fill: $pinterest;
+    }
+
+    &_color {
+        color: $pinterest;
+    }
+
+    &_bg {
+        background: $pinterest;
+    }
+    
+    &_border {
+        border-color: $pinterest;
+    }
+}
+
+._youtube {
+    &_fill {
+        fill: $youtube;
+    }
+
+    &_color {
+        color: $youtube;
+    }
+
+    &_bg {
+        background: $youtube;
+    }
+    
+    &_border {
+        border-color: $youtube;
+    }
+}
+
+._slack {
+    &_fill {
+        fill: $slack;
+    }
+
+    &_color {
+        color: $slack;
+    }
+
+    &_bg {
+        background: $slack;
+    }
+    
+    &_border {
+        border-color: $slack;
+    }
+}
+
+._dribbble {
+    &_fill {
+        fill: $dribbble;
+    }
+
+    &_color {
+        color: $dribbble;
+    }
+
+    &_bg {
+        background: $dribbble;
+    }
+    
+    &_border {
+        border-color: $dribbble;
+    }
+}
+
+._github {
+    &_fill {
+        fill: $github;
+    }
+
+    &_color {
+        color: $github;
+    }
+
+    &_bg {
+        background: $github;
+    }
+
+    &_border {
+        border-color: $github;
+    }
+}
+
+._dropbox {
+    &_fill {
+        fill: $dropbox;
+    }
+
+    &_color {
+        color: $dropbox;
+    }
+
+    &_bg {
+        background: $dropbox;
+    }
+
+    &_border {
+        border-color: $dropbox;
+    }
+}
+
+._twitch {
+    &_fill {
+        fill: $twitch;
+    }
+
+    &_color {
+        color: $twitch;
+    }
+
+    &_bg {
+        background: $twitch;
+    }
+
+    &_border {
+        border-color: $twitch;
+    }
+}
+
+._paypal {
+    &_fill {
+        fill: $paypal;
+    }
+
+    &_color {
+        color: $paypal;
+    }
+
+    &_bg {
+        background: $paypal;
+    }
+
+    &_border {
+        border-color: $paypal;
+    }
+}
+
+._behance {
+    &_fill {
+        fill: $behance;
+    }
+
+    &_color {
+        color: $behance;
+    }
+
+    &_bg {
+        background: $behance;
+    }
+
+    &_border {
+        border-color: $behance;
+    }
+}
+
+._reddit {
+    &_fill {
+        fill: $reddit;
+    }
+
+    &_color {
+        color: $reddit;
+    }
+
+    &_bg {
+        background: $reddit;
+    }
+
+    &_border {
+        border-color: $reddit;
+    }
+}

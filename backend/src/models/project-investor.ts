@@ -29,4 +29,16 @@ export default class ProjectInvestor extends Model<InferAttributes<ProjectInvest
         allowNull: false,
     })
     investorId!: number;
+
+    @Column({
+        type: DataType.DATE,
+        allowNull: false,
+    })
+    lockInPeriod!: Date;
+
+    @Column({
+        type: DataType.INTEGER,
+        allowNull: true
+    })
+    earning?: number;
 }

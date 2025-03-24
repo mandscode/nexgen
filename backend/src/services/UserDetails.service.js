@@ -33,6 +33,7 @@ const role_1 = __importDefault(require("../models/role"));
 const user_1 = __importDefault(require("../models/user"));
 const UserDetails_mapper_1 = require("./UserDetails.mapper");
 const currency_1 = __importDefault(require("../models/currency"));
+const resource_1 = __importDefault(require("../models/resource"));
 class UserDetailsDTO {
 }
 exports.UserDetailsDTO = UserDetailsDTO;
@@ -40,9 +41,10 @@ class UserDetailsRespDTO {
 }
 exports.UserDetailsRespDTO = UserDetailsRespDTO;
 class UserDetailsService {
-    getUserDetails(id) {
+    getUserDetails(id, userShare) {
         return __awaiter(this, void 0, void 0, function* () {
             var _a, _b, _c, _d, _e, _f, _g;
+            let entityName = userShare == 1 ? 'nexgen' : 'evolve';
             // Fetch user with roles and entities (excluding sensitive fields)
             const user = yield user_1.default.findByPk(id, {
                 include: [
@@ -59,6 +61,16 @@ class UserDetailsService {
             // Check if user is an investor
             const isInvestor = (_a = user.roles) === null || _a === void 0 ? void 0 : _a.some(role => role.name === "Investor");
             const isViewer = (_b = user.roles) === null || _b === void 0 ? void 0 : _b.some(role => role.name === "Viewer");
+            const entity = entities === null || entities === void 0 ? void 0 : entities.find((e) => e.name.toLowerCase() === entityName);
+            if (!entity) {
+                throw new Error(`Entity with name '${entityName}' not found for the user.`);
+            }
+            const entityId = entity.id;
+            const projects = yield project_1.default.findAll({
+                where: { entityID: entityId },
+                attributes: ['id'] // Only fetch project IDs for filtering
+            });
+            const projectIds = projects.map((p) => p.id);
             let userJSON = Object.assign(Object.assign({}, filteredUserDTO), { status: filteredUserDTO.status && filteredUserDTO.status == "active" ? 1 : 0, message: '', InvestedCurrencies: [], Investments: [], projects: [], Currencies: [] });
             if (isViewer) {
                 userJSON.projects = undefined;
@@ -76,6 +88,7 @@ class UserDetailsService {
                             include: [
                                 {
                                     model: transaction_1.default,
+                                    where: { projectId: projectIds },
                                     attributes: { exclude: ["accountId", "modifiedBy"] } // Exclude unwanted fields
                                 },
                                 {
@@ -83,34 +96,47 @@ class UserDetailsService {
                                 }
                             ]
                         },
-                        { model: project_1.default, through: { attributes: [] } }
+                        {
+                            model: project_1.default,
+                            where: { entityId },
+                            through: { attributes: ['lockInPeriod', 'earning'] },
+                            include: [
+                                {
+                                    model: resource_1.default, // Include ProjectResource under Project
+                                    //   attributes: ['id', 'location'], // Add required attributes
+                                }
+                            ]
+                        }
                     ],
-                    attributes: { exclude: ["userId"] }
+                    attributes: { include: ['id'], exclude: ["userId"] }
                 });
                 const groupedInvestments = new Map();
                 (_c = investorDetails === null || investorDetails === void 0 ? void 0 : investorDetails.accounts) === null || _c === void 0 ? void 0 : _c.forEach((account) => {
                     account.transactions.forEach((transaction) => {
-                        var _a, _b;
+                        var _a, _b, _c, _d, _e;
                         const projectId = transaction.projectId;
                         const currencyId = account.currencyDetails.id;
                         const key = `${projectId}-${currencyId}`; // Unique key for investments per project & currency
                         if (!groupedInvestments.has(key)) {
+                            const project = (_a = investorDetails.projects) === null || _a === void 0 ? void 0 : _a.find((p) => p.id === projectId);
+                            const earning = ((_b = project === null || project === void 0 ? void 0 : project.ProjectInvestor) === null || _b === void 0 ? void 0 : _b.earning) || 0;
+                            const lockInPeriod = ((_c = project === null || project === void 0 ? void 0 : project.ProjectInvestor) === null || _c === void 0 ? void 0 : _c.lockInPeriod) || '';
                             groupedInvestments.set(key, {
                                 id: transaction.id, // First transaction ID, can be adjusted
                                 ProjectId: projectId,
                                 currencyId: currencyId,
-                                maturityLockingPeriod: ((_b = (_a = investorDetails.projects) === null || _a === void 0 ? void 0 : _a.find(p => p.id === projectId)) === null || _b === void 0 ? void 0 : _b.maturityLockingPeriod) || 0,
-                                investedAmount: transaction.amount.toString(),
-                                intrestGenerated: ((transaction.amount * transaction.intrestRate) / 100).toFixed(2),
-                                totalValue: (transaction.amount + (transaction.amount * transaction.intrestRate) / 100).toFixed(2),
+                                lockInPeriod: lockInPeriod !== null && lockInPeriod !== void 0 ? lockInPeriod : null,
+                                maturityLockingPeriod: ((_e = (_d = investorDetails.projects) === null || _d === void 0 ? void 0 : _d.find(p => p.id === projectId)) === null || _e === void 0 ? void 0 : _e.maturityLockingPeriod) || 0,
+                                investedAmount: transaction.credited && transaction.amount,
+                                earning: earning || 0,
+                                totalValue: transaction.credited ? (transaction.amount + earning) : (-transaction.amount + earning),
                                 transactions: [] // Will collect transactions below
                             });
                         }
                         else {
                             const existingInvestment = groupedInvestments.get(key);
-                            existingInvestment.investedAmount = (parseFloat(existingInvestment.investedAmount) + transaction.amount).toString();
-                            existingInvestment.intrestGenerated = (parseFloat(existingInvestment.intrestGenerated) + (transaction.amount * transaction.intrestRate) / 100).toFixed(2);
-                            existingInvestment.totalValue = (parseFloat(existingInvestment.totalValue) + transaction.amount + (transaction.amount * transaction.intrestRate) / 100).toFixed(2);
+                            existingInvestment.investedAmount = transaction.credited ? (parseFloat(existingInvestment.investedAmount) + transaction.amount) : existingInvestment.investedAmount;
+                            existingInvestment.totalValue = (parseFloat(existingInvestment.totalValue) + (transaction.credited ? transaction.amount : -transaction.amount));
                         }
                         // Add transaction to the existing project investment
                         groupedInvestments.get(key).transactions.push({
@@ -118,18 +144,18 @@ class UserDetailsService {
                             title: transaction.details, // Assuming `details` contains the transaction title
                             date: transaction.transactionDate,
                             credited: transaction.credited ? true : false,
-                            amount: transaction.amount.toString(),
+                            amount: transaction.amount.toFixed(2),
                         });
                     });
                 });
                 // Convert the grouped investments into an array
                 const Investments = Array.from(groupedInvestments.values());
-                userJSON = Object.assign(Object.assign({}, filteredUserDTO), { status: filteredUserDTO.status && filteredUserDTO.status == "active" ? 1 : 0, "message": 'You dont have any active investments now, please contact 93232345 to start your investment journey', Currencies: ((_d = investorDetails === null || investorDetails === void 0 ? void 0 : investorDetails.accounts) === null || _d === void 0 ? void 0 : _d.map((account) => ({
+                userJSON = Object.assign(Object.assign({}, filteredUserDTO), { investorId: investorDetails === null || investorDetails === void 0 ? void 0 : investorDetails.id, status: filteredUserDTO.status && filteredUserDTO.status == "active" ? 1 : 0, "message": 'You dont have any active investments now, please contact 93232345 to start your investment journey', Currencies: ((_d = investorDetails === null || investorDetails === void 0 ? void 0 : investorDetails.accounts) === null || _d === void 0 ? void 0 : _d.map((account) => ({
                         id: (account === null || account === void 0 ? void 0 : account.currencyDetails.id) || 0,
                         name: (account === null || account === void 0 ? void 0 : account.currencyDetails.code) || '',
                         symbol: (account === null || account === void 0 ? void 0 : account.currencyDetails.symbol) || ''
                     }))) || [], Investments: Investments || [], projects: ((_e = investorDetails === null || investorDetails === void 0 ? void 0 : investorDetails.projects) === null || _e === void 0 ? void 0 : _e.map((project) => {
-                        var _a, _b, _c;
+                        var _a, _b, _c, _d, _e, _f, _g, _h;
                         return ({
                             id: project.id,
                             name: project.name,
@@ -142,7 +168,10 @@ class UserDetailsService {
                             overallCost: project.overallCost,
                             description: project.description,
                             ownerName: project.ownerName,
-                            legalId: project.legalId
+                            legalId: project.legalId,
+                            lockInPeriod: (_e = (_d = project.ProjectInvestor) === null || _d === void 0 ? void 0 : _d.lockInPeriod) !== null && _e !== void 0 ? _e : null,
+                            earning: (_g = (_f = project.ProjectInvestor) === null || _f === void 0 ? void 0 : _f.earning) !== null && _g !== void 0 ? _g : null,
+                            resource: (_h = project.resources) !== null && _h !== void 0 ? _h : null
                         });
                     })) || [] });
                 if (((_f = investorDetails === null || investorDetails === void 0 ? void 0 : investorDetails.accounts) === null || _f === void 0 ? void 0 : _f.length) == 0) {

@@ -17,10 +17,10 @@ export default class Transaction extends Model<InferAttributes<Transaction>, Inf
     id!: CreationOptional<number>;  // Auto-incrementing primary key
 
     @Column({
-        type: DataType.JSON,
-        allowNull: true,
+        type: DataType.STRING,
+        allowNull: false,
     })
-    details?: { [key: string]: any }
+    details!: string
 
     @ForeignKey(() => Project)
     @Column({

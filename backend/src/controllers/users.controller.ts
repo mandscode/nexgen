@@ -45,8 +45,13 @@ export class UserController {
         return { message: "Password changed successfully." };
     }
 
+    @Put('/{id}/entity/assign')
+    public async assignEntity(@Path() id: number, @Body() body:{entityIds: number[]}): Promise<UserRespDTO | null> {
+        return userService.assignEntities(id, body.entityIds);
+    }
+
     @Post('/login')
-    public async login(@Body() body: { email: string, password: string }): Promise<{ token: string, message?:string, userId:any, isMasterAdmin:any, isFirstLogin:boolean } | null> {
+    public async login(@Body() body: { email: string, password: string; entity?:number; }): Promise<{ token: string, message?:string, userId:any, isMasterAdmin:any, isFirstLogin:boolean } | null> {
         const user = await userService.findUserByEmail(body.email);
 
         if (!user || !user.id) {
@@ -58,10 +63,20 @@ export class UserController {
             throw new Error('Invalid password');
         }
 
-        // Generate a JWT token
-        const token = jwt.sign({ id: user.id, email: user.email, isMasterAdmin: user.isMasterAdmin, isFirstLogin:user.isFirstLogin }, 'your_jwt_secret', {
-            expiresIn: '1h', // Token expires in 1 hour
-        });
+        const userShare = body.entity !== undefined ? body.entity : null;
+
+        const payload: any = {
+            id: user.id,
+            email: user.email,
+            isMasterAdmin: user.isMasterAdmin,
+            isFirstLogin: user.isFirstLogin
+        };
+        
+        if (userShare !== null) {
+            payload.userShare = userShare;
+        }
+
+        const token = jwt.sign(payload, 'your_jwt_secret', { expiresIn: '1h' });
 
         const message = 'Login successful';
 
