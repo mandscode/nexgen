@@ -59,7 +59,13 @@ class ProjectService {
             }
             // Fetch projects with filtering
             const projects = yield project_1.default.findAll({
-                where: whereClause
+                where: whereClause,
+                include: [
+                    {
+                        model: resource_1.default, // Include related resources
+                        attributes: ['id', 'location']
+                    }
+                ]
             });
             // Convert projects to DTOs
             return projects.map(project_mapper_1.toProjectDTO);

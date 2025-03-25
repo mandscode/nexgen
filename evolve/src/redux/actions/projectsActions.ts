@@ -53,7 +53,7 @@ export const fetchProjects = () => {
           Authorization: token ? `Bearer ${token}` : '',
         },
       });
-
+      console.log(response)
       dispatch(fetchProjectsSuccess(response));
     } catch (error: any) {
       dispatch(fetchProjectsFailure(error.message));

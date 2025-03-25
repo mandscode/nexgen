@@ -655,6 +655,9 @@
 					"projects": {
 						"items": {
 							"properties": {
+								"resource": {
+									"nullable": true
+								},
 								"lockInPeriod": {},
 								"legalId": {
 									"type": "string"
@@ -700,6 +703,7 @@
 								}
 							},
 							"required": [
+								"resource",
 								"lockInPeriod",
 								"legalId",
 								"ownerName",

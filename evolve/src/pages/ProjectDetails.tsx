@@ -21,6 +21,7 @@ interface Project {
     overallCost: number;
     description: string;
     ownerName: string;
+    countryName:string;
     createdAt: string; // ISO string for timestamp
     updatedAt: string; // ISO string for timestamp
     legalId: string;
@@ -64,16 +65,11 @@ const ProjectDetails = () => {
     
         initializeSplide();
     }, []);
-    
-    
-    
-    
 
-    const { images, error, loading, projects, token } = useSelector((state: any) => ({
+    const {  error, loading, projects, token } = useSelector((state: any) => ({
         loading: state.userDetails?.loading,
-        images: state.projectImages?.images,
         token: state.token.token,
-        error: state.userDetails?.error,
+        error: state.projectsDetail?.error,
         projects:state?.projectsDetail?.projects
     }));
 
@@ -84,12 +80,10 @@ const ProjectDetails = () => {
             try {
                 await dispatch(fetchImages() as any)
                 const fetchedProject = await getProject(Number(id));
-                const projectImages = await getProjectImages(fetchedProject.name);
 
                 if(fetchedProject) {
                     setProject({
-                        ...fetchedProject,
-                        images:projectImages || []
+                        ...fetchedProject
                     });
                 }
             } catch (error) {
@@ -98,33 +92,6 @@ const ProjectDetails = () => {
         };
         fetchProject();
     }, [id]);
-
-    const getProjectsImages = (projectName: string) => {
-        if (!projectName || !images || images.length === 0) return ['/assets/media/images/no-image.jpg'];
-    
-        const formattedName = projectName.replace(/\s+/g, ''); // Remove spaces
-    
-        // Filter images matching the project name
-        const projectImages = images.filter((image: string) =>
-            image.includes(`projects/${formattedName}/Default`)
-        );
-    
-        // Return found images or a default fallback
-        return projectImages.length > 0 ? projectImages : ['/assets/media/images/no-image.jpg'];
-    };
-    
-
-    const getProjectImages = (projectName: string) => {
-        if (!projectName || !images || images.length === 0) return ['/assets/media/images/no-image.jpg'];
-
-        const formattedName = projectName.replace(/\s+/g, ''); // Remove spaces
-
-        const projectImages = images.filter((image: string) =>
-            image.includes(`projects/${formattedName}/Default`)
-        );
-
-        return projectImages.length > 0 ? projectImages : ['/assets/media/images/no-image.jpg']
-    };
 
     if (loading) {
         return <p>Loading...</p>;
@@ -191,10 +158,10 @@ const ProjectDetails = () => {
                                             },
                                         }}
                                         >
-                                        {project?.images && project?.images.map((image: string, index: number) => (
+                                        {project?.resources && project?.resources?.map((image: any, index: number) => (
 
                                             <SplideSlide key={index}>
-                                                <img className="_project-details_media_img _project-details_media_img_main" loading="lazy" src={image} />
+                                                <img className="_project-details_media_img _project-details_media_img_main" loading="lazy" src={image.location} />
                                             </SplideSlide>
 
                                         ))}
@@ -237,10 +204,10 @@ const ProjectDetails = () => {
                                             },
                                         }}
                                         >
-                                        {project?.images && project?.images.map((image: string, index: number) => (
+                                        {project?.resources && project?.resources?.map((image: any, index: number) => (
                                             
                                             <SplideSlide key={index}>
-                                                <img className="_project-details_media_img" loading="lazy" src={image} />
+                                                <img className="_project-details_media_img" loading="lazy" src={image.location} />
                                             </SplideSlide>
 
                                         ))}
@@ -260,18 +227,6 @@ const ProjectDetails = () => {
                                     </div>
                                     <div className="_project-details_info_item">
                                         <p className="_project-details_info_item_label">
-                                        Lock-in period
-                                        </p>
-                                        <p className="_project-details_info_item_value">
-                                            {new Date(project.actualMaturityDate).toLocaleDateString('en-GB', {
-                                                day: '2-digit',
-                                                month: '2-digit',
-                                                year: '2-digit',
-                                            })}
-                                        </p>
-                                    </div>
-                                    <div className="_project-details_info_item">
-                                        <p className="_project-details_info_item_label">
                                         Start date
                                         </p>
                                         <p className="_project-details_info_item_value">
@@ -280,8 +235,16 @@ const ProjectDetails = () => {
                                                     day: '2-digit',
                                                     month: '2-digit',
                                                     year: '2-digit',
-                                                  })
+                                                })
                                             }
+                                        </p>
+                                    </div>
+                                    <div className="_project-details_info_item">
+                                        <p className="_project-details_info_item_label">
+                                        Country
+                                        </p>
+                                        <p className="_project-details_info_item_value">
+                                            {project.countryName}
                                         </p>
                                     </div>
                                     <div className="_project-details_info_item">
@@ -294,7 +257,7 @@ const ProjectDetails = () => {
                                     </div>
                                 </div>           
                             <div className="_project-details_info_description">
-                                    <span className="_project-details_info_description_title">Description:</span>
+                                    <span className="_project-details_info_description_title">Description : </span>
                                     <span>
                                         {project?.description}
                                     </span>
@@ -317,13 +280,10 @@ const ProjectDetails = () => {
                                     {
                                         projects && projects.map((project: any, index: any) => {
                                             // Find the corresponding images for each project
-                                            let projectImages = getProjectsImages(project.name);
-
-                                            projectImages = projectImages.length > 0 ? projectImages : ['/assets/media/images/no-image.jpg'];
                                             return (
                                                 <div key={index}>
-                                                    <ProjectCard project={project} images={projectImages} token={token} />
-                                                    <ProjectCardMobile project={project} images={projectImages} token={token} />
+                                                    <ProjectCard project={project} token={token} />
+                                                    <ProjectCardMobile project={project} token={token} />
                                                 </div>
                                             );
                                         })

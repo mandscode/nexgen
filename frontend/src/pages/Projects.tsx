@@ -15,12 +15,11 @@ const Projects = () => {
 
     const [projectOptions, setProjectOptions] = useState<any>();
     
-    const { projects, token, images, loading} = useSelector((state: any) => ({
+    const { projects, token, loading} = useSelector((state: any) => ({
       loading: state.projectsDetail?.loading,
       projects: state.projectsDetail?.projects,
       error: state.projectsDetail?.error,
-      token: state.token.token,
-      images:state.projectImages.images
+      token: state.token.token
     }));
 
     
@@ -37,15 +36,6 @@ const Projects = () => {
       
           setProjectOptions(filteredProjects);
       }, [ projects]);
-      
-
-    const getProjectImages = (projectName: string) => {
-        if (!projectName || !images || images.length === 0) return [];
-        const formattedName = projectName.replace(/\s+/g, ''); // Remove spaces
-        return images.filter((image: string) =>
-            image.includes(`projects/${formattedName}/Default`)
-    );
-};
 
 if (loading) {
     return (
@@ -88,12 +78,11 @@ if (loading) {
                     <div className="_avail-projects_list">
                     {
                         projectOptions && projectOptions.map((project: any, index: any) => {
-                            // Find the corresponding images for each project
-                            const projectImages = getProjectImages(project.name);
+
                             return (
                                 <div key={index}>
-                                    <ProjectCard project={project} images={projectImages} token={token} />
-                                    <ProjectCardMobile project={project} images={projectImages} token={token} />
+                                    <ProjectCard project={project} token={token} />
+                                    <ProjectCardMobile project={project} token={token} />
                                 </div>
                             );
                         })

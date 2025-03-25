@@ -151,7 +151,7 @@ class UserDetailsService {
         
         const entity = entities?.find((e: any) => e.name.toLowerCase() === entityName);
         if (!entity) {
-            throw new Error(`Entity with name '${entityName}' not found for the user.`);
+            throw new Error(`You dont have any active investments now, please contact 93232345 to start your investment journey`);
         }
         const entityId = entity.id;
 
