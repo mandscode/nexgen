@@ -200,8 +200,8 @@ const PortfolioMobile = () => {
 
   if (error) {
     return (
-      <div className="error-container">
-        <p>Error: {error}</p>
+      <div className="_dashboard-mobile_no-account-container">
+        <p className='_h1'>{error}</p>
       </div>
     );
   }
@@ -324,8 +324,8 @@ const PortfolioMobile = () => {
                         </div>
                       
                     ):
-                    <div className="_dashboard_no-account-container">
-                    <p className='_h1'>You have no create any transaction.</p>
+                    <div className="_dashboard-mobile_no-account-container">
+                    <p className='_h1'>{error}</p>
                   </div>
                   }
                   {

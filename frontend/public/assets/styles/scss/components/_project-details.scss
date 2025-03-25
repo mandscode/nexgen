@@ -51,6 +51,10 @@
                 // min-width: 100%;
                 height: 100%;
             }
+
+            @include for-tablet {
+                grid-template-columns: 1fr;
+            }
             
         }
     }
@@ -162,6 +166,7 @@
                     display: flex;
                     flex-wrap: wrap;
                     padding-bottom: 2.399rem;
+                    row-gap: 1.7rem;
                 }   
     
                 &_label {

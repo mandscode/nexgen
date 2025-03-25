@@ -55,8 +55,8 @@ const Profile = () => {
     
     if (error || user.length == 0) {
         return (
-            <div className="error-container">
-                <p>Error: {error}</p>
+            <div className="_dashboard-all_no-account-container">
+        <p className='_h1'>{error}</p>
             </div>
         );
     }
@@ -198,8 +198,10 @@ const Profile = () => {
                 </div>
             ))}
     </div>
-
+    {
+                documents.length > 0 &&
     <MarkAllAsVerified id={Number(user?.investorId)} docs={documents} />
+}
 </div>
 
                             <div className="_user-profile_info_section">

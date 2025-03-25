@@ -63,7 +63,7 @@ class UserDetailsService {
             const isViewer = (_b = user.roles) === null || _b === void 0 ? void 0 : _b.some(role => role.name === "Viewer");
             const entity = entities === null || entities === void 0 ? void 0 : entities.find((e) => e.name.toLowerCase() === entityName);
             if (!entity) {
-                throw new Error(`Entity with name '${entityName}' not found for the user.`);
+                throw new Error(`You dont have any active investments now, please contact 93232345 to start your investment journey`);
             }
             const entityId = entity.id;
             const projects = yield project_1.default.findAll({

@@ -192,8 +192,8 @@ const DashboardMobile = () => {
 
   if (error) {
     return (
-      <div className="error-container">
-        <p>Error: {error}</p>
+      <div className="_dashboard-mobile_no-account-container">
+        <p className='_h1'>{error}</p>
       </div>
     );
   }
@@ -238,7 +238,7 @@ const DashboardMobile = () => {
                   </div>
                 </div>
                 {
-                  userDetails?.Currencies?.length !== 0 ?
+                  userDetails?.Currencies && userDetails?.Currencies?.length !== 0 ?
                   <div className='_dashboard-mobile_nav_currency'>
                     <div className="_dashboard-mobile_nav_currency-select">
                       <CurrencyDropdown currency={userDetails?.Currencies} setSelectCurrency={setSelectCurrency}/>
@@ -334,7 +334,7 @@ const DashboardMobile = () => {
                 </div>
                 :
                 <div className="_dashboard-mobile_no-account-container">
-                  <p className='_h1'>You have no any Investment.</p>
+                  <p className='_h1'>{userDetails?.message ? userDetails.message : `You have no Investment.`}</p>
                 </div>      
               }
           </div>

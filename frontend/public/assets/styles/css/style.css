@@ -2569,16 +2569,56 @@ a {
 ._dashboard_no-account-container {
   height: 50vh;
   display: flex;
+  text-align: center;
   align-items: center;
   justify-content: center;
+}
+._dashboard_no-account-container ._h1 {
+  font-weight: 500;
+  font-family: HelveticaNeueLight;
+  font-size: 2rem;
+}
+@media only screen and (max-width: 1024px) {
+  ._dashboard_no-account-container ._h1 {
+    font-size: 1.8rem;
+  }
+}
+
+._dashboard-all_no-account-container {
+  height: 50vh;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+}
+._dashboard-all_no-account-container ._h1 {
+  font-weight: 500;
+  font-family: HelveticaNeueLight;
+  font-size: 2rem;
+}
+@media only screen and (max-width: 1024px) {
+  ._dashboard-all_no-account-container ._h1 {
+    font-size: 1.8rem;
+  }
 }
 
 ._dashboard-mobile_no-investments-container_mobile {
   display: none;
 }
 
+._dashboard-mobile_no-account-container {
+  display: none;
+}
+
 @media only screen and (max-width: 1024px) {
+  ._dashboard_no-account-container {
+    display: none;
+  }
   ._dashboard-mobile_no-investments-container_mobile ._h1 {
+    font-size: 1.8rem;
+    text-align: center;
+  }
+  ._dashboard-all_no-investments-container_mobile ._h1 {
     font-size: 1.8rem;
     text-align: center;
   }
@@ -2921,7 +2961,10 @@ a {
     justify-content: center;
   }
   ._dashboard-mobile_no-account-container ._h1 {
-    font-size: 1.8rem;
+    font-family: HelveticaNeueLight;
+    font-weight: 500;
+    line-height: 1.3;
+    font-size: 1.5rem;
     text-align: center;
   }
 }
@@ -3332,6 +3375,11 @@ a {
 ._project-details_media_img_wrapper {
   height: 100%;
 }
+@media only screen and (max-width: 1024px) {
+  ._project-details_media_img {
+    grid-template-columns: 1fr;
+  }
+}
 ._project-details_info_title {
   color: #214897;
   font-size: 2rem;
@@ -3399,6 +3447,7 @@ a {
     display: flex;
     flex-wrap: wrap;
     padding-bottom: 2.399rem;
+    row-gap: 1.7rem;
   }
   ._project-details_info_item_label {
     font-size: 1.2rem;

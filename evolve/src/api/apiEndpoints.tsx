@@ -11,15 +11,19 @@ export const getUserDetails = async (id: number, token: string) => {
     return response.data;
   } catch (error: any) {
     if (error.response) {
-        // Handle specific error messages from the backend
-        if (error.response.data.message === 'Unauthorized: Invalid token' || error.response.data.message === 'TokenExpired: Please log in again') {
-            throw new Error(error.response.data.message); // Propagate the error message
-        } else {
-            throw new Error('Error fetching user details');
-        }
-    } else {
-        throw new Error('Network error: Unable to fetch user details');
-    }
+      // Handle specific error messages from the backend
+      if (error.response.data.message === 'Unauthorized: Invalid token' || error.response.data.message === 'TokenExpired: Please log in again') {
+          throw new Error(error.response.data.message); // Propagate the error message
+      } else if(error.response.data.message) {
+
+        throw new Error(error.response.data.message);
+      }
+      else {
+          throw new Error('Error fetching user details');
+      }
+  } else {
+      throw new Error('Network error: Unable to fetch user details');
+  }
 }
 };
 

@@ -58,12 +58,15 @@ const ProjectDetail = ({ }:ProjectDetailProps) => {
   
         if (project) {
           setProjectDetail(project);
+
+          const words = project.description.split(' ');
+          ;
   
           setProjectBasicDetail({
             entityName: project.entity?.name || "",
             name: project.name,
             countryName: project.countryName,
-            description: project.description,
+            description: words.length > 20 ? words.slice(0, 10).join(' ') + '...' : project.description,
             ownerName: project.ownerName,
           });
   

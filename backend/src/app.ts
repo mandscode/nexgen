@@ -8,7 +8,7 @@ import swaggerUi from 'swagger-ui-express';
 import * as swaggerDocument from './swagger.json';
 
 // app.ts or index.ts
-// import './createMasterAdmin';
+import './createMasterAdmin';
 
 
 import cors from 'cors';
@@ -25,7 +25,7 @@ sequelize.authenticate()
 
 if (environment === 'development') {
   // Sync all models
-  sequelize.sync({ force: true }) // Use { force: true } to drop and recreate tables
+  sequelize.sync({ force: false }) // Use { force: true } to drop and recreate tables
     .then(() => console.log('Models synchronized with the database.'))
     .catch((err: any) => console.log('Error synchronizing models:', err));
 }

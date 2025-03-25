@@ -10,6 +10,14 @@ const ProjectCardMobile = (props:any) => {
             year: "2-digit",
         }).format(date);
     };
+
+    const truncateText = (text:string, maxWords = 20, showWords = 20) => {
+        if (!text) return ""; // Handle empty/undefined description
+        const words = text.split(' ');
+        return words.length > maxWords 
+          ? words.slice(0, showWords).join(' ') + '...' 
+          : text;
+      };
     
     return (
         <>
@@ -25,55 +33,55 @@ const ProjectCardMobile = (props:any) => {
                                     <p className="_project_summary-mobile_info_item_value">₹{props.project.overallCost}</p>
                                 </div>
                                 <div className="_project_summary-mobile_info_item">
-                                    <p className="_project_summary-mobile_info_item_name">Lock-in period</p>
-                                    <p className="_project_summary-mobile_info_item_value">
-                                        {formatDate(props.project.startDate)}
-                                    </p>
-                                </div>
-                                <div className="_project_summary-mobile_info_item">
                                     <p className="_project_summary-mobile_info_item_name">Start date</p>
                                     <p className="_project_summary-mobile_info_item_value">
                                     {formatDate(props.project.startDate)}
                                     </p>
                                 </div>
                                 <div className="_project_summary-mobile_info_item">
-                                    <p className="_project_summary-mobile_info_item_name">Location</p>
-                                    <p className="_project_summary-mobile_info_item_value">{props.project.address}</p>
+                                    <p className="_project_summary-mobile_info_item_name">Country</p>
+                                    <p className="_project_summary-mobile_info_item_value">
+                                        {props?.project?.countryName}
+                                    </p>
                                 </div>
                             </div>
                             :
                             <div className="_project_summary-mobile_description">
                                 <span className="_project_summary-mobile_description_title">
-                                    Description:
+                                    Description : 
                                 </span>
                                 <span className="_project_summary-mobile_description_text">
-                                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor
+                                {props?.project?.description && truncateText(props.project.description)}
                                 </span>
                             </div>
                         }
 
                     </div>
                     <figure className="_project_summary-mobile_media_wrapper">
-                        {/* <img className="_project_summary-mobile_media"/> */}
-                        <img className="_project_summary-mobile_media"
-                        src={props.images && props.images[0] ? props.images[0] : '/assets/media/images/no-image.jpg'}
-                        alt="Project Image"
-                    
-                    />
+                        <img 
+                            className="_project_summary-mobile_media"
+                            src={props?.project?.resources?.[0]?.location || '/assets/media/images/no-image.jpg'}
+                            alt="Project Image"
+                        />
                     </figure>
                 </div>
                 {
                     props?.token && props?.token !== null ?
                     <div className="_project_summary-mobile_description">
-                        <span className="_project_summary-mobile_description_title">Description:</span>
+                        <span className="_project_summary-mobile_description_title">Description : </span>
                         <span className="_project_summary-mobile_description_text"> 
-                            {props.project.description}
+                        {props?.project?.description && truncateText(props.project.description)}
                             </span>
                     </div>
                     :
                     null
                 }
+                                        {
+                            props?.token && props?.token !== null ?
                 <Link className="_project_summary_card_link" to={`/project/${props.project.id}`}> </Link>
+                :
+                null
+                                        }
             </div>
         </>
     );

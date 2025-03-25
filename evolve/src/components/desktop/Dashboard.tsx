@@ -68,7 +68,6 @@ const Dashboard = () => {
   const [selectedCurrencyProjects, setSelectedCurrencyProjects] = useState<any[]>([]);
   const [selectedProjectTransactions, setSelectedProjectTransactions] = useState<any[]>([]);
 
-
   const [totalAmount, setTotalAmount] = useState(0);
   const [interest, setTotalInterest] = useState(0);
   const [projectCount, setProjectCount] = useState(0);
@@ -253,8 +252,8 @@ const Dashboard = () => {
 
   if (error) {
     return (
-      <div className="error-container">
-        <p>Error: {error}</p>
+      <div className="_dashboard_no-account-container">
+        <p className='_h1'>{error}</p>
       </div>
     );
   }
@@ -271,7 +270,7 @@ const Dashboard = () => {
     }).format(date);
   };
 
-    
+
     return (
         <>
           <section className='_dashboard'>
@@ -294,7 +293,7 @@ const Dashboard = () => {
                   </div>
                 </div>
                 {
-                  userDetails?.Currencies?.length !== 0 ?
+                  userDetails?.Currencies && userDetails?.Currencies?.length !== 0 ?
                     <div className='_dashboard_nav_bottom'>
                       <div className='_dashboard_nav_bottom_left'>
                         <p className="_dashboard_nav_currency-label">Currency</p>
@@ -305,7 +304,7 @@ const Dashboard = () => {
                     </div>
                     :
                     <div className="_dashboard_no-account-container">
-                    <p className='_h1'>You have no any accounts.</p>
+                    <p className='_h1'>{userDetails?.message ? userDetails.message : `You have no Investment.`}</p>
                   </div>
                 }
               </nav>
@@ -574,7 +573,7 @@ const Dashboard = () => {
                       )
                       :
                       <div className="_dashboard_no-account-container">
-                        <p className='_h1'>You have no create any transaction.</p>
+                        <p className='_h1'>{userDetails?.message ? userDetails.message : `You have no Investment.`}</p>
                       </div>
                     }
                   </div>

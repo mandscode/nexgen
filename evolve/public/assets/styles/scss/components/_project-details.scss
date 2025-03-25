@@ -38,6 +38,10 @@
             .splide__pagination__page.is-active {
                 background: #000000;
             }
+            
+            @include for-tablet {
+                grid-template-columns: 1fr;
+            }
         }
         
         &_img {            
@@ -162,6 +166,7 @@
                     display: flex;
                     flex-wrap: wrap;
                     padding-bottom: 2.399rem;
+                    row-gap: 1.7rem;
                 }   
     
                 &_label {

@@ -90,7 +90,13 @@ class ProjectService {
     
         // Fetch projects with filtering
         const projects = await Project.findAll({
-            where: whereClause
+            where: whereClause,
+            include: [
+                {
+                    model: Resource, // Include related resources
+                    attributes: ['id', 'location']
+                }
+            ]
         });
     
         // Convert projects to DTOs
