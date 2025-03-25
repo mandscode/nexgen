@@ -43,8 +43,10 @@ const truncateTextForScreen = (text: string, maxWords: number): string => {
   if (window.innerWidth <= 1024) {
     const words = text.split(" ");
     return words.length > maxWords ? `${words.slice(0, maxWords).join(" ")}...` : text;
+  } else {
+    const words = text.split(" ");
+    return words.length > 70 ? `${words.slice(0, 70).join(" ")}...` : text;
   }
-  return text; // No truncation for larger screens
 };
 
 export default BlogCard;
