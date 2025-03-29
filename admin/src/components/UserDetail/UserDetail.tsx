@@ -284,7 +284,7 @@ const UserDetail = ({  }:UserDetailProps) => {
               name: user.firstName,
             },
           ]);
-  
+          
           setUserAccount([
             {
               firstName: user.firstName,
@@ -297,22 +297,22 @@ const UserDetail = ({  }:UserDetailProps) => {
   
           setUserDetails(user);
         }
-  
-          // Set investor-specific details
-          setInvestorDetails(investor);
-          setProjects(investor.projects);
-  
+        
+        // Set investor-specific details
+        setInvestorDetails(investor);
+        setProjects(investor.projects);
+        
         if (investor.nomineeDetails) {
-          const parsedDataNominee = JSON.parse(investor.nomineeDetails);
+          const parsedDataNominee = investor.nomineeDetails;
           setNominee([parsedDataNominee]); // Wrap in an array
         }
   
         if (investor.personalDetails) {
-          setPersonalDetails([JSON.parse(investor.personalDetails)]); // Wrap in an array
+          setPersonalDetails([investor.personalDetails]); // Wrap in an array
         }
 
         if (investor?.emergencyContact) {
-          setEmergencyDetails([JSON.parse(investor.emergencyContact)]); // Wrap in an array
+          setEmergencyDetails([investor.emergencyContact]); // Wrap in an array
         }
       } catch (error) {
         console.error("Failed to fetch users and projects:", error);
