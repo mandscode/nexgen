@@ -312,7 +312,7 @@ const UserDetail = ({  }:UserDetailProps) => {
             entity: entity ? entity.name : null, // Add entity name or null if not found
           };
         });
-
+        
         setProjects(projectsWithEntity);
         
         if (investor.nomineeDetails) {
@@ -332,7 +332,7 @@ const UserDetail = ({  }:UserDetailProps) => {
       }
     };
     fetchUsersAndProjects();
-  }, [id, userAccountlistShow, updatedDocData, docDetailList]); // Ensure id and store are in dependency array
+  }, [id, userAccountlistShow, updatedDocData, docDetailList, entities]); // Ensure id and store are in dependency array
   
   useEffect(() => {
     const fetchData = async () => {
