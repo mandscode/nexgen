@@ -25,41 +25,32 @@ export class UserDetailStore {
 
     async assignAccount (values: AssignProjectOption, setUserProjectListShow: any, projects:any, setProjects:any, invId:number) {
 
-        if (values.entityType == 1) {
-            if(values.lockInPeriod) {
+        if(values.lockInPeriod) {
 
-                // Prepare the formatted values
-                const formattedValues = {
-                    investorId: invId,
-                    projectId: values.projectId,
-                    lockInPeriod:values.lockInPeriod
-                };
-        
-                // Call the createUser function
-                await assignProject(formattedValues);
-                setUserProjectListShow(true)
-            } else {
-                alert('Lock in Period required field')
+            const formattedValues = {
+                investorId: invId,
+                projectId: values.projectId,
+                lockInPeriod:values.lockInPeriod
+            };
+            
+            const investor = await getInvestor(Number(invId));
+            const user = await getUser(Number(investor?.userId));
+
+            const formattedValues1 = {
+                entityIds: [values.entityType],
+                userId: investor.userId
+            };
+            
+            const haveEntity = !!user?.entities?.some((e: any) => e.id === values.entityType);
+            await assignProject(formattedValues);
+            if(!haveEntity){
+                await assignEntity(formattedValues1);
             }
     
-            // await setProjects([...projects, ])
-    
-        }
-        else if(values.entityType == 0) {
-            // Prepare the formatted values
-
-            const investor = await getInvestor(Number(invId));
-            const formattedValues = {
-                entityIds: [values.projectId],
-                userId: investor.userId,
-            };
-    
-            // Call the createUser function
-            await assignEntity(formattedValues);
-    
             setUserProjectListShow(true)
+        } else {
+            alert('Lock in Period required field')
         }
-
     }
 
     async fetchAccountData(id:number) {

@@ -8,7 +8,7 @@ import Select from 'react-select';
 import { ColumnDef } from '@tanstack/react-table';
 import { Card, Col, Form, Row, Tab, Tabs } from 'react-bootstrap';
 import NexGenTable from '../NexGenTable/NexGenTable';
-import { ProjectBasicDetailInterface, Transaction } from '../Utilities/interface/interface';
+import { EntityInterface, ProjectBasicDetailInterface, Transaction } from '../Utilities/interface/interface';
 import { getAccountOfInvestor, getCurrencyAll, getEntities, getInvestor, getProject, getProjects, getUser, updateInvestorDocument } from '../../api/apiEndpoints';
 
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -107,7 +107,7 @@ export interface InvestorOption {
 // }
 
 export interface AssignProjectOption {
-  investorId: number;
+  investorId?: number;
   projectId: any;
   entityType:number;
   lockInPeriod?:string;
@@ -150,17 +150,20 @@ const UserDetail = ({  }:UserDetailProps) => {
   const [data, setData] = useState<{ name: string; value: number }[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  
+  const { id } = useParams();
 
   const [userOptions, setUserOptions] = useState<InvestorOption[]>([]);
   const [projectOptions, setProjectOptions] = useState([]);
   const [option, setOptions] = useState();
   const [entityOptions, setEntityOptions] = useState([]);
   const [projects, setProjects] = useState<ProjectBasicDetailInterface[]>([]);
+  const [entities, setEntities] = useState<EntityInterface[]>();
 
   const [investorDetails, setInvestorDetails] = useState<InvestorInterface>();
   const [userDetails, setUserDetails] = useState<User>();
   
-  const [investrId, setInvestorId] = useState(0);
+  const [investrId, setInvestorId] = useState(Number(id) || 0);
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [nominee, setNominee] = useState<NomineeDetails[]>([]);
@@ -175,7 +178,6 @@ const UserDetail = ({  }:UserDetailProps) => {
   const [selectedOptions, setSelectedOptions] = useState<readonly {value: number, label: string}[]>([]);
   const [selectedOption, setSelectedOption] = useState(0);
 
-  const { id } = useParams();
 
   useEffect(() => {
     const fetchInvestments = async () => {
@@ -249,7 +251,7 @@ const UserDetail = ({  }:UserDetailProps) => {
 
   const schema = yup
   .object({
-    investorId: yup.number().required('User ID is required'),
+    // investorId: yup.number().required('User ID is required'),
     projectId:  yup.number().required( "select atleast one role"),
     entityType:  yup.number().required("select atleast one entity"),
   })
@@ -300,7 +302,18 @@ const UserDetail = ({  }:UserDetailProps) => {
         
         // Set investor-specific details
         setInvestorDetails(investor);
-        setProjects(investor.projects);
+
+
+        const projectsWithEntity = investor?.projects?.map((p: any) => {
+          const entity = entities?.find((entity: any) => entity.id === p.entityID);
+        
+          return {
+            ...p,
+            entity: entity ? entity.name : null, // Add entity name or null if not found
+          };
+        });
+
+        setProjects(projectsWithEntity);
         
         if (investor.nomineeDetails) {
           const parsedDataNominee = investor.nomineeDetails;
@@ -326,16 +339,15 @@ const UserDetail = ({  }:UserDetailProps) => {
       try {
         const projects = await getProjects();
         const entities = await getEntities();
-
+        setEntities(entities)
         const investor = await getInvestor(Number(id));
         
-
-        const user = await getUser(investor.userId);          // Await the asynchronous call
-        const entityIds = user.entities.map((entity: any) => entity.id);
+        const projectIds = investor.projects.map((p: any) => p.id);
 
         const filteredProjects = projects.filter((project: any) =>
-          entityIds.includes(project.entityID)
+          [selectedOption].includes(project.entityID) && !projectIds.includes(project.id)
         );
+        
         // const filteredProjects;  
         setProjectOptions(
           filteredProjects
@@ -350,8 +362,8 @@ const UserDetail = ({  }:UserDetailProps) => {
     };
 
     fetchData();
-  }, [])
-  const [userEntities, setUserEntities] = useState(null);
+  }, [selectedOption])
+
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
@@ -403,26 +415,20 @@ const UserDetail = ({  }:UserDetailProps) => {
 
 
   const fields = [
-    { name: 'investorId', type: 'select', placeholder: 'Select User', options:userOptions },
     {
       name: 'entityType',
       type: 'select',
-      placeholder: 'Select Option',
-      options: [
-        {id:0, name:"Entity"},
-        {id:1, name:"Project"}
-      ]
+      placeholder: 'Select Entity',
+      options: entityOptions
     },
     {
       name: 'projectId',
       type: 'select',
       placeholder: 'Select Project',
       // options: selectedOption == 1 ? projectOptions : null
-      options: selectedOption == 1 ? projectOptions : entityOptions
+      options: projectOptions
     },
-    ...(selectedOption == 1
-    ? [{ name: 'lockInPeriod', type: 'date', placeholder: 'Lock in Period' }]
-    : [])
+    { name: 'lockInPeriod', type: 'date', placeholder: 'Lock in Period' }
   ];
 
 
@@ -622,7 +628,7 @@ const UserDetail = ({  }:UserDetailProps) => {
       header: 'All Projects where user Invested',
       columns: [
         {
-          accessorKey: 'id',
+          accessorKey: 'entity',
           cell: info => info.getValue(),
         },
         {
@@ -818,13 +824,13 @@ const UserDetail = ({  }:UserDetailProps) => {
               </Card.Body>
             </Card>
           </Tab>
-          <Tab eventKey="assignProjects" title="Manage Projects">
+          <Tab eventKey="assignProjects" title="User Project Mapping ">
             <div className="header">
               <div className="container-fluid">
                 <div className="header-body">
                   <div className="row align-items-end row">
                     <div className="col">
-                      <h1 className="header-title">User Account</h1>
+                      <h1 className="header-title">Entity & Project Permissions</h1>
                     </div>
                     <div className="col-auto">
                       {
@@ -1107,7 +1113,7 @@ const UserDetail = ({  }:UserDetailProps) => {
               <Card>
                 <Card.Header>Docs Details of {userDetails?.firstName} {userDetails?.lastName}</Card.Header>
                 <Card.Body>
-                    <NexGenTable columns={investorDocsColumns} data={ typeof investorDetails?.documents === "string" && JSON.parse(investorDetails?.documents) || []} />
+                    <NexGenTable columns={investorDocsColumns} data={ typeof investorDetails?.documents === "string" ? JSON.parse(investorDetails?.documents) || [] : (investorDetails?.documents) || [] } />
                 </Card.Body>
               </Card>
               :
