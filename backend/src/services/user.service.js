@@ -23,6 +23,7 @@ const user_entities_1 = __importDefault(require("../models/user-entities"));
 const investor_mapper_1 = require("./investor.mapper");
 const user_mapper_1 = require("./user.mapper");
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 class UserReqDTO {
 }
 exports.UserReqDTO = UserReqDTO;
@@ -31,6 +32,9 @@ class UserRespDTO {
 exports.UserRespDTO = UserRespDTO;
 const SALT_ROUNDS = 10;
 class UserService {
+    constructor() {
+        this.biometricTokens = {};
+    }
     updateUserRoles(userId, roleIds) {
         return __awaiter(this, void 0, void 0, function* () {
             if (roleIds) {
@@ -207,6 +211,28 @@ class UserService {
                 });
             }
             return this.getUserById(userId);
+        });
+    }
+    storeBiometricToken(userId, biometricToken) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.biometricTokens[userId] = biometricToken;
+        });
+    }
+    validateBiometricToken(userId, biometricToken) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const storedToken = this.biometricTokens[userId];
+            if (!storedToken) {
+                return false; // No biometric token stored
+            }
+            try {
+                // Verify the biometric token using the stored secret
+                const decoded = jsonwebtoken_1.default.verify(biometricToken, 'your_biometric_secret');
+                // Ensure the token belongs to the correct user
+                return (decoded === null || decoded === void 0 ? void 0 : decoded.userId) === userId;
+            }
+            catch (error) {
+                return false; // Invalid or expired token
+            }
         });
     }
 }

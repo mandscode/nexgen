@@ -12,6 +12,7 @@ import { RoleDTO } from './role.service';
 import { toUserDTO, toUsersDTO } from './user.mapper';
 import bcrypt from 'bcrypt';
 
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
 export class UserReqDTO {
     id?: number;
@@ -45,6 +46,8 @@ export class UserRespDTO {
 const SALT_ROUNDS = 10;
 
 class UserService {
+    biometricTokens: Record<number, string> = {};
+
     async updateUserRoles(userId: number, roleIds: number[]): Promise<UserRespDTO | null> {
         if (roleIds) {
             const user = await User.findByPk(userId);
@@ -242,6 +245,29 @@ class UserService {
             });
         }
         return this.getUserById(userId);
+    }
+
+    async storeBiometricToken(userId: number, biometricToken: string): Promise<void> {
+        this.biometricTokens[userId] = biometricToken;
+    }
+
+    async validateBiometricToken(userId: number, biometricToken: string): Promise<boolean> {
+        const storedToken = this.biometricTokens[userId];
+
+        if (!storedToken) {
+            return false; // No biometric token stored
+        }
+
+        try {
+            // Verify the biometric token using the stored secret
+            const decoded = jwt.verify(biometricToken, 'your_biometric_secret') as JwtPayload;
+
+            // Ensure the token belongs to the correct user
+            return decoded?.userId === userId;
+            
+        } catch (error) {
+            return false; // Invalid or expired token
+        }
     }
 }
 

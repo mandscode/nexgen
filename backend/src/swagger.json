@@ -1578,6 +1578,9 @@
 										},
 										"isMasterAdmin": {},
 										"userId": {},
+										"biometricToken": {
+											"type": "string"
+										},
 										"message": {
 											"type": "string"
 										},
@@ -1606,6 +1609,9 @@
 						"application/json": {
 							"schema": {
 								"properties": {
+									"biometricToken": {
+										"type": "string"
+									},
 									"entity": {
 										"type": "number",
 										"format": "double"

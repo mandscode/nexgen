@@ -109,9 +109,22 @@ let UserController = class UserController {
             if (!user || !user.id) {
                 throw new Error('User not found');
             }
-            const isPasswordValid = yield user_service_1.default.validatePassword(user.id, body.password);
-            if (!isPasswordValid) {
-                throw new Error('Invalid password');
+            if (body.biometricToken) {
+                // 🔹 Biometric Login
+                const isBiometricValid = yield user_service_1.default.validateBiometricToken(user.id, body.biometricToken);
+                if (!isBiometricValid) {
+                    throw new Error('Invalid biometric authentication');
+                }
+            }
+            else {
+                // 🔹 Password Login
+                if (!body.password) {
+                    throw new Error('Password is required');
+                }
+                const isPasswordValid = yield user_service_1.default.validatePassword(user.id, body.password);
+                if (!isPasswordValid) {
+                    throw new Error('Invalid password');
+                }
             }
             const userShare = body.entity !== undefined ? body.entity : null;
             const payload = {
@@ -123,9 +136,14 @@ let UserController = class UserController {
             if (userShare !== null) {
                 payload.userShare = userShare;
             }
+            let biometricToken;
+            if (body.password) {
+                biometricToken = jsonwebtoken_1.default.sign({ userId: user.id }, 'your_biometric_secret', { expiresIn: '7d' });
+                yield user_service_1.default.storeBiometricToken(user.id, biometricToken);
+            }
             const token = jsonwebtoken_1.default.sign(payload, 'your_jwt_secret', { expiresIn: '1h' });
             const message = 'Login successful';
-            return { token, message, userId: user.id, isMasterAdmin: user.isMasterAdmin, isFirstLogin: user.isFirstLogin };
+            return { token, message, biometricToken, userId: user.id, isMasterAdmin: user.isMasterAdmin, isFirstLogin: user.isFirstLogin };
         });
     }
 };

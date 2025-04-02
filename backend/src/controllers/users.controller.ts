@@ -51,16 +51,30 @@ export class UserController {
     }
 
     @Post('/login')
-    public async login(@Body() body: { email: string, password: string; entity?:number; }): Promise<{ token: string, message?:string, userId:any, isMasterAdmin:any, isFirstLogin:boolean } | null> {
+    public async login(@Body() body: { email: string, password: string; entity?:number; biometricToken?: string, }): Promise<{ token: string, message?:string, biometricToken?: string, userId:any, isMasterAdmin:any, isFirstLogin:boolean } | null> {
+
         const user = await userService.findUserByEmail(body.email);
 
         if (!user || !user.id) {
             throw new Error('User not found');
         }
 
-        const isPasswordValid = await userService.validatePassword(user.id, body.password);
-        if (!isPasswordValid) {
-            throw new Error('Invalid password');
+        if (body.biometricToken) {
+            // 🔹 Biometric Login
+            const isBiometricValid = await userService.validateBiometricToken(user.id, body.biometricToken);
+            if (!isBiometricValid) {
+                throw new Error('Invalid biometric authentication');
+            }
+        } else {
+            // 🔹 Password Login
+            if (!body.password) {
+                throw new Error('Password is required');
+            }
+            
+            const isPasswordValid = await userService.validatePassword(user.id, body.password);
+            if (!isPasswordValid) {
+                throw new Error('Invalid password');
+            }
         }
 
         const userShare = body.entity !== undefined ? body.entity : null;
@@ -76,10 +90,17 @@ export class UserController {
             payload.userShare = userShare;
         }
 
+        let biometricToken: string | undefined;
+
+        if (body.password) {
+            biometricToken = jwt.sign({ userId: user.id }, 'your_biometric_secret', { expiresIn: '7d' });
+            await userService.storeBiometricToken(user.id, biometricToken);
+        }
+
         const token = jwt.sign(payload, 'your_jwt_secret', { expiresIn: '1h' });
 
         const message = 'Login successful';
 
-        return { token, message, userId: user.id, isMasterAdmin:user.isMasterAdmin, isFirstLogin:user.isFirstLogin };
+        return { token, message, biometricToken, userId: user.id, isMasterAdmin:user.isMasterAdmin, isFirstLogin:user.isFirstLogin };
     }
 }
