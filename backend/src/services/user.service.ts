@@ -258,6 +258,7 @@ class UserService {
             // Verify the biometric token using the stored secret
             const decoded = jwt.verify(biometricToken, 'your_biometric_secret') as JwtPayload;
 
+            console.log(decoded)
             // Ensure the token belongs to the correct user
             const storedToken = this.biometricTokens[decoded?.userId];
             if (!storedToken) {
