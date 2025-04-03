@@ -67,7 +67,7 @@ const Profile = () => {
     const emergencyContact = profileData && profileData?.EmergencyContactDetails || {};
     const documents = profileData && profileData?.Documents || [];
     
-    
+    console.log(user?.investorId)
 
     return (
         <>

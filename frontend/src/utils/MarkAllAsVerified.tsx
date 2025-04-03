@@ -27,9 +27,7 @@ const MarkAllAsVerified:React.FC <any> = ({id, docs}) => {
       // Update the local state
       await setLocalDocs(updatedDocs);
       
-      
       // Save the updated status to the backend
-      console.log(updatedDocs)
       for (const doc of updatedDocs) {
     await updateInvestorDocument(checked, id, doc.id);
   }
