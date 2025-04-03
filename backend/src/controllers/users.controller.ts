@@ -60,7 +60,7 @@ export class UserController {
         if (!user || !user.id) {
             throw new Error('User not found');
         }
-
+        console.log(body.token)
         if (body.biometricToken) {
             // 🔹 Biometric Login
             const isBiometricValid = await userService.validateBiometricToken(user.id, body.biometricToken);
