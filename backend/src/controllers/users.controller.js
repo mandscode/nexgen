@@ -105,6 +105,8 @@ let UserController = class UserController {
     }
     login(body) {
         return __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            const generateBiometricToken = (_a = body.generateBiometricToken) !== null && _a !== void 0 ? _a : false;
             const user = yield user_service_1.default.findUserByEmail(body.email);
             if (!user || !user.id) {
                 throw new Error('User not found');
@@ -137,7 +139,7 @@ let UserController = class UserController {
                 payload.userShare = userShare;
             }
             let biometricToken;
-            if (body.password && body.generateBiometricToken) {
+            if (body.password && generateBiometricToken) {
                 biometricToken = jsonwebtoken_1.default.sign(payload, 'your_biometric_secret', { expiresIn: '7d' });
                 yield user_service_1.default.storeBiometricToken(user.id, biometricToken);
             }
