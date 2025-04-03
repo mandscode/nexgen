@@ -215,7 +215,7 @@ class UserService {
     }
     storeBiometricToken(userId, biometricToken) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.biometricTokens[userId] = biometricToken;
+            this.biometricTokens[Number(userId)] = biometricToken;
             console.log(this.biometricTokens);
         });
     }
@@ -225,8 +225,7 @@ class UserService {
                 // Verify the biometric token using the stored secret
                 const decoded = jsonwebtoken_1.default.verify(biometricToken, 'your_biometric_secret');
                 // Ensure the token belongs to the correct user
-                const storedToken = this.biometricTokens[decoded === null || decoded === void 0 ? void 0 : decoded.id];
-                console.log(this.biometricTokens);
+                const storedToken = this.biometricTokens[Number(decoded === null || decoded === void 0 ? void 0 : decoded.id)];
                 if (!storedToken) {
                     return false; // No biometric token stored
                 }

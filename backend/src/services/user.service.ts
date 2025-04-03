@@ -248,7 +248,7 @@ class UserService {
     }
 
     async storeBiometricToken(userId: number, biometricToken: string): Promise<void> {
-        this.biometricTokens[userId] = biometricToken;
+        this.biometricTokens[Number(userId)] = biometricToken;
         console.log(this.biometricTokens)
     }
     
@@ -260,8 +260,8 @@ class UserService {
             const decoded = jwt.verify(biometricToken, 'your_biometric_secret') as JwtPayload;
 
             // Ensure the token belongs to the correct user
-            const storedToken = this.biometricTokens[decoded?.id];
-            console.log(this.biometricTokens)
+            const storedToken = this.biometricTokens[Number(decoded?.id)];
+
             if (!storedToken) {
                 return false; // No biometric token stored
             }
