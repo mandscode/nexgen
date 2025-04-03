@@ -1627,7 +1627,6 @@
 									}
 								},
 								"required": [
-									"generateBiometricToken",
 									"password",
 									"email"
 								],
