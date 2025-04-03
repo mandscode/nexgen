@@ -46,7 +46,6 @@ export const fetchProjects = () => {
     try {
       // Get token from Redux state
       const token = getState().token.token;
-      console.log(token, "aaaaaaaaaaaaaaaaaaa")
       // Fetch projects with token in headers
       const response = await getProjects({
         headers: {

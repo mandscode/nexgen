@@ -40,7 +40,6 @@ export const fetchUserById = (userId: number) => {
       
             // Pass token to API call
             const response = await getUserDetails(userId, token);
-            console.log(response)
             dispatch(fetchUserSuccess(response));
           } catch (error:any) {
             if (error.message === 'Unauthorized: Invalid token' || error.message === 'TokenExpired: Please log in again') {

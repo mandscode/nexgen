@@ -68,8 +68,6 @@ export class UpdateProjectStore {
               file:url
             }
             const response = updateProjectImages(id, data)
-
-            console.log(response)
             
             this.uploadingImg = false;
             alert("File uploaded successfully!");          

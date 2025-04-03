@@ -94,7 +94,6 @@ const Academy = () => {
             const filteredData:any = academies.filter((blog:any) => {
                 return blog.title.toLowerCase().includes(searchVal.toLowerCase()) || blog.description.toLowerCase().includes(searchVal.toLowerCase());
             });
-            // console.log(listItems)
             setFilteredData(filteredData);
         }    
     }, [searchVal, academies])

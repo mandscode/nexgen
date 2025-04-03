@@ -13,7 +13,6 @@ export class AddTransactionsStore {
 
     async addTransaction(values: TransactionDTO, _: TransactionHistoryStore, navigate: NavigateFunction, transactionList:any, investrId:number) {
         
-        console.log(values, "a")
         if(values.credited.toLowerCase() == "bonus") {
             const formattedValue = {
                 amount: values.amount,
@@ -44,7 +43,6 @@ export class AddTransactionsStore {
             navigate("/investors");
 
         }
-        console.log(values, "b")
 
     }
 }

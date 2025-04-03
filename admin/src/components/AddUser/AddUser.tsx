@@ -233,7 +233,6 @@ const AddUser = ({ }:AddUserProps) => {
   // Handle role selection change
   const handleRoleChange = (selected: any) => {
     setSelectedRole(selected?.label); // Update selected role
-    console.log(selected?.value)
     if (selected?.value === 1 || selected?.value === 4) {
       setValue("entityIds", []); // ✅ Reset entityIds when selecting Admin/Master Admin
     }

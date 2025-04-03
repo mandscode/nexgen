@@ -24,17 +24,22 @@ const MarkAllAsVerified:React.FC <any> = ({id, docs}) => {
         Status: checked, // Update the status based on the checkbox
       }));
       
-      // Update the local state
+
       await setLocalDocs(updatedDocs);
       
-      
-      // Save the updated status to the backend
-      console.log(updatedDocs)
-      for (const doc of updatedDocs) {
-    await updateInvestorDocument(checked, id, doc.id);
-  }
 
-  alert("All documents updated successfully!");
+      const responses = await Promise.all(
+        updatedDocs.map((doc) => updateInvestorDocument(checked, id, doc.id))
+      );
+      
+
+      const allSuccessful = responses.every((res) => res.status === 200);
+      
+      if (allSuccessful) {
+        setIsChecked(true);
+        alert("All documents updated successfully!");
+      }
+
     } catch (error) {
       console.error('Error verifying documents:', error);
       alert("Error occurred while updating documents. Please try again.");

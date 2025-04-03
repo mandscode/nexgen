@@ -561,7 +561,6 @@ export const createTransactions = async (accountsData:TransactionDTO) => {
       credited: accountsData.credited === "true" ? true : accountsData.credited === "false" ? false : accountsData.credited
     };
 
-    console.log(formattedData)
     const response = await api.post('/transactions', formattedData);
     return response.data;
   } catch (error) {

@@ -49,7 +49,6 @@ const OldPasswordChangeModal = ({ show, onHide,email, userId, isFirstLogin }: Pa
           isFirstLogin:false
         }      
       }
-      console.log(isFirstLogin)
       await api.put(`/users/${userId}/change-password`, { ...data });
           
       const loginResponse = await api.post("/users/login", { email, password });

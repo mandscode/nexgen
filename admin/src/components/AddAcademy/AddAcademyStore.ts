@@ -53,7 +53,6 @@ export class AddAcademyStore {
 
     async addAcademy(values: AddAcademyInterface, academyStore: AcademyStore, navigate: NavigateFunction) {
         // usersStore.addUser({...values, roles: values.roles.split(",").map((role: string) => role.trim())});
-        console.log(values)
 
         if (values?.imageUrl?.[0]) {
             const file = values.imageUrl[0];
