@@ -1,7 +1,7 @@
 import { Body, Get, Path, Post, Put, Route } from 'tsoa';
 import userService, { UserReqDTO, UserRespDTO } from '../services/user.service';
 
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
 @Route('users')
 export class UserController {
@@ -51,11 +51,11 @@ export class UserController {
     }
 
     @Post('/login')
-    public async login(@Body() body: { email: string, password: string; entity?:number; biometricToken?: string, generateBiometricToken?:boolean}): Promise<{ token: string, message?:string, biometricToken?: string, userId:any, isMasterAdmin:any, isFirstLogin:boolean } | null> {
+    public async login(@Body() body: { email: string, password: string; entity?:number; biometricToken?: string, generateBiometricToken?:boolean,token?: string}): Promise<{ token: string, message?:string, biometricToken?: string, userId:any, isMasterAdmin:any, isFirstLogin:boolean } | null> {
 
         const generateBiometricToken = body.generateBiometricToken ?? false;
 
-        const user = await userService.findUserByEmail(body.email);
+        let user = await userService.findUserByEmail(body.email);
 
         if (!user || !user.id) {
             throw new Error('User not found');
@@ -67,7 +67,21 @@ export class UserController {
             if (!isBiometricValid) {
                 throw new Error('Invalid biometric authentication');
             }
-        } else {
+        }
+        else if (body.token) {
+            try {
+                const decoded = jwt.verify(body.token, 'your_jwt_secret') as JwtPayload;
+
+                if (typeof decoded !== 'string' && decoded.id) {
+                    user = await userService.getUserById(decoded.id);
+                } else {
+                    throw new Error('Invalid token');
+                }
+            } catch (error) {
+                throw new Error('Invalid token');
+            }
+        }  
+        else {
             // 🔹 Password Login
             if (!body.password) {
                 throw new Error('Password is required');
@@ -81,7 +95,11 @@ export class UserController {
 
         const userShare = body.entity !== undefined ? body.entity : null;
 
-        const payload: any = {
+        if (!user) {
+            throw new Error('User not found'); // Final safety check
+        }
+        
+        const payload: JwtPayload = {
             id: user.id,
             email: user.email,
             isMasterAdmin: user.isMasterAdmin,
@@ -94,9 +112,11 @@ export class UserController {
 
         let biometricToken: string | undefined;
 
-        if (body.password && generateBiometricToken) {
+        if (generateBiometricToken) {
             biometricToken = jwt.sign(payload, 'your_biometric_secret', { expiresIn: '7d' });
-            await userService.storeBiometricToken(user.id, biometricToken);
+            if(user.id) {
+                await userService.storeBiometricToken(user.id, biometricToken);
+            }
         }
 
         const token = jwt.sign(payload, 'your_jwt_secret', { expiresIn: '1h' });
