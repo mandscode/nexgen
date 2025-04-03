@@ -53,6 +53,7 @@ export class UserController {
     @Post('/login')
     public async login(@Body() body: { email: string, password: string; entity?:number; biometricToken?: string, generateBiometricToken?:boolean,token?: string}): Promise<{ token: string, message?:string, biometricToken?: string, userId:any, isMasterAdmin:any, isFirstLogin:boolean } | null> {
 
+        console.log(body)
         const generateBiometricToken = body.generateBiometricToken ?? false;
 
         let user = await userService.findUserByEmail(body.email);
@@ -60,7 +61,6 @@ export class UserController {
         if (!user || !user.id) {
             throw new Error('User not found');
         }
-        console.log(body)
         if (body.biometricToken) {
             // 🔹 Biometric Login
             const isBiometricValid = await userService.validateBiometricToken(user.id, body.biometricToken);

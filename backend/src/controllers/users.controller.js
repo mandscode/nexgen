@@ -106,12 +106,12 @@ let UserController = class UserController {
     login(body) {
         return __awaiter(this, void 0, void 0, function* () {
             var _a;
+            console.log(body);
             const generateBiometricToken = (_a = body.generateBiometricToken) !== null && _a !== void 0 ? _a : false;
             let user = yield user_service_1.default.findUserByEmail(body.email);
             if (!user || !user.id) {
                 throw new Error('User not found');
             }
-            console.log(body);
             if (body.biometricToken) {
                 // 🔹 Biometric Login
                 const isBiometricValid = yield user_service_1.default.validateBiometricToken(user.id, body.biometricToken);
