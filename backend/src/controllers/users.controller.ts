@@ -53,6 +53,8 @@ export class UserController {
     @Post('/login')
     public async login(@Body() body: { email: string, password: string; entity?:number; biometricToken?: string, generateBiometricToken:boolean}): Promise<{ token: string, message?:string, biometricToken?: string, userId:any, isMasterAdmin:any, isFirstLogin:boolean } | null> {
 
+        const generateBiometricToken = body.generateBiometricToken ?? false;
+
         const user = await userService.findUserByEmail(body.email);
 
         if (!user || !user.id) {
@@ -92,7 +94,7 @@ export class UserController {
 
         let biometricToken: string | undefined;
 
-        if (body.password && body.generateBiometricToken) {
+        if (body.password && generateBiometricToken) {
             biometricToken = jwt.sign(payload, 'your_biometric_secret', { expiresIn: '7d' });
             await userService.storeBiometricToken(user.id, biometricToken);
         }
