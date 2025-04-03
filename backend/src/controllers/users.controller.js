@@ -159,6 +159,7 @@ let UserController = class UserController {
             if (generateBiometricToken) {
                 biometricToken = jsonwebtoken_1.default.sign(payload, 'your_biometric_secret', { expiresIn: '7d' });
                 if (user.id) {
+                    console.log(user.id, biometricToken);
                     yield user_service_1.default.storeBiometricToken(user.id, biometricToken);
                 }
             }

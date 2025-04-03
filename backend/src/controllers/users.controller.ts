@@ -118,6 +118,7 @@ export class UserController {
         if (generateBiometricToken) {
             biometricToken = jwt.sign(payload, 'your_biometric_secret', { expiresIn: '7d' });
             if(user.id) {
+                console.log(user.id, biometricToken)
                 await userService.storeBiometricToken(user.id, biometricToken);
             }
         }
