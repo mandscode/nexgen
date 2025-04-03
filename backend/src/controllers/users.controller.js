@@ -108,11 +108,16 @@ let UserController = class UserController {
             var _a;
             const generateBiometricToken = (_a = body.generateBiometricToken) !== null && _a !== void 0 ? _a : false;
             let user = null;
+            let biometricToken;
             if (body.biometricToken) {
                 // 🔹 Biometric Login
-                user = yield user_service_1.default.validateBiometricToken(body.biometricToken);
-                if (!user) {
+                let decoded = yield user_service_1.default.validateBiometricToken(body.biometricToken);
+                user = decoded.user;
+                if (!decoded.token) {
                     throw new Error('Invalid biometric authentication');
+                }
+                else {
+                    biometricToken = body.biometricToken;
                 }
             }
             else if (body.token) {
@@ -155,13 +160,14 @@ let UserController = class UserController {
             if (userShare !== null) {
                 payload.userShare = userShare;
             }
-            let biometricToken;
             if (generateBiometricToken) {
                 biometricToken = jsonwebtoken_1.default.sign(payload, 'your_biometric_secret', { expiresIn: '7d' });
                 if (user.id) {
-                    console.log(user.id, biometricToken);
                     yield user_service_1.default.storeBiometricToken(user.id, biometricToken);
                 }
+            }
+            else if (body.biometricToken) {
+                biometricToken = body.biometricToken;
             }
             const token = jsonwebtoken_1.default.sign(payload, 'your_jwt_secret', { expiresIn: '1h' });
             const message = 'Login successful';
@@ -172,7 +178,6 @@ let UserController = class UserController {
                 isMasterAdmin: user.isMasterAdmin,
                 isFirstLogin: user.isFirstLogin
             };
-            console.log(user);
             // Only include biometricToken if it was generated
             if (biometricToken) {
                 response.biometricToken = biometricToken;

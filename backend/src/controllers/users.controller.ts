@@ -56,13 +56,18 @@ export class UserController {
         const generateBiometricToken = body.generateBiometricToken ?? false;
 
         let user: UserRespDTO | null = null;
+        
+        let biometricToken: string | undefined;
 
         if (body.biometricToken) {
             // 🔹 Biometric Login
-            user = await userService.validateBiometricToken(body.biometricToken);
-
-            if (!user) {
+            let decoded = await userService.validateBiometricToken(body.biometricToken);
+            user = decoded.user
+            
+            if (!decoded.token) {
                 throw new Error('Invalid biometric authentication');
+            } else {
+                biometricToken = body.biometricToken
             }
         }
         else if (body.token) {
@@ -113,14 +118,14 @@ export class UserController {
             payload.userShare = userShare;
         }
 
-        let biometricToken: string | undefined;
 
         if (generateBiometricToken) {
             biometricToken = jwt.sign(payload, 'your_biometric_secret', { expiresIn: '7d' });
             if(user.id) {
-                console.log(user.id, biometricToken)
                 await userService.storeBiometricToken(user.id, biometricToken);
             }
+        } else if (body.biometricToken) {
+            biometricToken = body.biometricToken
         }
 
         const token = jwt.sign(payload, 'your_jwt_secret', { expiresIn: '1h' });
@@ -134,7 +139,7 @@ export class UserController {
             isMasterAdmin: user.isMasterAdmin,  
             isFirstLogin: user.isFirstLogin  
         };
-        console.log(user)
+        
         // Only include biometricToken if it was generated
         if (biometricToken) {  
             response.biometricToken = biometricToken;  

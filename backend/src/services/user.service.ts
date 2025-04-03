@@ -265,7 +265,7 @@ class UserService {
             if (!storedToken) {
                 return false; // No biometric token stored
             }
-            return decoded;
+            return {user:decoded, token:storedToken};
             
         } catch (error) {
             return false; // Invalid or expired token
