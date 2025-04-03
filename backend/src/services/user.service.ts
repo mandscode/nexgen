@@ -249,8 +249,9 @@ class UserService {
 
     async storeBiometricToken(userId: number, biometricToken: string): Promise<void> {
         this.biometricTokens[userId] = biometricToken;
+        console.log(this.biometricTokens)
     }
-
+    
     async validateBiometricToken(biometricToken: string): Promise<any> {
         
         
@@ -260,7 +261,6 @@ class UserService {
 
             // Ensure the token belongs to the correct user
             const storedToken = this.biometricTokens[decoded?.id];
-            console.log(storedToken)
             if (!storedToken) {
                 return false; // No biometric token stored
             }
