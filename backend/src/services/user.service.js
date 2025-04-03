@@ -226,6 +226,7 @@ class UserService {
                 const decoded = jsonwebtoken_1.default.verify(biometricToken, 'your_biometric_secret');
                 // Ensure the token belongs to the correct user
                 const storedToken = this.biometricTokens[decoded === null || decoded === void 0 ? void 0 : decoded.id];
+                console.log(this.biometricTokens);
                 if (!storedToken) {
                     return false; // No biometric token stored
                 }
