@@ -51,7 +51,7 @@ export class UserController {
     }
 
     @Post('/login')
-    public async login(@Body() body: { email: string, password: string; entity?:number; biometricToken?: string, generateBiometricToken?:boolean,token?: string}): Promise<{ token: string, message?:string, biometricToken?: string, userId:any, isMasterAdmin:any, isFirstLogin:boolean } | null> {
+    public async login(@Body() body: { email: string, password?: string; entity?:number; biometricToken?: string, generateBiometricToken?:boolean,token?: string}): Promise<{ token: string, message?:string, biometricToken?: string, userId:any, isMasterAdmin:any, isFirstLogin:boolean } | null> {
 
         console.log(body)
         const generateBiometricToken = body.generateBiometricToken ?? false;
