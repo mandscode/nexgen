@@ -1630,7 +1630,6 @@
 									}
 								},
 								"required": [
-									"password",
 									"email"
 								],
 								"type": "object"
