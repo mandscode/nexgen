@@ -51,7 +51,7 @@ export class UserController {
     }
 
     @Post('/login')
-    public async login(@Body() body: { email: string, password: string; entity?:number; biometricToken?: string, }): Promise<{ token: string, message?:string, biometricToken?: string, userId:any, isMasterAdmin:any, isFirstLogin:boolean } | null> {
+    public async login(@Body() body: { email: string, password: string; entity?:number; biometricToken?: string, generateBiometricToken:boolean}): Promise<{ token: string, message?:string, biometricToken?: string, userId:any, isMasterAdmin:any, isFirstLogin:boolean } | null> {
 
         const user = await userService.findUserByEmail(body.email);
 
@@ -92,8 +92,8 @@ export class UserController {
 
         let biometricToken: string | undefined;
 
-        if (body.password) {
-            biometricToken = jwt.sign({ userId: user.id }, 'your_biometric_secret', { expiresIn: '7d' });
+        if (body.password && body.generateBiometricToken) {
+            biometricToken = jwt.sign(payload, 'your_biometric_secret', { expiresIn: '7d' });
             await userService.storeBiometricToken(user.id, biometricToken);
         }
 
@@ -101,6 +101,20 @@ export class UserController {
 
         const message = 'Login successful';
 
-        return { token, message, biometricToken, userId: user.id, isMasterAdmin:user.isMasterAdmin, isFirstLogin:user.isFirstLogin };
+        const response: any = {  
+            token,  
+            message,  
+            userId: user.id,  
+            isMasterAdmin: user.isMasterAdmin,  
+            isFirstLogin: user.isFirstLogin  
+        };
+        
+        // Only include biometricToken if it was generated
+        if (biometricToken) {  
+            response.biometricToken = biometricToken;  
+        }
+        
+        return response;
+        
     }
 }

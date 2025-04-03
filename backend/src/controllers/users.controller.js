@@ -137,13 +137,24 @@ let UserController = class UserController {
                 payload.userShare = userShare;
             }
             let biometricToken;
-            if (body.password) {
-                biometricToken = jsonwebtoken_1.default.sign({ userId: user.id }, 'your_biometric_secret', { expiresIn: '7d' });
+            if (body.password && body.generateBiometricToken) {
+                biometricToken = jsonwebtoken_1.default.sign(payload, 'your_biometric_secret', { expiresIn: '7d' });
                 yield user_service_1.default.storeBiometricToken(user.id, biometricToken);
             }
             const token = jsonwebtoken_1.default.sign(payload, 'your_jwt_secret', { expiresIn: '1h' });
             const message = 'Login successful';
-            return { token, message, biometricToken, userId: user.id, isMasterAdmin: user.isMasterAdmin, isFirstLogin: user.isFirstLogin };
+            const response = {
+                token,
+                message,
+                userId: user.id,
+                isMasterAdmin: user.isMasterAdmin,
+                isFirstLogin: user.isFirstLogin
+            };
+            // Only include biometricToken if it was generated
+            if (biometricToken) {
+                response.biometricToken = biometricToken;
+            }
+            return response;
         });
     }
 };
