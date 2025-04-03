@@ -107,7 +107,7 @@ let UserController = class UserController {
         return __awaiter(this, void 0, void 0, function* () {
             var _a;
             const generateBiometricToken = (_a = body.generateBiometricToken) !== null && _a !== void 0 ? _a : false;
-            const user = yield user_service_1.default.findUserByEmail(body.email);
+            let user = yield user_service_1.default.findUserByEmail(body.email);
             if (!user || !user.id) {
                 throw new Error('User not found');
             }
@@ -116,6 +116,20 @@ let UserController = class UserController {
                 const isBiometricValid = yield user_service_1.default.validateBiometricToken(user.id, body.biometricToken);
                 if (!isBiometricValid) {
                     throw new Error('Invalid biometric authentication');
+                }
+            }
+            else if (body.token) {
+                try {
+                    const decoded = jsonwebtoken_1.default.verify(body.token, 'your_jwt_secret');
+                    if (typeof decoded !== 'string' && decoded.id) {
+                        user = yield user_service_1.default.getUserById(decoded.id);
+                    }
+                    else {
+                        throw new Error('Invalid token');
+                    }
+                }
+                catch (error) {
+                    throw new Error('Invalid token');
                 }
             }
             else {
@@ -129,6 +143,9 @@ let UserController = class UserController {
                 }
             }
             const userShare = body.entity !== undefined ? body.entity : null;
+            if (!user) {
+                throw new Error('User not found'); // Final safety check
+            }
             const payload = {
                 id: user.id,
                 email: user.email,
@@ -139,9 +156,11 @@ let UserController = class UserController {
                 payload.userShare = userShare;
             }
             let biometricToken;
-            if (body.password && generateBiometricToken) {
+            if (generateBiometricToken) {
                 biometricToken = jsonwebtoken_1.default.sign(payload, 'your_biometric_secret', { expiresIn: '7d' });
-                yield user_service_1.default.storeBiometricToken(user.id, biometricToken);
+                if (user.id) {
+                    yield user_service_1.default.storeBiometricToken(user.id, biometricToken);
+                }
             }
             const token = jsonwebtoken_1.default.sign(payload, 'your_jwt_secret', { expiresIn: '1h' });
             const message = 'Login successful';
