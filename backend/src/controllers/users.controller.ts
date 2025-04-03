@@ -134,7 +134,7 @@ export class UserController {
             isMasterAdmin: user.isMasterAdmin,  
             isFirstLogin: user.isFirstLogin  
         };
-        
+        console.log(user)
         // Only include biometricToken if it was generated
         if (biometricToken) {  
             response.biometricToken = biometricToken;  
