@@ -251,19 +251,19 @@ class UserService {
         this.biometricTokens[userId] = biometricToken;
     }
 
-    async validateBiometricToken(userId: number, biometricToken: string): Promise<boolean> {
-        const storedToken = this.biometricTokens[userId];
-
-        if (!storedToken) {
-            return false; // No biometric token stored
-        }
-
+    async validateBiometricToken(biometricToken: string): Promise<any> {
+        
+        
         try {
             // Verify the biometric token using the stored secret
             const decoded = jwt.verify(biometricToken, 'your_biometric_secret') as JwtPayload;
 
             // Ensure the token belongs to the correct user
-            return decoded?.userId === userId;
+            const storedToken = this.biometricTokens[decoded?.userId];
+            if (!storedToken) {
+                return false; // No biometric token stored
+            }
+            return decoded;
             
         } catch (error) {
             return false; // Invalid or expired token

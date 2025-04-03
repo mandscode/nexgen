@@ -106,16 +106,12 @@ let UserController = class UserController {
     login(body) {
         return __awaiter(this, void 0, void 0, function* () {
             var _a;
-            console.log(body);
             const generateBiometricToken = (_a = body.generateBiometricToken) !== null && _a !== void 0 ? _a : false;
-            let user = yield user_service_1.default.findUserByEmail(body.email);
-            if (!user || !user.id) {
-                throw new Error('User not found');
-            }
+            let user = null;
             if (body.biometricToken) {
                 // 🔹 Biometric Login
-                const isBiometricValid = yield user_service_1.default.validateBiometricToken(user.id, body.biometricToken);
-                if (!isBiometricValid) {
+                user = yield user_service_1.default.validateBiometricToken(body.biometricToken);
+                if (!user) {
                     throw new Error('Invalid biometric authentication');
                 }
             }
@@ -134,11 +130,14 @@ let UserController = class UserController {
                 }
             }
             else {
-                // 🔹 Password Login
-                if (!body.password) {
-                    throw new Error('Password is required');
+                if (!body.email || !body.password) {
+                    throw new Error('Email and password are required');
                 }
-                const isPasswordValid = yield user_service_1.default.validatePassword(user.id, body.password);
+                user = yield user_service_1.default.findUserByEmail(body.email);
+                if (!user) {
+                    throw new Error('User not found');
+                }
+                const isPasswordValid = yield user_service_1.default.validatePassword(Number(user.id), body.password);
                 if (!isPasswordValid) {
                     throw new Error('Invalid password');
                 }

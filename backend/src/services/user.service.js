@@ -218,17 +218,17 @@ class UserService {
             this.biometricTokens[userId] = biometricToken;
         });
     }
-    validateBiometricToken(userId, biometricToken) {
+    validateBiometricToken(biometricToken) {
         return __awaiter(this, void 0, void 0, function* () {
-            const storedToken = this.biometricTokens[userId];
-            if (!storedToken) {
-                return false; // No biometric token stored
-            }
             try {
                 // Verify the biometric token using the stored secret
                 const decoded = jsonwebtoken_1.default.verify(biometricToken, 'your_biometric_secret');
                 // Ensure the token belongs to the correct user
-                return (decoded === null || decoded === void 0 ? void 0 : decoded.userId) === userId;
+                const storedToken = this.biometricTokens[decoded === null || decoded === void 0 ? void 0 : decoded.userId];
+                if (!storedToken) {
+                    return false; // No biometric token stored
+                }
+                return decoded;
             }
             catch (error) {
                 return false; // Invalid or expired token

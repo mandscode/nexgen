@@ -51,20 +51,17 @@ export class UserController {
     }
 
     @Post('/login')
-    public async login(@Body() body: { email: string, password?: string; entity?:number; biometricToken?: string, generateBiometricToken?:boolean,token?: string}): Promise<{ token: string, message?:string, biometricToken?: string, userId:any, isMasterAdmin:any, isFirstLogin:boolean } | null> {
+    public async login(@Body() body: { email?: string, password?: string; entity?:number; biometricToken?: string, generateBiometricToken?:boolean,token?: string}): Promise<{ token: string, message?:string, biometricToken?: string, userId:any, isMasterAdmin:any, isFirstLogin:boolean } | null> {
 
-        console.log(body)
         const generateBiometricToken = body.generateBiometricToken ?? false;
 
-        let user = await userService.findUserByEmail(body.email);
+        let user: UserRespDTO | null = null;
 
-        if (!user || !user.id) {
-            throw new Error('User not found');
-        }
         if (body.biometricToken) {
             // 🔹 Biometric Login
-            const isBiometricValid = await userService.validateBiometricToken(user.id, body.biometricToken);
-            if (!isBiometricValid) {
+            user = await userService.validateBiometricToken(body.biometricToken);
+
+            if (!user) {
                 throw new Error('Invalid biometric authentication');
             }
         }
@@ -82,15 +79,21 @@ export class UserController {
             }
         }  
         else {
-            // 🔹 Password Login
-            if (!body.password) {
-                throw new Error('Password is required');
+            if (!body.email || !body.password) {
+                throw new Error('Email and password are required');
             }
+    
+            user = await userService.findUserByEmail(body.email);
             
-            const isPasswordValid = await userService.validatePassword(user.id, body.password);
+            if (!user) {
+                throw new Error('User not found');
+            }
+    
+            const isPasswordValid = await userService.validatePassword(Number(user.id), body.password);
             if (!isPasswordValid) {
                 throw new Error('Invalid password');
             }
+            
         }
 
         const userShare = body.entity !== undefined ? body.entity : null;
