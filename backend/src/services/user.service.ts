@@ -260,6 +260,7 @@ class UserService {
 
             // Ensure the token belongs to the correct user
             const storedToken = this.biometricTokens[decoded?.id];
+            console.log(storedToken)
             if (!storedToken) {
                 return false; // No biometric token stored
             }
