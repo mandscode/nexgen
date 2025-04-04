@@ -72,6 +72,7 @@ export class UserController {
         }
         else if (body.token) {
             try {
+                console.log(body, "body>>>>>>>>>>>>>>>>>>>>>>>>>")
                 const decoded = jwt.verify(body.token, 'your_jwt_secret') as JwtPayload;
 
                 if (typeof decoded !== 'string' && decoded.id) {
@@ -114,7 +115,6 @@ export class UserController {
             isFirstLogin: user.isFirstLogin
         };
 
-        console.log(body, "body>>>>>>>>>>>>>>>>>>>>>>>>>")
         
         if (userShare !== null) {
             payload.userShare = userShare;

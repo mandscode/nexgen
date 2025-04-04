@@ -122,6 +122,7 @@ let UserController = class UserController {
             }
             else if (body.token) {
                 try {
+                    console.log(body, "body>>>>>>>>>>>>>>>>>>>>>>>>>");
                     const decoded = jsonwebtoken_1.default.verify(body.token, 'your_jwt_secret');
                     if (typeof decoded !== 'string' && decoded.id) {
                         user = yield user_service_1.default.getUserById(decoded.id);
@@ -157,7 +158,6 @@ let UserController = class UserController {
                 isMasterAdmin: user.isMasterAdmin,
                 isFirstLogin: user.isFirstLogin
             };
-            console.log(body, "body>>>>>>>>>>>>>>>>>>>>>>>>>");
             if (userShare !== null) {
                 payload.userShare = userShare;
             }
