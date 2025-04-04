@@ -14,10 +14,10 @@ export class ProjectController {
         let userShare: number | undefined;
 
         if (authHeader) {
-            // Decode the token to get the userShare
-            const token = authHeader.split(' ')[1]; // Extract Bearer token
+            const token = authHeader.split(' ')[1];
             const decodedToken: any = jwt.verify(token, 'your_jwt_secret');
             userShare = decodedToken.userShare;
+            console.log(userShare);
         }
 
         return projectService.getAllProjects(userShare);

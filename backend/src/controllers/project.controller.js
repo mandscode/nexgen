@@ -67,10 +67,10 @@ let ProjectController = class ProjectController {
             const authHeader = req.headers.authorization;
             let userShare;
             if (authHeader) {
-                // Decode the token to get the userShare
-                const token = authHeader.split(' ')[1]; // Extract Bearer token
+                const token = authHeader.split(' ')[1];
                 const decodedToken = jsonwebtoken_1.default.verify(token, 'your_jwt_secret');
                 userShare = decodedToken.userShare;
+                console.log(userShare);
             }
             return project_service_1.default.getAllProjects(userShare);
         });
