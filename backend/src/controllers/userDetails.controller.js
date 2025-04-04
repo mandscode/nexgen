@@ -37,7 +37,18 @@ let UserDetailsController = class UserDetailsController {
             }
             const token = authHeader.split(' ')[1];
             try {
-                const decodedToken = jsonwebtoken_1.default.verify(token, 'your_jwt_secret');
+                let decodedToken;
+                try {
+                    decodedToken = jsonwebtoken_1.default.verify(token, 'your_jwt_secret');
+                }
+                catch (firstError) {
+                    try {
+                        decodedToken = jsonwebtoken_1.default.verify(token, 'your_biometric_secret');
+                    }
+                    catch (secondError) {
+                        throw new Error('Unauthorized: Invalid token');
+                    }
+                }
                 if (decodedToken.userShare) {
                     return UserDetails_service_1.default.getUserDetails(id, decodedToken.userShare);
                 }
@@ -47,15 +58,12 @@ let UserDetailsController = class UserDetailsController {
             }
             catch (error) {
                 if (error instanceof jsonwebtoken_1.default.TokenExpiredError) {
-                    // Token is expired
                     throw new Error('TokenExpired: Please log in again');
                 }
                 else if (error instanceof jsonwebtoken_1.default.JsonWebTokenError) {
-                    // Token is invalid (e.g., malformed, not signed correctly)
                     throw new Error('Unauthorized: Invalid token');
                 }
                 else {
-                    // Other errors (e.g., network issues, server errors)
                     throw new Error('Unauthorized: Invalid token');
                 }
             }
