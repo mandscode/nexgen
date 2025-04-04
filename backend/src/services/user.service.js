@@ -216,7 +216,11 @@ class UserService {
     storeBiometricToken(userId, biometricToken) {
         return __awaiter(this, void 0, void 0, function* () {
             this.biometricTokens[Number(userId)] = biometricToken;
-            console.log(this.biometricTokens);
+        });
+    }
+    removeBiometricToken(userId, biometricToken) {
+        return __awaiter(this, void 0, void 0, function* () {
+            delete this.biometricTokens[Number(userId)];
         });
     }
     validateBiometricToken(biometricToken) {

@@ -51,7 +51,7 @@ export class UserController {
     }
 
     @Post('/login')
-    public async login(@Body() body: { email?: string, password?: string; entity?:number; biometricToken?: string, generateBiometricToken?:boolean,token?: string}): Promise<{ token: string, message?:string, biometricToken?: string, userId:any, isMasterAdmin:any, isFirstLogin:boolean } | null> {
+    public async login(@Body() body: { email?: string, password?: string; entity?:number; biometricToken?: string, generateBiometricToken?:boolean,token?: string, haveBiometricTokenLogin?:boolean}): Promise<{ token: string, message?:string, biometricToken?: string, userId:any, isMasterAdmin:any, isFirstLogin:boolean } | null> {
 
         const generateBiometricToken = body.generateBiometricToken ?? false;
 
@@ -124,8 +124,12 @@ export class UserController {
             if(user.id) {
                 await userService.storeBiometricToken(user.id, biometricToken);
             }
-        } else if (body.biometricToken) {
+        } else if (body.biometricToken && body.haveBiometricTokenLogin) {
             biometricToken = body.biometricToken
+        } else if (body.biometricToken && !body.haveBiometricTokenLogin) {
+            if(user.id) {
+                await userService.removeBiometricToken(user.id, body.biometricToken);
+            }
         }
 
         const token = jwt.sign(payload, 'your_jwt_secret', { expiresIn: '1h' });

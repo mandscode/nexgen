@@ -166,8 +166,13 @@ let UserController = class UserController {
                     yield user_service_1.default.storeBiometricToken(user.id, biometricToken);
                 }
             }
-            else if (body.biometricToken) {
+            else if (body.biometricToken && body.haveBiometricTokenLogin) {
                 biometricToken = body.biometricToken;
+            }
+            else if (body.biometricToken && !body.haveBiometricTokenLogin) {
+                if (user.id) {
+                    yield user_service_1.default.removeBiometricToken(user.id, body.biometricToken);
+                }
             }
             const token = jsonwebtoken_1.default.sign(payload, 'your_jwt_secret', { expiresIn: '1h' });
             const message = 'Login successful';

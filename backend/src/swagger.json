@@ -1609,6 +1609,9 @@
 						"application/json": {
 							"schema": {
 								"properties": {
+									"haveBiometricTokenLogin": {
+										"type": "boolean"
+									},
 									"token": {
 										"type": "string"
 									},

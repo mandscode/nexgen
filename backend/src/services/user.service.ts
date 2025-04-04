@@ -249,7 +249,10 @@ class UserService {
 
     async storeBiometricToken(userId: number, biometricToken: string): Promise<void> {
         this.biometricTokens[Number(userId)] = biometricToken;
-        console.log(this.biometricTokens)
+    }
+
+    async removeBiometricToken(userId: number, biometricToken: string): Promise<void> {
+        delete this.biometricTokens[Number(userId)];
     }
     
     async validateBiometricToken(biometricToken: string): Promise<any> {
