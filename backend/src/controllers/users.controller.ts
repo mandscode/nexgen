@@ -58,7 +58,7 @@ export class UserController {
         let user: UserRespDTO | null = null;
         
         let biometricToken: string | undefined;
-
+        console.log(body, "body ???????????????????????????????")
         if (body.biometricToken) {
             // 🔹 Biometric Login
             let decoded = await userService.validateBiometricToken(body.biometricToken);
@@ -73,7 +73,7 @@ export class UserController {
         else if (body.token) {
             try {
                 const decoded = jwt.verify(body.token, 'your_jwt_secret') as JwtPayload;
-
+                
                 if (typeof decoded !== 'string' && decoded.id) {
                     user = await userService.getUserById(decoded.id);
                 } else {
@@ -100,9 +100,9 @@ export class UserController {
             }
             
         }
-
+        
         const userShare = body.entity !== undefined ? body.entity : null;
-
+        
         if (!user) {
             throw new Error('User not found'); // Final safety check
         }
@@ -117,8 +117,8 @@ export class UserController {
         if (userShare !== null) {
             payload.userShare = userShare;
         }
-
-
+        
+        
         if (generateBiometricToken) {
             biometricToken = jwt.sign(payload, 'your_biometric_secret', { expiresIn: '7d' });
             if(user.id) {
@@ -132,11 +132,11 @@ export class UserController {
         } else if (body.biometricToken) {
             biometricToken = body.biometricToken
         }
-
+        
         const token = jwt.sign(payload, 'your_jwt_secret', { expiresIn: '15m' });
 
         const message = 'Login successful';
-
+        
         const response: any = {  
             token,  
             message,  
@@ -150,6 +150,7 @@ export class UserController {
             response.biometricToken = biometricToken;  
         }
         
+        console.log(response, "response ???????????????????????????????")
         return response;
         
     }

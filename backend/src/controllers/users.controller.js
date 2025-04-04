@@ -109,6 +109,7 @@ let UserController = class UserController {
             const generateBiometricToken = (_a = body.generateBiometricToken) !== null && _a !== void 0 ? _a : false;
             let user = null;
             let biometricToken;
+            console.log(body, "body ???????????????????????????????");
             if (body.biometricToken) {
                 // 🔹 Biometric Login
                 let decoded = yield user_service_1.default.validateBiometricToken(body.biometricToken);
@@ -188,6 +189,7 @@ let UserController = class UserController {
             if (biometricToken) {
                 response.biometricToken = biometricToken;
             }
+            console.log(response, "response ???????????????????????????????");
             return response;
         });
     }
