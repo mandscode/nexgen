@@ -72,9 +72,9 @@ export class UserController {
         }
         else if (body.token) {
             try {
-                console.log(body, "body>>>>>>>>>>>>>>>>>>>>>>>>>")
                 const decoded = jwt.verify(body.token, 'your_jwt_secret') as JwtPayload;
-
+                
+                console.log(decoded, "body>>>>>>>>>>>>>>>>>>>>>>>>>")
                 if (typeof decoded !== 'string' && decoded.id) {
                     user = await userService.getUserById(decoded.id);
                 } else {
