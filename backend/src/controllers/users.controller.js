@@ -157,6 +157,7 @@ let UserController = class UserController {
                 isMasterAdmin: user.isMasterAdmin,
                 isFirstLogin: user.isFirstLogin
             };
+            console.log(body, "body>>>>>>>>>>>>>>>>>>>>>>>>>");
             if (userShare !== null) {
                 payload.userShare = userShare;
             }
