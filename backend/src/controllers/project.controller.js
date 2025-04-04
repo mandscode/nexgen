@@ -67,10 +67,24 @@ let ProjectController = class ProjectController {
             const authHeader = req.headers.authorization;
             let userShare;
             if (authHeader) {
-                const token = authHeader.split(' ')[1];
-                const decodedToken = jsonwebtoken_1.default.verify(token, 'your_jwt_secret');
-                userShare = decodedToken.userShare;
-                console.log(userShare);
+                try {
+                    const token = authHeader.split(' ')[1];
+                    // Try with regular JWT secret
+                    try {
+                        const decodedToken = jsonwebtoken_1.default.verify(token, 'your_jwt_secret');
+                        userShare = decodedToken.userShare;
+                    }
+                    catch (_a) { } // Ignore errors for first secret
+                    // If userShare not found, try with biometric secret
+                    if (userShare === undefined) {
+                        try {
+                            const decodedToken = jsonwebtoken_1.default.verify(token, 'your_biometric_secret');
+                            userShare = decodedToken.userShare;
+                        }
+                        catch (_b) { } // Ignore errors for second secret
+                    }
+                }
+                catch (_c) { } // Ignore any other errors (like malformed auth header)
             }
             return project_service_1.default.getAllProjects(userShare);
         });

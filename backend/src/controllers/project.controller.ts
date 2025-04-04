@@ -14,10 +14,22 @@ export class ProjectController {
         let userShare: number | undefined;
 
         if (authHeader) {
-            const token = authHeader.split(' ')[1];
-            const decodedToken: any = jwt.verify(token, 'your_jwt_secret');
-            userShare = decodedToken.userShare;
-            console.log(userShare);
+            try {
+                const token = authHeader.split(' ')[1];
+                // Try with regular JWT secret
+                try {
+                    const decodedToken = jwt.verify(token, 'your_jwt_secret') as { userShare?: number };
+                    userShare = decodedToken.userShare;
+                } catch {} // Ignore errors for first secret
+                
+                // If userShare not found, try with biometric secret
+                if (userShare === undefined) {
+                    try {
+                        const decodedToken = jwt.verify(token, 'your_biometric_secret') as { userShare?: number };
+                        userShare = decodedToken.userShare;
+                    } catch {} // Ignore errors for second secret
+                }
+            } catch {} // Ignore any other errors (like malformed auth header)
         }
 
         return projectService.getAllProjects(userShare);
