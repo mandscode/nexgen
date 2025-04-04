@@ -51,7 +51,7 @@ export class UserController {
     }
 
     @Post('/login')
-    public async login(@Body() body: { email?: string, password?: string; entity?:number; biometricToken?: string, generateBiometricToken?:boolean,token?: string, haveBiometricTokenLogin?:boolean}): Promise<{ token: string, message?:string, biometricToken?: string, userId:any, isMasterAdmin:any, isFirstLogin:boolean } | null> {
+    public async login(@Body() body: { email?: string, password?: string; entity?:number; biometricToken?: string, generateBiometricToken?:boolean,token?: string, disableBiometricLogin?:boolean}): Promise<{ token: string, message?:string, biometricToken?: string, userId:any, isMasterAdmin:any, isFirstLogin:boolean } | null> {
 
         const generateBiometricToken = body.generateBiometricToken ?? false;
 
@@ -73,8 +73,7 @@ export class UserController {
         else if (body.token) {
             try {
                 const decoded = jwt.verify(body.token, 'your_jwt_secret') as JwtPayload;
-                
-                console.log(decoded, "body>>>>>>>>>>>>>>>>>>>>>>>>>")
+
                 if (typeof decoded !== 'string' && decoded.id) {
                     user = await userService.getUserById(decoded.id);
                 } else {
@@ -114,7 +113,6 @@ export class UserController {
             isMasterAdmin: user.isMasterAdmin,
             isFirstLogin: user.isFirstLogin
         };
-
         
         if (userShare !== null) {
             payload.userShare = userShare;
@@ -126,15 +124,16 @@ export class UserController {
             if(user.id) {
                 await userService.storeBiometricToken(user.id, biometricToken);
             }
-        } else if (body.biometricToken && body.haveBiometricTokenLogin) {
-            biometricToken = body.biometricToken
-        } else if (body.biometricToken && !body.haveBiometricTokenLogin) {
+        } else if (body.disableBiometricLogin) {
             if(user.id) {
-                await userService.removeBiometricToken(user.id, body.biometricToken);
+                await userService.removeBiometricToken(user.id);
             }
+            biometricToken = jwt.sign(payload, 'your_biometric_secret', { expiresIn: '15m' });
+        } else if (body.biometricToken) {
+            biometricToken = body.biometricToken
         }
 
-        const token = jwt.sign(payload, 'your_jwt_secret', { expiresIn: '1h' });
+        const token = jwt.sign(payload, 'your_jwt_secret', { expiresIn: '15m' });
 
         const message = 'Login successful';
 

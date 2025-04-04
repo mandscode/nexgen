@@ -1609,7 +1609,7 @@
 						"application/json": {
 							"schema": {
 								"properties": {
-									"haveBiometricTokenLogin": {
+									"disableBiometricLogin": {
 										"type": "boolean"
 									},
 									"token": {

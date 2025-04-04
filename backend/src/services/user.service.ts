@@ -251,7 +251,7 @@ class UserService {
         this.biometricTokens[Number(userId)] = biometricToken;
     }
 
-    async removeBiometricToken(userId: number, biometricToken: string): Promise<void> {
+    async removeBiometricToken(userId: number): Promise<void> {
         delete this.biometricTokens[Number(userId)];
     }
     

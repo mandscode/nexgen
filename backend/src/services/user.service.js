@@ -218,7 +218,7 @@ class UserService {
             this.biometricTokens[Number(userId)] = biometricToken;
         });
     }
-    removeBiometricToken(userId, biometricToken) {
+    removeBiometricToken(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             delete this.biometricTokens[Number(userId)];
         });

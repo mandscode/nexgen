@@ -568,7 +568,7 @@ function RegisterRoutes(app) {
     });
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     const argsUserController_login = {
-        body: { "in": "body", "name": "body", "required": true, "dataType": "nestedObjectLiteral", "nestedProperties": { "haveBiometricTokenLogin": { "dataType": "boolean" }, "token": { "dataType": "string" }, "generateBiometricToken": { "dataType": "boolean" }, "biometricToken": { "dataType": "string" }, "entity": { "dataType": "double" }, "password": { "dataType": "string" }, "email": { "dataType": "string" } } },
+        body: { "in": "body", "name": "body", "required": true, "dataType": "nestedObjectLiteral", "nestedProperties": { "disableBiometricLogin": { "dataType": "boolean" }, "token": { "dataType": "string" }, "generateBiometricToken": { "dataType": "boolean" }, "biometricToken": { "dataType": "string" }, "entity": { "dataType": "double" }, "password": { "dataType": "string" }, "email": { "dataType": "string" } } },
     };
     app.post('/users/login', ...((0, runtime_1.fetchMiddlewares)(users_controller_1.UserController)), ...((0, runtime_1.fetchMiddlewares)(users_controller_1.UserController.prototype.login)), function UserController_login(request, response, next) {
         return __awaiter(this, void 0, void 0, function* () {

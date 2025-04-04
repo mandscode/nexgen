@@ -123,7 +123,6 @@ let UserController = class UserController {
             else if (body.token) {
                 try {
                     const decoded = jsonwebtoken_1.default.verify(body.token, 'your_jwt_secret');
-                    console.log(decoded, "body>>>>>>>>>>>>>>>>>>>>>>>>>");
                     if (typeof decoded !== 'string' && decoded.id) {
                         user = yield user_service_1.default.getUserById(decoded.id);
                     }
@@ -167,15 +166,16 @@ let UserController = class UserController {
                     yield user_service_1.default.storeBiometricToken(user.id, biometricToken);
                 }
             }
-            else if (body.biometricToken && body.haveBiometricTokenLogin) {
+            else if (body.disableBiometricLogin) {
+                if (user.id) {
+                    yield user_service_1.default.removeBiometricToken(user.id);
+                }
+                biometricToken = jsonwebtoken_1.default.sign(payload, 'your_biometric_secret', { expiresIn: '15m' });
+            }
+            else if (body.biometricToken) {
                 biometricToken = body.biometricToken;
             }
-            else if (body.biometricToken && !body.haveBiometricTokenLogin) {
-                if (user.id) {
-                    yield user_service_1.default.removeBiometricToken(user.id, body.biometricToken);
-                }
-            }
-            const token = jsonwebtoken_1.default.sign(payload, 'your_jwt_secret', { expiresIn: '1h' });
+            const token = jsonwebtoken_1.default.sign(payload, 'your_jwt_secret', { expiresIn: '15m' });
             const message = 'Login successful';
             const response = {
                 token,
