@@ -58,7 +58,7 @@ export class UserController {
         let user: UserRespDTO | null = null;
         
         let biometricToken: string | undefined;
-        console.log(body, "body ???????????????????????????????")
+
         if (body.biometricToken) {
             // 🔹 Biometric Login
             let decoded = await userService.validateBiometricToken(body.biometricToken);
@@ -149,8 +149,6 @@ export class UserController {
         if (biometricToken) {  
             response.biometricToken = biometricToken;  
         }
-        
-        console.log(response, "response ???????????????????????????????")
         return response;
         
     }
