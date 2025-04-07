@@ -5,6 +5,7 @@ import { toContentDTO, toContentsDTO } from "./content.mapper";
 export class ContentDTO {
     id?: number;
     title!: string;
+    entityID!:number;
     imageUrl?: string;
     description!: string;
 }
@@ -18,8 +19,15 @@ class ContentService {
         return Content.create(content).then(content => toContentDTO(content));
     }    
 
-    async getAllContents(): Promise<ContentDTO[]> {
-        return Content.findAll().then(contents => toContentsDTO(contents));
+    async getAllContents(entityId?: number): Promise<ContentDTO[]> {
+        const whereClause = entityId ? { entityID: entityId } : undefined;
+
+        const contents = await Content.findAll({
+          where: whereClause,
+        });
+      
+        return toContentsDTO(contents);
+        // return Content.findAll().then(contents => toContentsDTO(contents));
     }
 
     async getContentById(id: number): Promise<ContentDTO | null> {

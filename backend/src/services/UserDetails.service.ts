@@ -214,7 +214,7 @@ class UserDetailsService {
                 attributes: { include:['id'], exclude: ["userId"] }
             });
             const groupedInvestments = new Map();
-
+            
             investorDetails?.accounts?.forEach((account: any) => {
                 account.transactions.forEach((transaction: any) => {
                     const projectId = transaction.projectId;
@@ -232,14 +232,17 @@ class UserDetailsService {
                             currencyId: currencyId,
                             lockInPeriod: lockInPeriod ?? null,
                             maturityLockingPeriod: investorDetails.projects?.find(p => p.id === projectId)?.maturityLockingPeriod || 0,
-                            investedAmount: transaction.credited && transaction.amount,
+                            investedAmount: (transaction.credited && transaction.details !== 'bonus') ? transaction.amount : 0,
                             earning: earning || 0,
                             totalValue: transaction.credited ? (transaction.amount + earning) : (-transaction.amount + earning),
                             transactions: [] // Will collect transactions below
                         });
                     } else {
                         const existingInvestment = groupedInvestments.get(key);
-                        existingInvestment.investedAmount = transaction.credited ? (parseFloat(existingInvestment.investedAmount) + transaction.amount) : existingInvestment.investedAmount;
+                        if (transaction.credited && transaction.details !== 'bonus') {
+                            existingInvestment.investedAmount = parseFloat(existingInvestment.investedAmount) + transaction.amount;
+                        }
+                        
                         existingInvestment.totalValue = (parseFloat(existingInvestment.totalValue) + (transaction.credited ? transaction.amount : -transaction.amount));
                     }
                     

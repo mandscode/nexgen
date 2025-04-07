@@ -8,8 +8,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_typescript_1 = require("sequelize-typescript");
+const entity_1 = __importDefault(require("./entity"));
 let Content = class Content extends sequelize_typescript_1.Model {
 };
 __decorate([
@@ -28,6 +32,11 @@ __decorate([
     }),
     __metadata("design:type", String)
 ], Content.prototype, "title", void 0);
+__decorate([
+    (0, sequelize_typescript_1.ForeignKey)(() => entity_1.default),
+    sequelize_typescript_1.Column,
+    __metadata("design:type", Number)
+], Content.prototype, "entityID", void 0);
 __decorate([
     (0, sequelize_typescript_1.Column)({
         type: sequelize_typescript_1.DataType.STRING,

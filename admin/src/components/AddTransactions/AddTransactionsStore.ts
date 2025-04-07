@@ -12,37 +12,40 @@ export class AddTransactionsStore {
     }
 
     async addTransaction(values: TransactionDTO, _: TransactionHistoryStore, navigate: NavigateFunction, transactionList:any, investrId:number) {
+
+        let formattedValue = {
+            details:values.details,
+            projectId: values.projectId,
+            accountId: values.accountId,
+            amount: values.amount,
+            credited: values.credited,
+            intrestRate: 0,
+            transactionDate:values.transactionDate
+        };
         
-        if(values.credited.toLowerCase() == "bonus") {
-            const formattedValue = {
+        // Handle bonus (earning)
+        if (values.credited.toLowerCase() === 'bonus') {
+            // 1. Update earning
+            const earningValue = {
                 amount: values.amount,
-                investorId:investrId,
+                investorId: investrId,
                 projectId: values.projectId
             };
+            await createEarning(earningValue); // ✅ API to update ProjectInvestor.earning
 
-            await createEarning(formattedValue);
-    
-            transactionList(false);
-    
-            navigate("/investors");
-        }
-        else {
-            const formattedValue = {
-                details:values.details,
-                projectId: values.projectId,
-                accountId: values.accountId,
-                amount: values.amount,
-                credited: values.credited,
-                intrestRate: 0,
-                transactionDate:values.transactionDate
+            // 2. Create bonus transaction
+            formattedValue = {
+                ...formattedValue,
+                details: 'bonus',
+                credited: 'true', // Make sure it's a string if your API expects that
             };
-            await createTransactions(formattedValue);
-    
-            transactionList(false);
-    
-            navigate("/investors");
-
         }
+
+        await createTransactions(formattedValue);
+
+        transactionList(false);
+
+        navigate("/investors");
 
     }
 }

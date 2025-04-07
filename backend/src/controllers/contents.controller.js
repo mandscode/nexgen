@@ -58,9 +58,10 @@ exports.ContentController = void 0;
 const tsoa_1 = require("tsoa");
 const content_service_1 = __importStar(require("../services/content.service"));
 let ContentController = class ContentController {
-    getAllContents() {
+    getAllContents(entityId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return content_service_1.default.getAllContents();
+            const entityIDNumber = entityId ? parseInt(entityId) : undefined;
+            return content_service_1.default.getAllContents(entityIDNumber);
         });
     }
     getContentById(id) {
@@ -93,8 +94,9 @@ let ContentController = class ContentController {
 exports.ContentController = ContentController;
 __decorate([
     (0, tsoa_1.Get)('/'),
+    __param(0, (0, tsoa_1.Query)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], ContentController.prototype, "getAllContents", null);
 __decorate([

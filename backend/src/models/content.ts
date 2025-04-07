@@ -1,5 +1,6 @@
-import { Table, Column, Model, DataType, AutoIncrement, PrimaryKey, HasMany } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, AutoIncrement, PrimaryKey, HasMany, ForeignKey } from 'sequelize-typescript';
 import { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
+import Entity from './entity';
 
 
 @Table({
@@ -20,6 +21,10 @@ export default class Content extends Model<InferAttributes<Content>, InferCreati
         allowNull: false
     })
     title!: string;
+
+    @ForeignKey(() => Entity)
+    @Column
+    entityID!: number;
 
     @Column({
         type: DataType.STRING,

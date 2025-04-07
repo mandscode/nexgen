@@ -92,14 +92,14 @@ const TransactionHistory = ({ }:TransactionHistoryProps) => {
 
         const formattedData = await Promise.all(
           data.map(async (value: any) => {
-              const allCurr = await getCurrencyAll();
+            const allCurr = await getCurrencyAll();
             const account = await getAccount(value.accountId); // Await the asynchronous call
             const investor = await getInvestor(account.investorId); // Await the asynchronous call
             const user = await getUser(investor.userId); 
             const project = await getProject(value.projectId)         // Await the asynchronous call
 
 
-              const currency = allCurr.find((curr: any) => curr.id === account.currency); // Find matching currency
+            const currency = allCurr.find((curr: any) => curr.id === account.currency); // Find matching currency
               
 
             return {

@@ -20,6 +20,7 @@ export class AcademyStore {
             runInAction(() => {
                 this.data = academies.map((academy: any) => ({
                     id: academy.id,
+                    entityID:academy.entityID,
                     title: academy.title,
                     imageUrl: academy.imageUrl,
                     description: academy.description

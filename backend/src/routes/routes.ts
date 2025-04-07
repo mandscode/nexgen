@@ -313,6 +313,7 @@ const models: TsoaRoute.Models = {
         "properties": {
             "id": {"dataType":"double"},
             "title": {"dataType":"string","required":true},
+            "entityID": {"dataType":"double","required":true},
             "imageUrl": {"dataType":"string"},
             "description": {"dataType":"string","required":true},
         },
@@ -321,7 +322,7 @@ const models: TsoaRoute.Models = {
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Partial_ContentDTO_": {
         "dataType": "refAlias",
-        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"id":{"dataType":"double"},"title":{"dataType":"string"},"imageUrl":{"dataType":"string"},"description":{"dataType":"string"}},"validators":{}},
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"id":{"dataType":"double"},"title":{"dataType":"string"},"entityID":{"dataType":"double"},"imageUrl":{"dataType":"string"},"description":{"dataType":"string"}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "GoogleLoginRespDTO": {
@@ -1942,6 +1943,7 @@ export function RegisterRoutes(app: Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsContentController_getAllContents: Record<string, TsoaRoute.ParameterSchema> = {
+                entityId: {"in":"query","name":"entityId","dataType":"string"},
         };
         app.get('/contents',
             ...(fetchMiddlewares<RequestHandler>(ContentController)),

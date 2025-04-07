@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { AcademyStore } from "./AcademyStore";
 import  "./Academy.scss";
@@ -8,7 +8,7 @@ import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { ColumnDef } from '@tanstack/react-table';
 import UseSearch from '../Utilities/Forms/useSearch';
 import { X } from 'react-feather';
-import { deleteAcademy } from '../../api/apiEndpoints';
+import { deleteAcademy, getEntities } from '../../api/apiEndpoints';
 
 export interface AcademyProps {
  className?: string;
@@ -17,6 +17,8 @@ export interface AcademyProps {
 export interface Academy {
   id?: number;
   title: string;
+  entityID?:string,
+  entityName?:string,
   imageUrl?: string;
   description: string;
 }
@@ -27,6 +29,18 @@ const Academy = ({ className="" }:AcademyProps) => {
 
   const [academy, setAcademy] = useState<Academy[]>([]);
   const [filteredData, setFilteredData] = useState<Academy[]>([]);
+
+
+  const [entities, setEntities] = useState<{ id: number; name: string }[]>([]);
+
+  useEffect(() => {
+    const fetchEntities = async () => {
+      const response = await getEntities(); // your API/service call
+      setEntities(response);
+    };
+    fetchEntities();
+  }, []);
+
 
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -48,6 +62,11 @@ const Academy = ({ className="" }:AcademyProps) => {
       header: 'Academies',
       columns: [
         {
+          accessorKey: 'entityName',
+          header: 'Entity',
+          cell: info => info.getValue(),
+        },
+        {
           accessorKey: 'title',
           header: 'Title',
           cell: info => info.getValue(),
@@ -58,7 +77,7 @@ const Academy = ({ className="" }:AcademyProps) => {
           cell: info => {
             const value = info.getValue();
             const words = value.split(' ');
-            return words.length > 20 ? words.slice(0, 10).join(' ') + '...' : value;
+            return words.length > 10 ? words.slice(0, 10).join(' ') + '...' : value;
           },
         },
         {
@@ -78,15 +97,19 @@ const Academy = ({ className="" }:AcademyProps) => {
     }
   };
 
-  // Memoize the handleSearch function to prevent it from changing on every render
   const handleSearch = useCallback((filteredData: Academy[]) => {
-    const plainData = filteredData.map(data => ({
-      id:data.id,
-      title: data.title.trim(),  // Trim any whitespace
-      description: data.description.trim(),  // Trim any whitespace
-    }));
+    const plainData = filteredData.map(data => {
+      const entity = entities.find((e:any) => Number(e.id) === Number(data.entityID));
+      return {
+        id: data.id,
+        entityName: entity ? entity.name : "Unknown", // replace entityID with name
+        title: data.title.trim(),
+        description: data.description.trim(),
+      };
+    });
     setFilteredData(plainData);
-  }, []);
+  }, [entities]);
+  
 
 
   return (

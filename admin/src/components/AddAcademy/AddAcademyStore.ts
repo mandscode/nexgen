@@ -70,6 +70,7 @@ export class AddAcademyStore {
                 // Prepare roles as an array
                 const formattedValues = {
                     title: values.title,
+                    entityID:values.entityID,
                     description: values.description,
                     imageUrl:url
                 };

@@ -1,4 +1,4 @@
-import { Body, Delete, Get, Path, Post, Put, Route } from "tsoa";
+import { Body, Delete, Get, Path, Post, Put, Query, Route } from "tsoa";
 import contentService, { ContentDTO } from "../services/content.service";
 
 
@@ -6,8 +6,9 @@ import contentService, { ContentDTO } from "../services/content.service";
 export class ContentController {
     
     @Get('/')
-    public async getAllContents(): Promise<ContentDTO[]> {
-        return contentService.getAllContents();
+    public async getAllContents(@Query() entityId?: string): Promise<ContentDTO[]> {
+        const entityIDNumber = entityId ? parseInt(entityId) : undefined;
+        return contentService.getAllContents(entityIDNumber);
     }
 
     @Get('{id}')

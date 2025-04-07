@@ -288,7 +288,7 @@ const Dashboard = () => {
                         <span className={`${user?.status == 1 ? `_dashboard_nav_status-circle` : `_dashboard_nav_status-circle _dashboard_nav_status-circle_inactive`}`}></span>
                         <p className="_dashboard_nav_status-text">{user.status == 1 ? 'Active' : 'Inactive' }</p>
                       </span>
-                      <p className="_dashboard_nav_status-date">Since {formatDate(user.createdAt)}</p>
+                      <p className="_dashboard_nav_status-date">Since {user?.createdAt && formatDate(user?.createdAt)}</p>
                     </div>
                   </div>
                 </div>

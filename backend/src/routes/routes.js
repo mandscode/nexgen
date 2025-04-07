@@ -316,6 +316,7 @@ const models = {
         "properties": {
             "id": { "dataType": "double" },
             "title": { "dataType": "string", "required": true },
+            "entityID": { "dataType": "double", "required": true },
             "imageUrl": { "dataType": "string" },
             "description": { "dataType": "string", "required": true },
         },
@@ -324,7 +325,7 @@ const models = {
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Partial_ContentDTO_": {
         "dataType": "refAlias",
-        "type": { "dataType": "nestedObjectLiteral", "nestedProperties": { "id": { "dataType": "double" }, "title": { "dataType": "string" }, "imageUrl": { "dataType": "string" }, "description": { "dataType": "string" } }, "validators": {} },
+        "type": { "dataType": "nestedObjectLiteral", "nestedProperties": { "id": { "dataType": "double" }, "title": { "dataType": "string" }, "entityID": { "dataType": "double" }, "imageUrl": { "dataType": "string" }, "description": { "dataType": "string" } }, "validators": {} },
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "GoogleLoginRespDTO": {
@@ -1667,7 +1668,9 @@ function RegisterRoutes(app) {
         });
     });
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    const argsContentController_getAllContents = {};
+    const argsContentController_getAllContents = {
+        entityId: { "in": "query", "name": "entityId", "dataType": "string" },
+    };
     app.get('/contents', ...((0, runtime_1.fetchMiddlewares)(contents_controller_1.ContentController)), ...((0, runtime_1.fetchMiddlewares)(contents_controller_1.ContentController.prototype.getAllContents)), function ContentController_getAllContents(request, response, next) {
         return __awaiter(this, void 0, void 0, function* () {
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa

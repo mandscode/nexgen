@@ -127,7 +127,7 @@ class UserDetailsService {
                                 currencyId: currencyId,
                                 lockInPeriod: lockInPeriod !== null && lockInPeriod !== void 0 ? lockInPeriod : null,
                                 maturityLockingPeriod: ((_e = (_d = investorDetails.projects) === null || _d === void 0 ? void 0 : _d.find(p => p.id === projectId)) === null || _e === void 0 ? void 0 : _e.maturityLockingPeriod) || 0,
-                                investedAmount: transaction.credited && transaction.amount,
+                                investedAmount: (transaction.credited && transaction.details !== 'bonus') ? transaction.amount : 0,
                                 earning: earning || 0,
                                 totalValue: transaction.credited ? (transaction.amount + earning) : (-transaction.amount + earning),
                                 transactions: [] // Will collect transactions below
@@ -135,7 +135,9 @@ class UserDetailsService {
                         }
                         else {
                             const existingInvestment = groupedInvestments.get(key);
-                            existingInvestment.investedAmount = transaction.credited ? (parseFloat(existingInvestment.investedAmount) + transaction.amount) : existingInvestment.investedAmount;
+                            if (transaction.credited && transaction.details !== 'bonus') {
+                                existingInvestment.investedAmount = parseFloat(existingInvestment.investedAmount) + transaction.amount;
+                            }
                             existingInvestment.totalValue = (parseFloat(existingInvestment.totalValue) + (transaction.credited ? transaction.amount : -transaction.amount));
                         }
                         // Add transaction to the existing project investment

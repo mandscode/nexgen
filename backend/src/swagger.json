@@ -1132,6 +1132,10 @@
 					"title": {
 						"type": "string"
 					},
+					"entityID": {
+						"type": "number",
+						"format": "double"
+					},
 					"imageUrl": {
 						"type": "string"
 					},
@@ -1141,6 +1145,7 @@
 				},
 				"required": [
 					"title",
+					"entityID",
 					"description"
 				],
 				"type": "object",
@@ -1154,6 +1159,10 @@
 					},
 					"title": {
 						"type": "string"
+					},
+					"entityID": {
+						"type": "number",
+						"format": "double"
 					},
 					"imageUrl": {
 						"type": "string"
@@ -3254,7 +3263,16 @@
 					}
 				},
 				"security": [],
-				"parameters": []
+				"parameters": [
+					{
+						"in": "query",
+						"name": "entityId",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
 			},
 			"post": {
 				"operationId": "CreateContent",

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { AddAcademyStore } from "./AddAcademyStore";
 import  "./AddAcademy.scss";
@@ -10,6 +10,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Academy } from '../Academy/Academy';
 import { useForm } from 'react-hook-form';
 import { Col, Form, Row } from 'react-bootstrap';
+import { getEntities } from '../../api/apiEndpoints';
 
 export interface AddAcademyProps {
  className?: string;
@@ -17,6 +18,7 @@ export interface AddAcademyProps {
 
 export interface AddAcademyInterface {
   id?: number;
+  entityID: number;
   title: string;
   imageUrl?: File[];
   description: string;
@@ -26,8 +28,11 @@ const AddAcademy = ({ className="" }:AddAcademyProps) => {
   const [addAcademyStore] = useState(() => new AddAcademyStore());
   const academyStore = useOutletContext<AcademyStore>();
 
+  const [entityOptions, setEntityOptions] = useState([]);
+
   const schema = yup
   .object({
+    entityID: yup.number().required(),
     title: yup.string().required(),
     description: yup.string().required(),
   })
@@ -40,8 +45,28 @@ const AddAcademy = ({ className="" }:AddAcademyProps) => {
   
   const onSubmit = (data: AddAcademyInterface) => addAcademyStore.addAcademy(data, academyStore,  navigate);
 
+  useEffect(() => {
+    // Fetch the entities from the API
+    const fetchEntities = async () => {
+      try {
+        const response = await getEntities();
+        // Assuming the response is an array of entities with `entityID` and `name` fields
+        const formattedEntities = response.map((entity: any) => ({
+          value: entity.id,
+          label: entity.name,
+        }));
+        setEntityOptions(formattedEntities);
+      } catch (error) {
+        console.error('Failed to fetch entities:', error);
+      }
+    };
+
+    fetchEntities();
+  }, []);
+
   // Define form fields array
   const fields = [
+    { name: 'entityID', type: 'select', placeholder: 'Entity', options:entityOptions},
     { name: 'title', type: 'text', placeholder: 'Title' },
     { name: 'description', type: 'text', placeholder: 'Description', as:"textarea" },
     { name: 'imageUrl', type: 'file', placeholder: 'Upload Image', isMultiple:'multiple' }
@@ -66,18 +91,34 @@ const AddAcademy = ({ className="" }:AddAcademyProps) => {
             <Col key={fld.name} md={6} className="mb-3" >
               <div className="form-group">
                 <label className="form-label">{fld.placeholder}</label>
-                  <Form.Control
-                    type={fld.type}
-                    className={`form-control ${errors[fld.name as keyof Academy] ? 'is-invalid' : ''}`}
-                    placeholder={fld.placeholder}
-                    isInvalid={!!errors[fld.name as keyof Academy]}
-                    {...register(fld.name as keyof Academy)}
-                  />
-                  <Form.Control.Feedback type="invalid" className={getErrorMessage(fld.name) ? 'd-block' : 'd-none'}>
-                    {
-                      getErrorMessage(fld.name)
-                    }
-                  </Form.Control.Feedback>
+                  {
+                    fld.type === "select" ?
+                      <Form.Select
+                        aria-label="Default select example"
+                        className={`form-control ${errors[fld.name as keyof Academy] ? 'is-invalid' : ''}`}
+                        {...register(fld.name as keyof Academy)} // Register the select field
+                      >
+                        <option>Open this select menu</option>
+                        {
+                          fld.options && fld.options.map((entity: { value: number, label:string }, index: number) => (
+                            <option key={index} value={entity.value}>{entity.label}</option>
+                          ))
+                        }
+                      </Form.Select>
+                      :
+                      <Form.Control
+                        type={fld.type}
+                        className={`form-control ${errors[fld.name as keyof Academy] ? 'is-invalid' : ''}`}
+                        placeholder={fld.placeholder}
+                        isInvalid={!!errors[fld.name as keyof Academy]}
+                        {...register(fld.name as keyof Academy)}
+                      />
+                      }
+                      <Form.Control.Feedback type="invalid" className={getErrorMessage(fld.name) ? 'd-block' : 'd-none'}>
+                        {
+                          getErrorMessage(fld.name)
+                        }
+                      </Form.Control.Feedback>
               </div>
             </Col>
           ))}

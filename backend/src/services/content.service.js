@@ -25,9 +25,14 @@ class ContentService {
             return content_1.default.create(content).then(content => (0, content_mapper_1.toContentDTO)(content));
         });
     }
-    getAllContents() {
+    getAllContents(entityId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return content_1.default.findAll().then(contents => (0, content_mapper_1.toContentsDTO)(contents));
+            const whereClause = entityId ? { entityID: entityId } : undefined;
+            const contents = yield content_1.default.findAll({
+                where: whereClause,
+            });
+            return (0, content_mapper_1.toContentsDTO)(contents);
+            // return Content.findAll().then(contents => toContentsDTO(contents));
         });
     }
     getContentById(id) {
