@@ -474,7 +474,7 @@ const Dashboard = () => {
                                                         Current value
                                                       </div>
                                                       <div className="_dashboard_project_details_card_info_value">
-                                                        {selectedCurrency?.symbol}&nbsp;{investment.totalValue}
+                                                        {selectedCurrency?.symbol}&nbsp;{investment.totalValue - investment.earning}
                                                       </div>
                                                     </div>
                                                     <div className="_dashboard_project_details_card_info">
