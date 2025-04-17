@@ -76,30 +76,36 @@ class ProjectService {
     }
 
     async getAllProjects(userShare?: number): Promise<ProjectRespDTO[]> {
-        let whereClause = {};
+        const includeClause: any[] = [
+            {
+                model: Resource,
+                attributes: ['id', 'location']
+            }
+        ];
     
         if (userShare !== undefined) {
-            if (userShare === 1) {
-                // NexGen Projects
-                whereClause = { entityID : 1 };
-            } else {
-                // Evolve Projects
-                whereClause = { entityID : 2 };
-            }
+            const entityName = userShare === 1 ? 'NexGen' : 'Evolve';
+            
+            includeClause.push({
+                model: Entity,
+                attributes: [], // Exclude from result (only used for filtering)
+                where: {
+                    name: entityName
+                },
+                required: true // INNER JOIN (only projects with matching entities)
+            });
+        } else {
+            // Include Entity without filtering if no userShare provided
+            includeClause.push({
+                model: Entity,
+                attributes: ['id', 'name'] // Include in result
+            });
         }
     
-        // Fetch projects with filtering
         const projects = await Project.findAll({
-            where: whereClause,
-            include: [
-                {
-                    model: Resource, // Include related resources
-                    attributes: ['id', 'location']
-                }
-            ]
+            include: includeClause
         });
     
-        // Convert projects to DTOs
         return projects.map(toProjectDTO);
     }
     

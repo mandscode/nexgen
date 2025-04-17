@@ -46,28 +46,33 @@ class ProjectService {
     }
     getAllProjects(userShare) {
         return __awaiter(this, void 0, void 0, function* () {
-            let whereClause = {};
+            const includeClause = [
+                {
+                    model: resource_1.default,
+                    attributes: ['id', 'location']
+                }
+            ];
             if (userShare !== undefined) {
-                if (userShare === 1) {
-                    // NexGen Projects
-                    whereClause = { entityID: 1 };
-                }
-                else {
-                    // Evolve Projects
-                    whereClause = { entityID: 2 };
-                }
+                const entityName = userShare === 1 ? 'NexGen' : 'Evolve';
+                includeClause.push({
+                    model: entity_1.default,
+                    attributes: [], // Exclude from result (only used for filtering)
+                    where: {
+                        name: entityName
+                    },
+                    required: true // INNER JOIN (only projects with matching entities)
+                });
             }
-            // Fetch projects with filtering
+            else {
+                // Include Entity without filtering if no userShare provided
+                includeClause.push({
+                    model: entity_1.default,
+                    attributes: ['id', 'name'] // Include in result
+                });
+            }
             const projects = yield project_1.default.findAll({
-                where: whereClause,
-                include: [
-                    {
-                        model: resource_1.default, // Include related resources
-                        attributes: ['id', 'location']
-                    }
-                ]
+                include: includeClause
             });
-            // Convert projects to DTOs
             return projects.map(project_mapper_1.toProjectDTO);
         });
     }
