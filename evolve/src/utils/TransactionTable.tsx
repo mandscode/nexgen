@@ -129,7 +129,7 @@ const TransactionTable: React.FC<any> = ({data, currency}) => {
   }
   return (
     <div>
-      <h2>Transaction List</h2>
+      {/* <h2>Transaction List</h2> */}
       <TransactionList data={data} currency={currency} />
     </div>
   );

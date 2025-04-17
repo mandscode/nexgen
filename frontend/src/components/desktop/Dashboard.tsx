@@ -183,7 +183,7 @@ const Dashboard = () => {
   useEffect(() => {
 
     const totalAsset = selectedCurrencyInvestments.reduce(
-      (sum, t) => (sum + Number(t.totalValue)),
+      (sum, t) => (sum + Number(t.totalValue) - Number(t.earning)),
       0
     );
     const totalInvested = selectedCurrencyInvestments.reduce(
@@ -505,7 +505,7 @@ const Dashboard = () => {
                                           
                                     <div className='_dashboard_project_details_graph'>
                                       <h6 className='_dashboard_project_details_graph_title _title_h1'>
-                                      10 Project transactions
+                                      Transaction List
                                       </h6>
                                       <TransactionTable data={chartData} currency={selectedCurrency} />
                                     </div>

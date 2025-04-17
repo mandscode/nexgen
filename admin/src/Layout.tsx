@@ -12,8 +12,8 @@ const Layout = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
   const [userId, setUserId] = useState("");
 
   useEffect(() => {
-
-    setUserId(userId)
+    const id = localStorage.getItem('userIds');
+    setUserId(id || "");
   }, [])
 
     const [showModalForOldPassword, setShowModalForOldPassword] = useState(false);

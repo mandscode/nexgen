@@ -47,7 +47,7 @@ const OldPasswordChangeModal = ({ show, onHide, userId, isFirstLogin }: Password
           }
 
         }
-        
+
       await api.put(`/users/${userId}/change-password`, { ...data });
       alert("Password changed successfully. Please log in with your new password.");
       onHide();
@@ -55,7 +55,7 @@ const OldPasswordChangeModal = ({ show, onHide, userId, isFirstLogin }: Password
     } catch (error:any) {
       setLoading(false);
       onHide();
-      alert(`Wrong old password`);
+      alert(error.response.data.message || `Wrong old password`);
     }
     setLoading(false);
   };

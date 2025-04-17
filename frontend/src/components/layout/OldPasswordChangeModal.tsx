@@ -51,7 +51,7 @@ const OldPasswordChangeModal = ({ show, onHide,email, userId, isFirstLogin }: Pa
       }
       await api.put(`/users/${userId}/change-password`, { ...data });
           
-      const loginResponse = await api.post("/users/login", { email, password });
+      const loginResponse = await api.post("/users/login", { email, password, entity:1 });
       if (loginResponse.data.token) {
         const { token, userId } = loginResponse.data;
         
@@ -59,7 +59,10 @@ const OldPasswordChangeModal = ({ show, onHide,email, userId, isFirstLogin }: Pa
         dispatch(tokenSuccess(token));
         
         // Fetch updated user details
-        dispatch(fetchUserById(Number(userId)) as any);
+        setTimeout(() => {
+          dispatch(fetchUserById(Number(userId)) as any);
+          navigate("/");
+        }, 0);
         
         alert("You are now logged in with your new password.");
       } else {

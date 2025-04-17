@@ -128,7 +128,7 @@ class UserDetailsService {
                                 lockInPeriod: lockInPeriod !== null && lockInPeriod !== void 0 ? lockInPeriod : null,
                                 maturityLockingPeriod: ((_e = (_d = investorDetails.projects) === null || _d === void 0 ? void 0 : _d.find(p => p.id === projectId)) === null || _e === void 0 ? void 0 : _e.maturityLockingPeriod) || 0,
                                 investedAmount: (transaction.credited && transaction.details !== 'bonus') ? transaction.amount : 0,
-                                earning: earning || 0,
+                                earning: transaction.credited && transaction.details === 'bonus' ? transaction.amount : 0,
                                 totalValue: transaction.credited ? (transaction.amount + earning) : (-transaction.amount + earning),
                                 transactions: [] // Will collect transactions below
                             });
@@ -137,6 +137,9 @@ class UserDetailsService {
                             const existingInvestment = groupedInvestments.get(key);
                             if (transaction.credited && transaction.details !== 'bonus') {
                                 existingInvestment.investedAmount = parseFloat(existingInvestment.investedAmount) + transaction.amount;
+                            }
+                            if (transaction.credited && transaction.details === 'bonus') {
+                                existingInvestment.earning = parseFloat(existingInvestment.earning) + transaction.amount;
                             }
                             existingInvestment.totalValue = (parseFloat(existingInvestment.totalValue) + (transaction.credited ? transaction.amount : -transaction.amount));
                         }

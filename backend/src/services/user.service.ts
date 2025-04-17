@@ -140,6 +140,11 @@ class UserService {
             throw new Error("Old password is incorrect.");
         }
 
+        const isSamePassword = await bcrypt.compare(newPassword, user.password!);
+        if (isSamePassword) {
+            throw new Error("New password must be different from the old password.");
+        }    
+
         // Hash the new password
         const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
 

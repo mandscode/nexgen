@@ -10,7 +10,6 @@ import * as swaggerDocument from './swagger.json';
 // app.ts or index.ts
 import './createMasterAdmin';
 
-
 import cors from 'cors';
 import { RegisterRoutes } from "./routes/routes";
 

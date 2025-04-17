@@ -221,7 +221,6 @@ class UserDetailsService {
                     const currencyId = account.currencyDetails.id;
                     
                     const key = `${projectId}-${currencyId}`; // Unique key for investments per project & currency
-
                     if (!groupedInvestments.has(key)) {
                         const project = investorDetails.projects?.find((p: any) => p.id === projectId);
                         const earning = project?.ProjectInvestor?.earning || 0;
@@ -233,7 +232,7 @@ class UserDetailsService {
                             lockInPeriod: lockInPeriod ?? null,
                             maturityLockingPeriod: investorDetails.projects?.find(p => p.id === projectId)?.maturityLockingPeriod || 0,
                             investedAmount: (transaction.credited && transaction.details !== 'bonus') ? transaction.amount : 0,
-                            earning: earning || 0,
+                            earning: transaction.credited && transaction.details === 'bonus' ? transaction.amount : 0,
                             totalValue: transaction.credited ? (transaction.amount + earning) : (-transaction.amount + earning),
                             transactions: [] // Will collect transactions below
                         });
@@ -241,6 +240,10 @@ class UserDetailsService {
                         const existingInvestment = groupedInvestments.get(key);
                         if (transaction.credited && transaction.details !== 'bonus') {
                             existingInvestment.investedAmount = parseFloat(existingInvestment.investedAmount) + transaction.amount;
+                        }
+
+                        if (transaction.credited && transaction.details === 'bonus') {
+                            existingInvestment.earning = parseFloat(existingInvestment.earning) + transaction.amount;
                         }
                         
                         existingInvestment.totalValue = (parseFloat(existingInvestment.totalValue) + (transaction.credited ? transaction.amount : -transaction.amount));

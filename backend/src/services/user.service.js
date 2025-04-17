@@ -110,6 +110,10 @@ class UserService {
             if (!isPasswordValid) {
                 throw new Error("Old password is incorrect.");
             }
+            const isSamePassword = yield bcrypt_1.default.compare(newPassword, user.password);
+            if (isSamePassword) {
+                throw new Error("New password must be different from the old password.");
+            }
             // Hash the new password
             const hashedPassword = yield bcrypt_1.default.hash(newPassword, SALT_ROUNDS);
             // Update the user's password

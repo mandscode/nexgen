@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { PieChart, Pie, Cell, Tooltip } from 'recharts';
-import { getAccounts, getProjects, getTransactions } from './api/apiEndpoints';
+import { getAccounts, getCurrencyDetail, getProjects, getTransactions } from './api/apiEndpoints';
 import { ColumnDef } from '@tanstack/react-table';
 import NexGenTable from './components/NexGenTable/NexGenTable';
 
@@ -37,6 +37,25 @@ const Home = () => {
           const projects = await getProjects();
           const accounts = await getAccounts();
 
+
+          const currencyIdsSet = new Set<string>();
+          transactions.forEach((tx: any) => {
+            const account = accounts.find((ac: any) => ac.id === tx.accountId);
+            const currencyId = account ? account.currency : tx.currency;
+            currencyIdsSet.add(currencyId);
+          });
+
+          
+          const currencyMap: { [id: string]: string } = {};
+          for (const id of currencyIdsSet) {
+            try {
+              const detail = await getCurrencyDetail(Number(id));
+              currencyMap[id] = detail.name;
+            } catch (e) {
+              currencyMap[id] = id; // fallback if API fails
+            }
+          }
+
           const investments = projects.map((project: any) => {
             const projectTransactions = transactions.filter(
               (transaction: any) => transaction.projectId === project.id
@@ -55,27 +74,28 @@ const Home = () => {
 
             const currencyData = projectTransactions.reduce((acc: any, tx: any) => {
               const account = accounts.find((ac: any) => ac.id === tx.accountId);
-              const currencyName = account ? account.currency : tx.currency; // Use account name if found, otherwise use tx.currency
+              const currencyId = account ? account.currency : tx.currency;
+              const currencyName = currencyMap[currencyId] || currencyId;
 
 
               const currencyItem = acc.find((item: any) => item.currency === currencyName);
               
               const amount = tx.credited ? tx.amount : -tx.amount;
 
-
+              
               if (currencyItem) {
                 currencyItem.value += amount;
               } else {
                 acc.push({ currency: currencyName, value: tx.amount });
               }
+
               return acc;
             }, [] as { currency: string; value: number }[]);
-
+            
             // Adding all transactions (both credited and debited) for this project
             const allTransactions = projectTransactions.map((transaction: any) => {
               const account = accounts.find((ac: any) => ac.id === transaction.accountId);
               const currencyName = account ? account.currency : transaction.currency; // Use account name if found, otherwise use tx.currency
-
               return {
                 id: transaction.id,
                 amount: transaction.amount,
@@ -106,9 +126,9 @@ const Home = () => {
 
     // Handle click on project pie slice
     const handleProjectClick = (data:any) => {
+      console.log(data, 's')
       setSelectedProject(data);
     };
-
     const handleCurrencyClick = (currencyData: any) => {
       const currency = currencyData.payload.currency;
       setSelectedCurrency(currency);

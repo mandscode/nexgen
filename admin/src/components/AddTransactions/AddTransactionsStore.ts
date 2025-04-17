@@ -31,7 +31,7 @@ export class AddTransactionsStore {
                 investorId: investrId,
                 projectId: values.projectId
             };
-            await createEarning(earningValue); // ✅ API to update ProjectInvestor.earning
+            // await createEarning(earningValue); // ✅ API to update ProjectInvestor.earning
 
             // 2. Create bonus transaction
             formattedValue = {

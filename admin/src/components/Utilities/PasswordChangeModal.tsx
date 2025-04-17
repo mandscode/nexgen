@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Modal, Button, Form, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/api";
 import { Eye, EyeOff } from "react-feather";
+import { getUser } from "../../api/apiEndpoints";
+
+import { AppStore } from '../../AppStore';
+import {AppContext} from '../../AppContext';
 
 interface PasswordModalProps {
   show: boolean;
@@ -15,6 +19,7 @@ const PasswordChangeModal = ({ show, onHide, userId }: PasswordModalProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const appStore = useContext<AppStore>(AppContext);
 
   const handlePasswordSubmit = async () => {
     if (!password) {
@@ -30,7 +35,7 @@ const PasswordChangeModal = ({ show, onHide, userId }: PasswordModalProps) => {
         const response = await api.get(`/users/${userId}`)
         const user = response.data; // Extract user data
 
-        const data = {
+        const updateData = {
           firstName:user.firstName,
           lastName:user.lastName,
           email: user.email,
@@ -40,10 +45,40 @@ const PasswordChangeModal = ({ show, onHide, userId }: PasswordModalProps) => {
           isFirstLogin:false
         }
 
-      await api.put("/users", { id: userId, ...data });
-      alert("Password changed successfully. Please log in with your new password.");
-      onHide();
-      navigate("/login"); // Redirect to login after password change
+      await api.put("/users", { id: userId, ...updateData });
+
+      // Now automatically log in with new credentials
+      const loginData = {
+        email: user.email,
+        password: password
+      };
+
+      const loginResponse = await api.post('/users/login', loginData);
+      const { token, userId: loggedInUserId, isMasterAdmin } = loginResponse.data;
+      const loggedInUser = await getUser(loggedInUserId);
+
+      if (loggedInUser.roles) {
+        const isAdmin = loggedInUser.roles.find((role: any) => role.name === "Admin");
+        const isMasterAdminRole = loggedInUser.roles.find((role: any) => role.name === "Master Admin");
+
+        if (token && loggedInUserId) {
+          // Store authentication data
+          localStorage.setItem('token', token);
+          localStorage.setItem('userIds', String(loggedInUserId));
+          localStorage.setItem('isMasterAdmin', isMasterAdmin);
+          
+          if (localStorage.getItem('userIds')) {
+            appStore.setAuthenticated(true);
+            navigate("/dashboard");
+          }
+        } else {
+          alert("You don't have permission to login");
+        }
+      } else {
+        alert("Login failed after password change");
+      }
+      
+      onHide(); // Close the password change modal if applicable
     } catch (error) {
       alert("Failed to change password.");
     }
